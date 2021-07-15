@@ -1,0 +1,72 @@
+version: "3.8"
+
+services:
+
+    nginx:
+        image: nginx:stable-alpine
+        ports:
+            - "80:80"
+            - "6001:6001"
+        depends_on:
+            - php-fpm
+        volumes:
+            - ./:/var/www/app
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+    php-fpm:
+        build:
+            context: docker/php-fpm
+            args:
+                - PHP_VERSION=${DOCKER_COMPOSE_PHP_VERSION}
+                - UID=${DOCKER_COMPOSE_UID}
+                - GID=${DOCKER_COMPOSE_GID}
+        depends_on:
+            - mysql
+            - redis
+        volumes:
+            - ./:/var/www/app
+
+    # schedule, queue, websockets
+    php-worker:
+        build:
+            context: docker/php-worker
+            args:
+                - PHP_VERSION=${DOCKER_COMPOSE_PHP_VERSION}
+                - UID=${DOCKER_COMPOSE_UID}
+                - GID=${DOCKER_COMPOSE_GID}
+        depends_on:
+            - mysql
+            - redis
+        volumes:
+            - ./:/var/www/app
+
+    # composer, artisan
+    workspace:
+        build:
+            context: docker/workspace
+            args:
+                - PHP_VERSION=${DOCKER_COMPOSE_PHP_VERSION}
+                - UID=${DOCKER_COMPOSE_UID}
+                - GID=${DOCKER_COMPOSE_GID}
+        volumes:
+            - ./:/var/www/app
+
+    mysql:
+        image: mysql:8.0.25
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./:/var/www/app/mysql
+        build:
+            context: docker/mysql
+
+    redis:
+        image: redis
+
+volumes:
+    docsystem:
