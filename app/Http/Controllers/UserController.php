@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use JsonException;
 
 class UserController extends Controller
 {
-    //
+
 
     public function login(Request $request)
     {
@@ -18,23 +21,23 @@ class UserController extends Controller
         ];
 
 
+        $user = User::find('5000000');
 
-        if (!Auth::attempt($login)) {
+        if (!$user) {
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
         }
 
-        $user = Auth::user();
-        $accessToken = $user->createToken('authToken')->accessToken;
 
         return response([
             'user' => $user,
-            'accessToken' => $accessToken
+//            'accessToken' => $accessToken
         ]);
     }
 
-    public function getAll(){
+    public function getAll()
+    {
         return User::all();
     }
 }
