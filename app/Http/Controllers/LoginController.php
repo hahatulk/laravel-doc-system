@@ -11,12 +11,18 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function login(Request $request): Response|Application|ResponseFactory
+    public function login(Request $request)
     {
         $login = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
+
+        if (!Auth::attempt($login)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
 
         $user = User::where('username', $login['username'])
             ->first();

@@ -3,6 +3,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Passport;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/login', [LoginController::class, 'login'])->withoutMiddleware('auth:api');
+    Route::post('/login', [UserController::class, 'login'])->withoutMiddleware('auth:api');
     Route::post('/userget', [UserController::class, 'getAll']);
 });
+
+
