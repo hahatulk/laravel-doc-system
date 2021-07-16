@@ -89,7 +89,7 @@ class User extends Authenticatable
      * @param string $password
      * @return bool
      */
-    public function validateForPassportPasswordGrant($password)
+    public function validateForPassportPasswordGrant($password): bool
     {
         return true;
     }
