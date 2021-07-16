@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Passport\Passport;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +20,11 @@ use Laravel\Passport\Passport;
 //});
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/login', [UserController::class, 'login'])->withoutMiddleware('auth:api');
-    Route::post('/token/refresh', [UserController::class, 'userRefreshToken'])->withoutMiddleware('auth:api');
+    Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
+    Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
 
     Route::post('/userget', [UserController::class, 'getAll']);
+    Route::post('/logout/full', [AuthController::class, '']);
 });
 
 

@@ -28,8 +28,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::cookie('access_token');
 
-        Passport::tokensExpireIn(now()->addMinutes());
-        Passport::refreshTokensExpireIn(now()->addMonths(6));
+        Passport::tokensExpireIn(now()->addMinutes(env('ACCESS_TOKEN_MINUTES')));
+        Passport::refreshTokensExpireIn(now()->addDays(env('REFRESH_TOKEN_DAYS')));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
     }
 }

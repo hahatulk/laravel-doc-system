@@ -10,6 +10,7 @@
         "prod": "npm run production",
         "production": "mix --production",
         "docker": "docker-compose up --build -d",
+        "cache": "docker-compose run workspace php artisan config:cache && docker-compose run workspace php artisan config:clear",
         "migrate": "docker-compose run workspace php artisan migrate:fresh --seed",
         "larkey": "docker-compose run workspace composer run-script post-create-project-cmd"
     },
