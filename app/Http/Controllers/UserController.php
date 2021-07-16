@@ -17,7 +17,8 @@ use JsonException;
 class UserController extends Controller
 {
 
-
-
-
+    public function getAll(Request $request): \Illuminate\Database\Eloquent\Collection|array
+    {
+        return User::all();
+    }
 }

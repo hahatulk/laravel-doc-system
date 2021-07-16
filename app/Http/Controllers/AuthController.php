@@ -37,7 +37,7 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $tokens = $this->userIssueToken($user->username, $user->password);
+        $tokens = $this->issueToken($user->username, $user->password);
 
         Cookie::queue('access_token', $tokens['access_token'], env('ACCESS_TOKEN_MINUTES'));
         Cookie::queue('refresh_token', $tokens['refresh_token'], env('REFRESH_TOKEN_MINUTES'));
@@ -73,16 +73,37 @@ class AuthController extends Controller
         return response($tokens);
     }
 
-    public function revokeAllTokens($user): bool
+    public function logout(Request $request): bool
     {
         $userTokens = Auth::user()->tokens;
-        $tokenId = $user->token()->id;
+        $tokenId = $request->user()->token()->id;
 
         $tokenRepository = app(TokenRepository::class);
         $refreshTokenRepository = app(RefreshTokenRepository::class);
 
         // Revoke an access token...
         $tokenRepository->revokeAccessToken($tokenId);
+
+        // Revoke all of the token's refresh tokens...
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
+        Cookie::queue('access_token', '', 0);
+        Cookie::queue('refresh_token', '', 0);
+
+        return true;
+    }
+
+    public function revokeAllTokens(Request $request): bool
+    {
+        $userTokens = Auth::user()->tokens;
+        $tokenId = $request->user()->token()->id;
+
+        $tokenRepository = app(TokenRepository::class);
+        $refreshTokenRepository = app(RefreshTokenRepository::class);
+
+        foreach($userTokens as $token) {
+            $token->revoke();
+        }
 
         // Revoke all of the token's refresh tokens...
         $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);

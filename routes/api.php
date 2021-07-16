@@ -24,7 +24,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
 
     Route::post('/userget', [UserController::class, 'getAll']);
-    Route::post('/logout/full', [AuthController::class, '']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
 });
 
 
