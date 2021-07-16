@@ -9,6 +9,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use JsonException;
 
@@ -33,9 +34,12 @@ class UserController extends Controller
             'scope' => ''
         ];
         $response = Request::create('/oauth/token', 'POST', $data);
-        $content = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        return response($content);
+        Cookie::queue('access_token', $tokens['access_token'], env('ACCESS_TOKEN_MINUTES'));
+        Cookie::queue('refresh_token', $tokens['refresh_token'], env('REFRESH_TOKEN_MINUTES'));
+
+        return response($tokens);
     }
 
     /**
@@ -56,8 +60,14 @@ class UserController extends Controller
             ], 400);
         }
 
-//        return response(dd($vars));
-        return response($this->userGetToken($user->username, $user->password));
+        $tokens = $this->userGetToken($user->username, $user->password);
+
+        Cookie::queue('access_token', $tokens['access_token'], env('ACCESS_TOKEN_MINUTES'));
+        Cookie::queue('refresh_token', $tokens['refresh_token'], env('REFRESH_TOKEN_MINUTES'));
+
+        return response()->json([
+            'msg' => 'Logged in.'
+        ]);
     }
 
     /**
@@ -84,8 +94,8 @@ class UserController extends Controller
         return json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
-        return User::all();
+        return $request->user();
     }
 }
