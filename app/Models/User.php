@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\PassportToken;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -68,10 +67,15 @@ class User extends Authenticatable
         return self::whereUsername($username)->first();
     }
 
+    public static function findCredentials(string $username, string $password): Model|Builder|null
+    {
+        return self::whereUsername($username)->wherePassword($password)->first();
+    }
+
     /**
      * Find the user instance for the given username.
      *
-     * @param  string  $username
+     * @param string $username
      * @return \App\Models\User
      */
     public function findForPassport($username)
@@ -82,7 +86,7 @@ class User extends Authenticatable
     /**
      * Validate the password of the user for the Passport password grant.
      *
-     * @param  string  $password
+     * @param string $password
      * @return bool
      */
     public function validateForPassportPasswordGrant($password)

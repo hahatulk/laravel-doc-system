@@ -22,6 +22,7 @@ use Laravel\Passport\Passport;
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/login', [UserController::class, 'login'])->withoutMiddleware('auth:api');
+
     Route::post('/userget', [UserController::class, 'getAll']);
 });
 

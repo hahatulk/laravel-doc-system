@@ -49,23 +49,22 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $login = [
-            'username' => $request->get('username'),
-            'password' => $request->get('password'),
-        ];
+//        $login = [
+//            'username' => $request->get('username'),
+//            'password' => $request->get('password'),
+//        ];
 
-
-        $user = User::find($request->get('username'));
+        $user = User::findCredentials($request->get('username'), $request->get('password'));
 
         if (!$user) {
             return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+                'message' => 'Invalid credentials'
+            ], 400);
         }
 
-        return response([
-            'user' => $this->userGetToken($user->username, $user->password),
-        ]);
+        $tokens = $this->userGetToken($user->username, $user->password);
+
+        return response($tokens);
     }
 
     /**
@@ -88,10 +87,7 @@ class UserController extends Controller
         ];
 
         $response = Request::create('/oauth/token', 'POST', $data);
-        $content = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
-
-//        return json_decode((string)$response->getContent(), true, 512, JSON_THROW_ON_ERROR);
-            return $content;
+        return json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function getAll()
