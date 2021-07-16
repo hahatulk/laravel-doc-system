@@ -96,6 +96,6 @@ class UserController extends Controller
 
     public function getAll(Request $request)
     {
-        return $request->user();
+        return dd($request->headers);
     }
 }
