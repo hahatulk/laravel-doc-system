@@ -25,6 +25,9 @@ services:
             - redis
         volumes:
             - ./:/var/www/app
+#            - ./php.ini:/usr/local/etc/php/php.ini
+#        environment:
+#            PHP_INI_SCAN_DIR: "/usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d"
 
     # schedule, queue, websockets
     php-worker:

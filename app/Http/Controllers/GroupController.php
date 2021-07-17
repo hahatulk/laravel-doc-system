@@ -14,6 +14,28 @@ use Illuminate\Http\Request;
  */
 class GroupController extends Controller
 {
+//    public function find(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|array|Group|null
+//    {
+//        return Group::find($request->get('id'));
+//    }
+
+//    public function findAll(Request $request): \Illuminate\Database\Eloquent\Collection|array
+//    {
+//        return Group::all();
+//    }
+
+//    public function findAllWithSortFilter(Request $request): \Illuminate\Database\Eloquent\Collection|array
+//    {
+//        $vars = $request->validate([
+//            'offset' => 'required|numeric',
+//            'limit' => 'required|numeric',
+//            'sort' => 'required',
+//            'filters' => 'required',
+//        ]);
+//
+//        return Group::all();
+//    }
+
     public function create(Request $request): JsonResponse
     {
         $vars = $request->validate([
@@ -28,5 +50,16 @@ class GroupController extends Controller
         Group::create($vars);
 
         return $this->success('jopa');
+    }
+
+    public function delete(Request $request): JsonResponse
+    {
+        $vars = $request->validate([
+            'groupId' => 'required|numeric',
+        ]);
+
+        Group::destroy($vars);
+
+        return $this->success($vars);
     }
 }
