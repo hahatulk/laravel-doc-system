@@ -62,7 +62,7 @@ class AuthController extends Controller
             'refresh_token' => $request->cookie('refresh_token'),
             'client_id' => $client->id,
             'client_secret' => $client->secret,
-            'scope' => ''
+            'scope' => Auth::user()->role
         ];
         $response = Request::create('/oauth/token', 'POST', $data);
         $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -124,13 +124,15 @@ class AuthController extends Controller
             ->where('password_client', true)
             ->first();
 
+        $user = User::find($username);
+
         $data = [
             'grant_type' => 'password',
             'client_id' => $client->id,
             'client_secret' => $client->secret,
             'username' => $username,
             'password' => $password,
-            'scope' => ''
+            'scope' => $user->role
         ];
 
 

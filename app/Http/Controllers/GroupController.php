@@ -3,19 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
-use Illuminate\Database\Eloquent\Collection;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
 /**
- * @mixin \Eloquent
- * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin Eloquent
+ * @mixin Builder
  */
 class GroupController extends Controller
 {
-    public function create(Request $request): Collection|array
+    public function create(Request $request): JsonResponse
     {
         $vars = $request->validate([
             'kurs' => 'required|numeric',
-            'name' => 'required|string',
+            'name' => 'required|string|unique:groups',
             'startDate' => 'required|date',
             'finishDate' => 'required|date',
             'groupType' => 'required|digits_between:0,1',
@@ -24,6 +27,6 @@ class GroupController extends Controller
 
         Group::create($vars);
 
-        return $vars;
+        return $this->success('jopa');
     }
 }
