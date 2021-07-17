@@ -23,7 +23,7 @@ class CreateGroupsTable extends Migration
             $table->integer('groupType');
             $table->string('facultet');
             $table->foreign('facultet')->references('name')->on('facultets');
-            $table->integer('prikazOtchislenieN');
+            $table->integer('prikazOtchislenieN')->nullable();
             $table->foreign('prikazOtchislenieN')->references('N')->on('prikazs');
             $table->timestamps();
         });

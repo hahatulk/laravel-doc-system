@@ -67,8 +67,11 @@ class AuthController extends Controller
         $response = Request::create('/oauth/token', 'POST', $data);
         $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        Cookie::queue('access_token', $tokens['access_token'], env('ACCESS_TOKEN_MINUTES'));
-        Cookie::queue('refresh_token', $tokens['refresh_token'], env('REFRESH_TOKEN_MINUTES'));
+        $accessExpire = (int)env('ACCESS_TOKEN_HOURS');
+        $refreshExpire = (int)env('REFRESH_TOKEN_DAYS');
+
+        Cookie::queue('access_token', $tokens['access_token'], $accessExpire);
+        Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshExpire);
 
         return response($tokens);
     }

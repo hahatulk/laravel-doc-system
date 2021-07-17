@@ -10,10 +10,12 @@
         "prod": "npm run production",
         "production": "mix --production",
         "docker": "docker-compose up --build -d",
-        "cache": "docker-compose run workspace php artisan config:cache",
+        "cache": "docker-compose run workspace php artisan config:clear",
         "migrate": "docker-compose run workspace php artisan migrate:fresh --seed",
         "passport": "docker-compose run workspace php artisan passport:install",
-        "larkey": "docker-compose run workspace composer run-script post-create-project-cmd"
+        "larkey": "docker-compose run workspace composer run-script post-create-project-cmd",
+        "idehelper": "docker-compose run workspace php artisan ide-helper:generate && docker-compose run workspace php artisan ide-helper:models && docker-compose run workspace php artisan ide-helper:meta"
+
     },
     "devDependencies": {
         "axios": "^0.21",

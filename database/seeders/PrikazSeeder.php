@@ -14,9 +14,9 @@ class PrikazSeeder extends Seeder
      */
     public function run()
     {
-        Prikaz::factory()->create([
-            'N' => '1',
-            'name' => 'prikaz_o_zachislenii',
-        ]);
+//        Prikaz::factory()->create([
+//            'N' => '1',
+//            'name' => 'prikaz_o_zachislenii',
+//        ]);
     }
 }
