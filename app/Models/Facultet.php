@@ -25,4 +25,8 @@ use Illuminate\Database\Eloquent\Model;
 class Facultet extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+    ];
 }

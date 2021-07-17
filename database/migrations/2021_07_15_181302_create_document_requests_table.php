@@ -20,8 +20,8 @@ class CreateDocumentRequestsTable extends Migration
             $table->string('documentName');
             $table->foreign('documentName')->references('name')->on('default_documents');
             $table->integer('status');
-            $table->tinyInteger('fullFilled');
-            $table->dateTime('fullFilledAt');
+            $table->tinyInteger('fullFilled')->default('0');
+            $table->dateTime('fullFilledAt')->nullable();
             $table->text('comment')->nullable();
             $table->timestamps();
         });

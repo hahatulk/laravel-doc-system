@@ -31,4 +31,10 @@ use Illuminate\Database\Eloquent\Model;
 class Prikaz extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'N',
+        'name',
+        'date',
+    ];
 }

@@ -15,11 +15,11 @@ class CreatePrikazsTable extends Migration
     {
         Schema::create('prikazs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('userId');
-            $table->foreign('userId')->references('id')->on('users');
             $table->integer('N');
+            $table->index('N');
             $table->string('name');
-            $table->date('date');
+            $table->date('date')->default(now());
+            $table->json('userId')->nullable();
             $table->timestamps();
         });
     }

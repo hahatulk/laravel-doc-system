@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
 
     Route::post('/userget', [UserController::class, 'getAll']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
+
+    Route::post('/group/create', [GroupController::class, 'create']);
 });
 
 

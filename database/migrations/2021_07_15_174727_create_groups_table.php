@@ -16,7 +16,7 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->tinyInteger('inProgress');
+            $table->tinyInteger('inProgress')->default('1');
             $table->integer('kurs');
             $table->date('startDate');
             $table->date('finishDate');
@@ -24,6 +24,7 @@ class CreateGroupsTable extends Migration
             $table->string('facultet');
             $table->foreign('facultet')->references('name')->on('facultets');
             $table->integer('prikazOtchislenieN');
+            $table->foreign('prikazOtchislenieN')->references('N')->on('prikazs');
             $table->timestamps();
         });
     }

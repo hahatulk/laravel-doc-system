@@ -24,6 +24,7 @@ class CreateStudentsTable extends Migration
             $table->date('birthday');
             $table->integer('group');
             $table->integer('zachislenPoPrikazu');
+            $table->foreign('zachislenPoPrikazu')->references('N')->on('prikazs');
             $table->integer('formaObuch');
             $table->integer('status');
             $table->timestamps();
