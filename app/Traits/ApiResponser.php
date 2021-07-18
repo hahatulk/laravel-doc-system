@@ -2,12 +2,14 @@
 
 namespace App\Traits;
 
+use DebugBar\DebugBar;
 use Illuminate\Http\JsonResponse;
 
 trait ApiResponser
 {
     protected function success($data, $errors = null, $code = 200): JsonResponse
     {
+
         return response()->json([
             'errors' => $errors,
             'data' => $data

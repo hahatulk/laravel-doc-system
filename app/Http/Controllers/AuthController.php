@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use DebugBar\DebugBar;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -24,6 +25,7 @@ class AuthController extends Controller
      */
     public function login(Request $request): Response|JsonResponse|Application|ResponseFactory
     {
+
         $vars = $request->validate([
             'username' => 'required',
             'password' => 'required',

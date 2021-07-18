@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\PrikazController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +24,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
     Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
 
-    Route::post('/userget', [UserController::class, 'getAll']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
@@ -32,6 +31,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/group/list', [GroupController::class, 'findAllWithSortFilter']);
     Route::post('/group/create', [GroupController::class, 'create']);
     Route::delete('/group/delete', [GroupController::class, 'delete']);
+
+
+    Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
 });
 
 
