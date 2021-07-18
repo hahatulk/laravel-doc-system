@@ -49,7 +49,7 @@ class GroupController extends Controller
 
         Group::create($vars);
 
-        return $this->success('jopa');
+        return $this->success();
     }
 
     public function delete(Request $request): JsonResponse

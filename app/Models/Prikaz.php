@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Prikaz whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Prikaz whereUserId($value)
  * @mixin \Eloquent
+ * @property string $title
+ * @method static \Illuminate\Database\Eloquent\Builder|Prikaz whereTitle($value)
  */
 class Prikaz extends Model
 {
@@ -35,6 +37,7 @@ class Prikaz extends Model
     protected $fillable = [
         'N',
         'name',
+        'title',
         'date',
     ];
 }
