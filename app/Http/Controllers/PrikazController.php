@@ -7,6 +7,8 @@ use App\Class\Util;
 use App\Models\DefaultDocument;
 use App\Models\Group;
 use App\Models\Prikaz;
+use App\Models\Student;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -17,7 +19,7 @@ class PrikazController extends Controller {
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function createZachislenie(Request $request) {
+    public function createZachislenie(Request $request): JsonResponse {
         $vars = $request->validate([
             'prikazNumber' => 'required|numeric',
             'group' => 'required|exists:groups,id',
@@ -38,8 +40,15 @@ class PrikazController extends Controller {
 
         $this->createPrikaz($vars['prikazNumber'], $prikazName, $prikazTitle, $vars['prikazDate']);
 
-        return response('((');
-//        return $this->success();
+//        todo сделать создание акков студиков
+        Student::create($students);
+
+//        return response('((');
+        return $this->success([
+            'prikazName' => $prikazName,
+            'prikazNumber' => $prikazNumber,
+            'prikazTitle' => $prikazTitle,
+        ]);
     }
 
     /**
