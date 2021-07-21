@@ -8,6 +8,7 @@ use App\Models\DefaultDocument;
 use App\Models\Group;
 use App\Models\Prikaz;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -28,6 +29,7 @@ class PrikazController extends Controller {
         ]);
 
         $students = $this->exctractStudents($vars['excelFile']);
+        $studentsLength = count($students);
 
         $prikazInstance = DefaultDocument::whereName('prikaz_o_zachislenii')->first();
         $kursNumber = Group::find($vars['group'])->kurs;
@@ -41,7 +43,35 @@ class PrikazController extends Controller {
         $this->createPrikaz($vars['prikazNumber'], $prikazName, $prikazTitle, $vars['prikazDate']);
 
 //        todo сделать создание акков студиков
-        Student::create($students);
+
+        for ($i = 0; $i < $studentsLength; $i++) {
+            $user = User::create([
+                'username' => (int)User::max('username') + 1,
+                'password' => 'password',
+                'role' => 'student',
+            ]);
+
+            $gender =
+
+            $insert = [
+                'userId' => $user->id,
+                'surname' => $students[0]->id,
+                'name' => $students[0]->id,
+                'patronymic' => $students[0]->id,
+                'gender' => $students[0]->id,
+                'birthday' => $students[0]->id,
+                'group' => $students[0]->id,
+                'zachislenPoPrikazu' => $prikazNumber,
+                'formaObuch' => $students[0]->id,
+                'status' => $students[0]->id,
+            ];
+
+            Student::create(
+
+            );
+
+        }
+
 
 //        return response('((');
         return $this->success([
