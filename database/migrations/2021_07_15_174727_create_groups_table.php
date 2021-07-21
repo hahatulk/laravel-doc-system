@@ -11,8 +11,7 @@ class CreateGroupsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(): void {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -22,9 +21,9 @@ class CreateGroupsTable extends Migration
             $table->date('finishDate');
             $table->integer('groupType');
             $table->string('facultet');
-            $table->foreign('facultet')->references('name')->on('facultets');
+            $table->foreign('facultet')->references('name')->on('facultets')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('prikazOtchislenieN')->nullable();
-            $table->foreign('prikazOtchislenieN')->references('N')->on('prikazs');
+            $table->foreign('prikazOtchislenieN')->references('N')->on('prikazs')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -34,8 +33,7 @@ class CreateGroupsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('groups');
     }
 }

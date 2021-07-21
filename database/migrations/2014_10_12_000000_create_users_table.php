@@ -11,14 +11,13 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(): void {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
             $table->string('role');
-            $table->foreign('role')->references('role')->on('roles');
+            $table->foreign('role')->references('role')->on('roles')->onUpdate('cascade')->onDelete('restrict');
             $table->integer('status')->default('1');
             $table->timestamps();
         });
@@ -29,8 +28,7 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('users');
     }
 }

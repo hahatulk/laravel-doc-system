@@ -11,12 +11,11 @@ class CreateStudentsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(): void {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('userId');
-            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('surname');
             $table->string('name');
             $table->string('patronymic')->nullable();
@@ -24,7 +23,7 @@ class CreateStudentsTable extends Migration
             $table->date('birthday');
             $table->integer('group');
             $table->integer('zachislenPoPrikazu');
-            $table->foreign('zachislenPoPrikazu')->references('N')->on('prikazs');
+            $table->foreign('zachislenPoPrikazu')->references('N')->on('prikazs')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('formaObuch');
             $table->integer('status');
             $table->timestamps();
@@ -36,8 +35,7 @@ class CreateStudentsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('students');
     }
 }

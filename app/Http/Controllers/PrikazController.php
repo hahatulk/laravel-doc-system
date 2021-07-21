@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
@@ -20,7 +21,7 @@ class PrikazController extends Controller {
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function createZachislenie(Request $request): JsonResponse {
+    public function createZachislenie(Request $request) {
         $vars = $request->validate([
             'prikazNumber' => 'required|numeric',
             'group' => 'required|exists:groups,id',
@@ -47,33 +48,51 @@ class PrikazController extends Controller {
         for ($i = 0; $i < $studentsLength; $i++) {
             $user = User::create([
                 'username' => (int)User::max('username') + 1,
-                'password' => 'password',
+                'password' => 'Str::random(10)',
                 'role' => 'student',
             ]);
 
-            $gender =
+            $gender = '';
+
+            if (strpos('женский', $students[$i]['gender']) >= 0) {
+                $gender = 'женский';
+            } else if(strpos('мужской', $students[$i]['gender']) >= 0){
+                $gender = 'мужской';
+            } else{
+                throw new \Error('Ошибка валидации gender');
+            }
+
+            $formaObuch = '';
+
+            if (strpos('платная', $students[$i]['formaObuch']) >= 0) {
+                $formaObuch = 1;
+            } else if(strpos('бюджетная', $students[$i]['formaObuch']) >= 0){
+                $formaObuch = 0;
+            } else{
+                throw new \Error('Ошибка валидации formaObuch');
+            }
 
             $insert = [
                 'userId' => $user->id,
-                'surname' => $students[0]->id,
-                'name' => $students[0]->id,
-                'patronymic' => $students[0]->id,
-                'gender' => $students[0]->id,
-                'birthday' => $students[0]->id,
-                'group' => $students[0]->id,
+                'surname' => $students[$i]['surname'],
+                'name' => $students[$i]['name'],
+                'patronymic' => $students[$i]['patronymic'],
+                'gender' => $gender,
+                'birthday' => $students[$i]['birthday'],
+                'group' => $vars['group'],
                 'zachislenPoPrikazu' => $prikazNumber,
-                'formaObuch' => $students[0]->id,
-                'status' => $students[0]->id,
+                'formaObuch' => $formaObuch,
+                'status' => 0,
             ];
 
             Student::create(
-
+                $insert
             );
 
         }
 
 
-//        return response('((');
+//        return response($insert);
         return $this->success([
             'prikazName' => $prikazName,
             'prikazNumber' => $prikazNumber,

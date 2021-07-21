@@ -11,12 +11,11 @@ class CreateModeratorsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(): void {
         Schema::create('moderators', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('userId');
-            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('fio');
             $table->string('gender')->nullable();
             $table->timestamps();
@@ -28,8 +27,7 @@ class CreateModeratorsTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(): void {
         Schema::dropIfExists('moderators');
     }
 }

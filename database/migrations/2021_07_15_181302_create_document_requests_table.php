@@ -11,14 +11,13 @@ class CreateDocumentRequestsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(): void {
         Schema::create('document_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('userId');
-            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('documentName');
-            $table->foreign('documentName')->references('name')->on('default_documents');
+            $table->foreign('documentName')->references('name')->on('default_documents')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('status');
             $table->tinyInteger('fullFilled')->default('0');
             $table->dateTime('fullFilledAt')->nullable();
