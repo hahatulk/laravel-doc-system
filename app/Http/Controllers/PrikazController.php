@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Class\StudentImportExcelReadFilter;
 use App\Class\Util;
+use App\Http\Requests\PrikazZachislenie;
 use App\Models\DefaultDocument;
 use App\Models\Group;
 use App\Models\Prikaz;
@@ -21,13 +22,8 @@ class PrikazController extends Controller {
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function createZachislenie(Request $request) {
-        $vars = $request->validate([
-            'prikazNumber' => 'required|numeric',
-            'group' => 'required|exists:groups,id',
-            'prikazDate' => 'required|date',
-            'excelFile' => 'required|file',
-        ]);
+    public function createZachislenie(PrikazZachislenie $request): JsonResponse {
+        $vars = $request->validated();
 
         $students = $this->exctractStudents($vars['excelFile']);
         $studentsLength = count($students);
@@ -43,16 +39,12 @@ class PrikazController extends Controller {
 
         $this->createPrikaz($vars['prikazNumber'], $prikazName, $prikazTitle, $vars['prikazDate']);
 
-//        todo сделать создание акков студиков
-
         for ($i = 0; $i < $studentsLength; $i++) {
             $user = User::create([
                 'username' => (int)User::max('username') + 1,
-                'password' => 'Str::random(10)',
+                'password' => Str::random(10),
                 'role' => 'student',
             ]);
-
-            $gender = '';
 
             if (strpos('женский', $students[$i]['gender']) >= 0) {
                 $gender = 'женский';
@@ -61,8 +53,6 @@ class PrikazController extends Controller {
             } else{
                 throw new \Error('Ошибка валидации gender');
             }
-
-            $formaObuch = '';
 
             if (strpos('платная', $students[$i]['formaObuch']) >= 0) {
                 $formaObuch = 1;
@@ -91,8 +81,6 @@ class PrikazController extends Controller {
 
         }
 
-
-//        return response($insert);
         return $this->success([
             'prikazName' => $prikazName,
             'prikazNumber' => $prikazNumber,
@@ -148,7 +136,7 @@ class PrikazController extends Controller {
         return $students;
     }
 
-    private function createPrikaz(int $N, string $name, string $title, string $date) {
+    private function createPrikaz(int $N, string $name, string $title, string $date): void {
         $prikazCount = Prikaz::where('N', '=', $N)->count();
 
         if ($prikazCount === 0) {

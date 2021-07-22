@@ -28,7 +28,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
 
-    Route::post('/group/list', [GroupController::class, 'findAllWithSortFilter']);
+//    Route::post('/group/list', [GroupController::class, 'findAllWithSortFilter']);
+    Route::post('/group/edit', [GroupController::class, 'edit']);
     Route::post('/group/create', [GroupController::class, 'create']);
     Route::delete('/group/delete', [GroupController::class, 'delete']);
 

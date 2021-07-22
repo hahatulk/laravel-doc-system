@@ -2,64 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GroupCreate;
+use App\Http\Requests\GroupDelete;
+use App\Http\Requests\GroupEdit;
 use App\Models\Group;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * @mixin Eloquent
  * @mixin Builder
  */
-class GroupController extends Controller
-{
-//    public function find(Request $request): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|array|Group|null
-//    {
-//        return Group::find($request->get('id'));
-//    }
-
-//    public function findAll(Request $request): \Illuminate\Database\Eloquent\Collection|array
-//    {
-//        return Group::all();
-//    }
-
-//    public function findAllWithSortFilter(Request $request): \Illuminate\Database\Eloquent\Collection|array
-//    {
-//        $vars = $request->validate([
-//            'offset' => 'required|numeric',
-//            'limit' => 'required|numeric',
-//            'sort' => 'required',
-//            'filters' => 'required',
-//        ]);
-//
-//        return Group::all();
-//    }
-
-    public function create(Request $request): JsonResponse
-    {
-        $vars = $request->validate([
-            'kurs' => 'required|numeric',
-            'name' => 'required|string|unique:groups',
-            'startDate' => 'required|date',
-            'finishDate' => 'required|date',
-            'groupType' => 'required|digits_between:0,1',
-            'facultet' => 'required|exists:facultets,name',
-        ]);
+class GroupController extends Controller {
+    public function create(GroupCreate $request): JsonResponse {
+        $vars = $request->validated();
 
         Group::create($vars);
 
         return $this->success();
     }
 
-    public function delete(Request $request): JsonResponse
-    {
-        $vars = $request->validate([
-            'groupId' => 'required|numeric',
-        ]);
+    /**
+     * @throws \JsonException
+     */
+    public function edit(GroupEdit $request): JsonResponse {
+        $vars = $request->validated();
+        $vars['values'] = json_decode($vars['values'], JSON_THROW_ON_ERROR | true, 512, JSON_THROW_ON_ERROR);
 
-        Group::destroy($vars);
+        Group::whereId($vars['groupId'])->update($vars['values']);
 
-        return $this->success($vars);
+        return $this->success();
+    }
+
+    public function delete(GroupDelete $request): JsonResponse {
+        $vars = $request->validated();
+
+        try {
+            Group::findOrFail($vars);
+
+            Group::destroy($vars);
+
+            return $this->success();
+        } catch (\Exception $e) {
+            return $this->error($e);
+        }
     }
 }
