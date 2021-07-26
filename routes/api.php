@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PrikazController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,13 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 Route::middleware('auth:api')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
     Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
+    Route::get('/token/check', [AuthController::class, 'tokenCheck']);
 
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -33,7 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/group/create', [GroupController::class, 'create']);
     Route::delete('/group/delete', [GroupController::class, 'delete']);
 
-
+    Route::get('/user/info', [StudentController::class, 'getInfo']);
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
 });
 

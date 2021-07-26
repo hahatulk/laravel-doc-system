@@ -25,6 +25,7 @@ class CreateStudentsTable extends Migration
             $table->integer('zachislenPoPrikazu');
             $table->foreign('zachislenPoPrikazu')->references('N')->on('prikazs')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('formaObuch');
+            $table->integer('diplomaId');
             $table->integer('status');
             $table->timestamps();
         });

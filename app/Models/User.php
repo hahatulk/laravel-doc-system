@@ -46,8 +46,7 @@ use Laravel\Passport\Token;
  * @method static Builder|User whereUsername($value)
  * @mixin Eloquent
  */
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use HasApiTokens, HasFactory, Notifiable;
 
     public const ROLE_ADMIN = 'admin';
@@ -68,13 +67,11 @@ class User extends Authenticatable
 //        'email_verified_at' => 'datetime',
 //    ];
 
-    public static function find(string $username): Model|Builder|null
-    {
+    public static function find(string $username): Model|Builder|null {
         return self::whereUsername($username)->first();
     }
 
-    public static function findCredentials(string $username, string $password): Model|Builder|null
-    {
+    public static function findCredentials(string $username, string $password): Model|Builder|null {
         return self::whereUsername($username)->wherePassword($password)->first();
     }
 
@@ -84,8 +81,7 @@ class User extends Authenticatable
      * @param string $username
      * @return \App\Models\User
      */
-    public function findForPassport($username)
-    {
+    public function findForPassport($username) {
         return $this->where('username', $username)->first();
     }
 
@@ -95,8 +91,7 @@ class User extends Authenticatable
      * @param string $password
      * @return bool
      */
-    public function validateForPassportPasswordGrant($password): bool
-    {
+    public function validateForPassportPasswordGrant($password): bool {
         return true;
     }
 }

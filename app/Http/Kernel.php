@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AlwaysReturnJson;
 use App\Http\Middleware\BearerToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -43,6 +44,8 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:api',
             BearerToken::class,
+//            AlwaysReturnJson::class,
+            \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

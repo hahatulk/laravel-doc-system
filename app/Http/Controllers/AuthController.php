@@ -141,4 +141,7 @@ class AuthController extends Controller
         return json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    public function tokenCheck(): JsonResponse {
+       return $this->success();
+    }
 }

@@ -49,7 +49,7 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Kernel::class);
 
 $response = tap($kernel->handle(
-//    хак для отправки json всегда (маньякич)
+//    хак для принятия json всегда (маньякич)
     $request = \App\Http\Requests\BaseRequest::capture()
 ))->send();
 
