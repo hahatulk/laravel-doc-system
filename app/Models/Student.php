@@ -60,7 +60,7 @@ class Student extends Model {
     ];
 
 
-    public static function findAllInfo(UserInfoGetRequest $request): \Illuminate\Support\Collection {
+    public static function findAllInfo(): \Illuminate\Support\Collection {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
@@ -110,5 +110,38 @@ class Student extends Model {
 //            $userId =
 //        return self::find($userId)
 //            ->join();
+    }
+
+    public static function findOneByUserId(int $userId): \Illuminate\Support\Collection {
+
+        $q = DB::table('students')
+            ->select([
+                'students.id                                       as id',
+                'students.userId                                   as userId',
+                'students.surname                                  as surname',
+                'students.name                                     as name',
+                'students.patronymic                               as patronymic',
+                'students.gender                                   as gender',
+                'students.diplomaId                                as diplomaId',
+                DB::raw("DATE_FORMAT(students.birthday, \"%Y-%m-%d\")      as birthday"),
+                DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
+                'students.formaObuch                               as formaObuch',
+                'prikazs.N                                         as prikaz',
+                DB::raw('DATE_FORMAT(prikazs.date, "%Y-%m-%d")     as prikazDate'),
+                'g.id                                              as group',
+                'g.name                                            as groupName',
+                'g.groupType                                       as groupType',
+                'g.kurs                                            as kurs',
+                'g.startDate                                       as startDate',
+                'g.finishDate                                      as finishDate',
+                'users.role                                        as role',
+            ])
+            ->join('users', 'students.userId', '=', 'users.id')
+            ->join('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
+            ->join('groups as g', 'students.group', '=', 'g.id')
+            ->where('users.id', '=', $userId)
+            ->get();
+
+        return $q;
     }
 }

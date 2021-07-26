@@ -32,6 +32,10 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/group/delete', [GroupController::class, 'delete']);
 
     Route::get('/user/info', [StudentController::class, 'getInfo']);
+
+    Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
+
+
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
     Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);
 });
