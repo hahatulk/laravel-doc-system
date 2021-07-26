@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\GroupCreate;
-use App\Http\Requests\GroupDelete;
-use App\Http\Requests\GroupEdit;
+use App\Http\Requests\GroupCreateRequest;
+use App\Http\Requests\GroupDeleteRequest;
+use App\Http\Requests\GroupEditRequest;
 use App\Models\Group;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +15,7 @@ use Illuminate\Http\JsonResponse;
  * @mixin Builder
  */
 class GroupController extends Controller {
-    public function create(GroupCreate $request): JsonResponse {
+    public function create(GroupCreateRequest $request): JsonResponse {
         $vars = $request->validated();
 
         Group::create($vars);
@@ -26,7 +26,7 @@ class GroupController extends Controller {
     /**
      * @throws \JsonException
      */
-    public function edit(GroupEdit $request): JsonResponse {
+    public function edit(GroupEditRequest $request): JsonResponse {
         $vars = $request->validated();
         $vars['values'] = json_decode($vars['values'], JSON_THROW_ON_ERROR | true, 512, JSON_THROW_ON_ERROR);
 
@@ -35,7 +35,7 @@ class GroupController extends Controller {
         return $this->success();
     }
 
-    public function delete(GroupDelete $request): JsonResponse {
+    public function delete(GroupDeleteRequest $request): JsonResponse {
         $vars = $request->validated();
 
         try {

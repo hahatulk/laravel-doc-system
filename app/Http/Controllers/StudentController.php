@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserInfoGet;
+use App\Http\Requests\UserInfoGetRequest;
 use App\Models\Student;
 
 class StudentController extends Controller {
@@ -11,7 +11,7 @@ class StudentController extends Controller {
     }
 
 
-    public function getInfo(UserInfoGet $request) {
+    public function getInfo(UserInfoGetRequest $request) {
         $userInfo = Student::findAllInfo($request);
         return $this->success($userInfo[0]);
     }

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Class\StudentImportExcelReadFilter;
 use App\Class\Util;
-use App\Http\Requests\PrikazZachislenie;
+use App\Http\Requests\PrikazDeleteRequest;
+use App\Http\Requests\PrikazZachislenieRequest;
 use App\Models\DefaultDocument;
 use App\Models\Group;
 use App\Models\Prikaz;
@@ -22,7 +23,7 @@ class PrikazController extends Controller {
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function createZachislenie(PrikazZachislenie $request): JsonResponse {
+    public function createZachislenie(PrikazZachislenieRequest $request): JsonResponse {
         $vars = $request->validated();
 
         $students = $this->exctractStudents($vars['excelFile']);
@@ -147,5 +148,20 @@ class PrikazController extends Controller {
                 'date' => $date,
             ]);
         }
+    }
+
+    public function deletePrikaz(PrikazDeleteRequest $request): JsonResponse {
+
+        $prikaz = Prikaz::select('id')
+            ->where('N','=', $request->get('prikazNumber'))
+        ->get();
+
+        if (!count($prikaz)) {
+            return $this->error('Prikaz not found');
+        }
+
+        Prikaz::destroy($prikaz[0]->id);
+
+        return $this->success();
     }
 }

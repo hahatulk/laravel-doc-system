@@ -5,11 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserInfoGet extends FormRequest {
+class GroupEditRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return Authenticatable
      */
     public function authorize(): Authenticatable {
         return auth()->user();
@@ -22,7 +22,8 @@ class UserInfoGet extends FormRequest {
      */
     public function rules(): array {
         return [
-            //
+            'groupId' => 'required|numeric',
+            'values' => 'required|json',
         ];
     }
 }

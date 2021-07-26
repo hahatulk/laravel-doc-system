@@ -5,7 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GroupDelete extends FormRequest {
+class GroupCreateRequest extends FormRequest
+{
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -22,7 +23,12 @@ class GroupDelete extends FormRequest {
      */
     public function rules(): array {
         return [
-            'groupId' => 'required|numeric',
+            'kurs' => 'required|numeric',
+            'name' => 'required|string|unique:groups',
+            'startDate' => 'required|date',
+            'finishDate' => 'required|date',
+            'groupType' => 'required|digits_between:0,1',
+            'facultet' => 'required|exists:facultets,name',
         ];
     }
 }

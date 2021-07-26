@@ -5,12 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GroupCreate extends FormRequest
-{
+class UserInfoGetRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return Authenticatable
+     * @return bool
      */
     public function authorize(): Authenticatable {
         return auth()->user();
@@ -23,12 +22,7 @@ class GroupCreate extends FormRequest
      */
     public function rules(): array {
         return [
-            'kurs' => 'required|numeric',
-            'name' => 'required|string|unique:groups',
-            'startDate' => 'required|date',
-            'finishDate' => 'required|date',
-            'groupType' => 'required|digits_between:0,1',
-            'facultet' => 'required|exists:facultets,name',
+            //
         ];
     }
 }

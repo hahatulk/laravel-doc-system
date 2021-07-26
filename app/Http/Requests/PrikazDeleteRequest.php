@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GroupEdit extends FormRequest {
+class PrikazDeleteRequest extends FormRequest
+{
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return Authenticatable
+     * @return \Illuminate\Contracts\Auth\Authenticatable
      */
-    public function authorize(): Authenticatable {
+    public function authorize()
+    {
         return auth()->user();
     }
 
@@ -20,10 +21,10 @@ class GroupEdit extends FormRequest {
      *
      * @return array
      */
-    public function rules(): array {
+    public function rules()
+    {
         return [
-            'groupId' => 'required|numeric',
-            'values' => 'required|json',
+            'prikazNumber' => 'required|numeric'
         ];
     }
 }

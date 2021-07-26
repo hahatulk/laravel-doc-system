@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/user/info', [StudentController::class, 'getInfo']);
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
+    Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);
 });
 
 

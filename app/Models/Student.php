@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Requests\UserInfoGet;
+use App\Http\Requests\UserInfoGetRequest;
 use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +60,7 @@ class Student extends Model {
     ];
 
 
-    public static function findAllInfo(UserInfoGet $request): \Illuminate\Support\Collection {
+    public static function findAllInfo(UserInfoGetRequest $request): \Illuminate\Support\Collection {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
