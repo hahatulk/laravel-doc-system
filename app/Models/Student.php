@@ -59,6 +59,10 @@ class Student extends Model {
         'status',
     ];
 
+    protected $hidden = [
+        'userId',
+        'zachislenPoPrikazu',
+    ];
 
     public static function findAllInfo(): \Illuminate\Support\Collection {
         $user = Auth::user();
@@ -114,7 +118,7 @@ class Student extends Model {
 
     public static function findOneByUserId(int $userId): \Illuminate\Support\Collection {
 
-        $q = DB::table('students')
+        return DB::table('students')
             ->select([
                 'students.id                                       as id',
                 'students.userId                                   as userId',
@@ -141,7 +145,5 @@ class Student extends Model {
             ->join('groups as g', 'students.group', '=', 'g.id')
             ->where('users.id', '=', $userId)
             ->get();
-
-        return $q;
     }
 }
