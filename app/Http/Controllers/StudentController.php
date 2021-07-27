@@ -14,7 +14,7 @@ class StudentController extends Controller {
     }
 
     public function getInfo(UserInfoGetRequest $request) {
-        $userInfo = Student::findAllInfo();
+        $userInfo = Student::findSelf();
         return $this->success($userInfo[0]);
     }
 
@@ -33,7 +33,7 @@ class StudentController extends Controller {
     }
 
     public function getList(StudentListRequest $request): \Illuminate\Http\JsonResponse {
-        $students = Student::getInfo($request->filters);
+        $students = Student::getInfo($request->filters, $request->sort);
 
 //        if (!empty($request->filters)) {
 //            $students->whereFilter($request->filters);

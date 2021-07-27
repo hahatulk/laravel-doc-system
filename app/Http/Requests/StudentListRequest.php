@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property-read array $filters
+ * @property-read array sort
  * @property-read int per_page
  */
 class StudentListRequest extends FormRequest {
@@ -27,6 +28,10 @@ class StudentListRequest extends FormRequest {
             $input['filters'] = json_decode($this->get('filters'), true);
         }
 
+        if (isset($input['sort'])) {
+            $input['sort'] = json_decode($this->get('sort'), true);
+        }
+
         return $input;
     }
 
@@ -40,6 +45,7 @@ class StudentListRequest extends FormRequest {
             'page' => 'required|numeric',
             'per_page' => 'numeric',
             'filters' => 'array',
+            'sort' => 'array',
         ];
     }
 }

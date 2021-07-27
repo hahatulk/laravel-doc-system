@@ -100,7 +100,7 @@ class Student extends Model {
             ->get();
     }
 
-    public static function findAllInfo(): Collection {
+    public static function findSelf(): Collection {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
@@ -126,7 +126,7 @@ class Student extends Model {
     }
 
 //    дефолт запрос на данные студента
-    public static function getInfo(array|null $filters) {
+    public static function getInfo(array|null $filters, array|null $sort) {
         $query = self::select([
                 'students.id                                       as id',
                 'students.userId                                   as userId',
@@ -154,6 +154,10 @@ class Student extends Model {
 
         if (!empty($filters)) {
             $query->whereFilter($filters);
+        }
+
+        if (!empty($sort)) {
+            $query->orderBy($sort['columnName'], $sort['direction']);
         }
 
         return $query;

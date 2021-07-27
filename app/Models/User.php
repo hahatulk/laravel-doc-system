@@ -52,7 +52,6 @@ class User extends Authenticatable {
     public const ROLE_ADMIN = 'admin';
     public const ROLE_STUDENT = 'student';
 
-
     protected $fillable = [
         'username',
         'password',
@@ -93,5 +92,10 @@ class User extends Authenticatable {
      */
     public function validateForPassportPasswordGrant($password): bool {
         return true;
+    }
+
+    public function hasRole(array $roles): bool
+    {
+        return in_array($this->role, $roles, true);
     }
 }
