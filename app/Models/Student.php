@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Http\Requests\UserInfoGetRequest;
 use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -64,7 +64,7 @@ class Student extends Model {
         'zachislenPoPrikazu',
     ];
 
-    public static function findAllInfo(): \Illuminate\Support\Collection {
+    public static function findAllInfo(): Collection {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
@@ -81,7 +81,7 @@ class Student extends Model {
                     DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
                     'students.formaObuch                               as formaObuch',
                     'prikazs.N                                         as prikaz',
-                    DB::raw('DATE_FORMAT(prikazs.date, "%Y-%m-%d")     as prikazDate'),
+                    DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
                     'g.id                                              as group',
                     'g.name                                            as groupName',
                     'g.groupType                                       as groupType',
@@ -116,7 +116,7 @@ class Student extends Model {
 //            ->join();
     }
 
-    public static function findOneByUserId(int $userId): \Illuminate\Support\Collection {
+    public static function findOneByUserId(int $userId): Collection {
 
         return DB::table('students')
             ->select([

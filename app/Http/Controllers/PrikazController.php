@@ -12,7 +12,6 @@ use App\Models\Prikaz;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -47,19 +46,19 @@ class PrikazController extends Controller {
                 'role' => 'student',
             ]);
 
-            if (strpos('женский', $students[$i]['gender']) >= 0) {
+            if (str_contains('женский', strtolower($students[$i]['gender']))) {
                 $gender = 'женский';
-            } else if(strpos('мужской', $students[$i]['gender']) >= 0){
+            } else if (str_contains('мужской', strtolower($students[$i]['gender']))) {
                 $gender = 'мужской';
-            } else{
+            } else {
                 throw new \Error('Ошибка валидации gender');
             }
 
-            if (strpos('платная', $students[$i]['formaObuch']) >= 0) {
+            if (str_contains('платная', strtolower($students[$i]['formaObuch']))) {
                 $formaObuch = 1;
-            } else if(strpos('бюджетная', $students[$i]['formaObuch']) >= 0){
+            } else if (str_contains('бюджетная', strtolower($students[$i]['formaObuch']))) {
                 $formaObuch = 0;
-            } else{
+            } else {
                 throw new \Error('Ошибка валидации formaObuch');
             }
 
@@ -153,8 +152,8 @@ class PrikazController extends Controller {
     public function deletePrikaz(PrikazDeleteRequest $request): JsonResponse {
 
         $prikaz = Prikaz::select('id')
-            ->where('N','=', $request->get('prikazNumber'))
-        ->get();
+            ->where('N', '=', $request->get('prikazNumber'))
+            ->get();
 
         if (!count($prikaz)) {
             return $this->error('Prikaz not found');

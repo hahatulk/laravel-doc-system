@@ -18,7 +18,7 @@ class StudentController extends Controller {
     }
 
     public function findOneByUserId(StudentFindOneRequest $request) {
-        $userId = $request->get('userId');
+        $userId = $request->userId;
         $student = Student::findOneByUserId($userId);
 
         if (count($student)) {
