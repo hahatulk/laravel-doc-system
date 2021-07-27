@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:api',
+//            'throttle:200,1',
             BearerToken::class,
 //            AlwaysReturnJson::class,
             \Illuminate\Session\Middleware\StartSession::class,

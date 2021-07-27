@@ -26,7 +26,6 @@ class PrikazController extends Controller {
         $vars = $request->validated();
 
         $students = $this->exctractStudents($vars['excelFile']);
-        $studentsLength = count($students);
 
         $prikazInstance = DefaultDocument::whereName('prikaz_o_zachislenii')->first();
         $kursNumber = Group::find($vars['group'])->kurs;
@@ -39,24 +38,24 @@ class PrikazController extends Controller {
 
         $this->createPrikaz($vars['prikazNumber'], $prikazName, $prikazTitle, $vars['prikazDate']);
 
-        for ($i = 0; $i < $studentsLength; $i++) {
+        foreach ($students as $student) {
             $user = User::create([
                 'username' => (int)User::max('username') + 1,
                 'password' => Str::random(10),
                 'role' => 'student',
             ]);
 
-            if (str_contains('женский', strtolower($students[$i]['gender']))) {
+            if (str_contains('женский', strtolower($student['gender']))) {
                 $gender = 'женский';
-            } else if (str_contains('мужской', strtolower($students[$i]['gender']))) {
+            } else if (str_contains('мужской', strtolower($student['gender']))) {
                 $gender = 'мужской';
             } else {
                 throw new \Error('Ошибка валидации gender');
             }
 
-            if (str_contains('платная', strtolower($students[$i]['formaObuch']))) {
+            if (str_contains('платная', strtolower($student['formaObuch']))) {
                 $formaObuch = 1;
-            } else if (str_contains('бюджетная', strtolower($students[$i]['formaObuch']))) {
+            } else if (str_contains('бюджетная', strtolower($student['formaObuch']))) {
                 $formaObuch = 0;
             } else {
                 throw new \Error('Ошибка валидации formaObuch');
@@ -64,11 +63,11 @@ class PrikazController extends Controller {
 
             $insert = [
                 'userId' => $user->id,
-                'surname' => $students[$i]['surname'],
-                'name' => $students[$i]['name'],
-                'patronymic' => $students[$i]['patronymic'],
+                'surname' => $student['surname'],
+                'name' => $student['name'],
+                'patronymic' => $student['patronymic'],
                 'gender' => $gender,
-                'birthday' => $students[$i]['birthday'],
+                'birthday' => $student['birthday'],
                 'group' => $vars['group'],
                 'zachislenPoPrikazu' => $prikazNumber,
                 'formaObuch' => $formaObuch,

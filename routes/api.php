@@ -34,6 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user/info', [StudentController::class, 'getInfo']);
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
+    Route::get('/student/list', [StudentController::class, 'getList']);
 
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
