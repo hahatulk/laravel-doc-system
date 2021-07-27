@@ -1,0 +1,14 @@
+.order-card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .MuiTypography-root{
+        display: flex;
+        min-height: 150px;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        word-break: normal !important;
+    }
+}

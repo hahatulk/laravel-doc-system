@@ -24,20 +24,17 @@ class StudentController extends Controller {
         $userId = $vars['userId'];
         $student = Student::findOneByUserId($userId);
 
-        if (count($student)) {
-            return $this->success($student);
-        } else {
+        if (!count($student)) {
             return $this->error('Not found');
         }
+
+        return $this->success($student);
 
     }
 
     public function getList(StudentListRequest $request): \Illuminate\Http\JsonResponse {
-        $students = Student::getInfo($request->filters, $request->sort);
 
-//        if (!empty($request->filters)) {
-//            $students->whereFilter($request->filters);
-//        }
+        $students = Student::getList($request->filters, $request->sort);
 
         return $this->success($students->paginate(6));
     }

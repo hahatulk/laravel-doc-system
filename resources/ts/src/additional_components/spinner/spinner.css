@@ -1,0 +1,47 @@
+.circle2-spinner {
+    position: relative;
+    /*padding-top: 20px;*/
+}
+
+/**===== circle2 =====*/
+#circle2 {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 30px;
+    width: 30px;
+    margin: -19px 0 0 -20px;
+    border: var(--color-spinner-bg);
+    /*border: 4px rgba(36, 36, 36, 0.2) solid;*/
+    /*border-top: 3px black solid;*/
+    border-top: var(--color-spinner-element);
+    border-radius: 50%;
+    -webkit-animation: spin2 1s infinite linear;
+    animation: spin2 1s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+@keyframes spin2 {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+/** END of circle2 */
+/*-----------------------------------------------------------------------*/

@@ -104,7 +104,7 @@ class Student extends Model {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
-            $q = self::getInfo()
+            $q = self::getList()
                 ->where('users.username', '=', $user->username)
                 ->get();
         }
@@ -126,7 +126,7 @@ class Student extends Model {
     }
 
 //    дефолт запрос на данные студента
-    public static function getInfo(array|null $filters, array|null $sort): Builder {
+    public static function getList(array|null $filters, array|null $sort): Builder {
         $query = self::select([
                 'students.id                                       as id',
                 'students.userId                                   as userId',
@@ -182,14 +182,14 @@ class Student extends Model {
                     $query->where('students.gender', 'мужской');
                 }
             } // Если поиск по ID, то используем точное соответствие
-
-
 //            elseif ($key === 'id') {
 //                $query->where('tasks.id', $value);
 //            } // Если поиск по ID, то используем точное соответствие
-//            else {
-//                $query->where('tasks.' . $key, 'ilike', '%' . $value . '%');
-//            }
+            else {
+                $query->where($key, 'like', "%$value%");
+            }
+
+           dd($key);
         }
 
         return $query;

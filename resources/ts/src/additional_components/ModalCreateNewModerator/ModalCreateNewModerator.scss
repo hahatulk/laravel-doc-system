@@ -1,0 +1,11 @@
+.students-import-zone {
+    height: 100px;
+    border: 4px dotted darkblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+        font-weight: bold;
+    }
+}
