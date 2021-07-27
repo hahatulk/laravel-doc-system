@@ -126,7 +126,7 @@ class Student extends Model {
     }
 
 //    дефолт запрос на данные студента
-    public static function getInfo(array|null $filters, array|null $sort) {
+    public static function getInfo(array|null $filters, array|null $sort): Builder {
         $query = self::select([
                 'students.id                                       as id',
                 'students.userId                                   as userId',
