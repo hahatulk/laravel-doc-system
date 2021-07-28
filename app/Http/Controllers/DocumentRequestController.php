@@ -34,17 +34,27 @@ class DocumentRequestController extends Controller {
             'spravka_ob_obuchenii' => 2
         ];
 
+        $usedCount = DocumentRequest::orderCount($user->id, $vars['type'])->total;
+
         //проверка на лимит заказов
-        if (DocumentRequest::orderCount($user->id, $vars['type'])->total >= $allowedCounts[$vars['type']] ) {
-            return $this->error('Order limit reached');
+        if ($vars['count'] > $allowedCounts[$vars['type']] ) {
+            return $this->error('Orders count is more than can order', [
+                'left' => $usedCount
+            ]);
+        }
+
+        if ($usedCount >= $allowedCounts[$vars['type']] ) {
+            return $this->error('Orders limit reached');
         }
 
        try {
-           DocumentRequest::create([
-               'userId' => $user->id,
-               'documentName' => $vars['type'],
-               'comment' => $vars['comment'],
-           ]);
+          for ($i = 0; $i < $vars['count']; $i++) {
+              DocumentRequest::create([
+                  'userId' => $user->id,
+                  'documentName' => $vars['type'],
+                  'comment' => $vars['comment'],
+              ]);
+          }
        } catch (\Exception $e) {
            return $this->error('Order creation error');
        }

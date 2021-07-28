@@ -12,9 +12,10 @@ trait ApiResponser {
         ], $code);
     }
 
-    protected function error(string $errors = '', int $code = 500): JsonResponse {
+    protected function error(string $errors = '', array $data = [], int $code = 500): JsonResponse {
         return response()->json([
             'errors' => $errors,
+            'data' => $data,
         ], $code);
     }
 }

@@ -25,7 +25,7 @@ class OrdersCreateRequest extends FormRequest
     {
         return [
             'count' => 'required|numeric',
-            'comment' => 'string',
+            'comment' => 'nullable|string',
             'type' => 'required|string',
         ];
     }
