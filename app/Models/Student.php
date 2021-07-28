@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
-use Auth;
+use Database\Factories\StudentFactory;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use function auth;
 
 
 /**
@@ -24,10 +28,10 @@ use Illuminate\Support\Facades\DB;
  * @property int $zachislenPoPrikazu
  * @property int $formaObuch
  * @property int $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $diplomaId
- * @method static \Database\Factories\StudentFactory factory(...$parameters)
+ * @method static StudentFactory factory(...$parameters)
  * @method static Builder|Student newModelQuery()
  * @method static Builder|Student newQuery()
  * @method static Builder|Student query()
@@ -45,7 +49,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Student whereUpdatedAt($value)
  * @method static Builder|Student whereUserId($value)
  * @method static Builder|Student whereZachislenPoPrikazu($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  * @method static Builder|Student whereFilter(array $filters)
  */
 class Student extends Model {
@@ -70,7 +74,6 @@ class Student extends Model {
     ];
 
     public static function findOneByUserId(int $userId): Collection {
-
         return DB::table('students')
             ->select([
                 'students.id                                       as id',
@@ -100,13 +103,13 @@ class Student extends Model {
             ->get();
     }
 
-    public static function findSelf(): Collection {
+    public static function findSelf() {
         $user = Auth::user();
 
         if ($user->role === User::ROLE_STUDENT) {
             $q = self::getList()
                 ->where('users.username', '=', $user->username)
-                ->get();
+                ->first();
         }
 
         if ($user->role === User::ROLE_ADMIN) {
@@ -119,38 +122,39 @@ class Student extends Model {
                 ])
                 ->join('moderators', 'moderators.userId', '=', 'users.id')
                 ->where('users.username', '=', $user->username)
-                ->get();
+                ->first();
         }
 
         return $q;
     }
 
 //    дефолт запрос на данные студента
-    public static function getList(array|null $filters, array|null $sort): Builder {
-        $query = self::select([
-                'students.id                                       as id',
-                'students.userId                                   as userId',
-                'students.surname                                  as surname',
-                'students.name                                     as name',
-                'students.patronymic                               as patronymic',
-                'students.gender                                   as gender',
-                'students.diplomaId                                as diplomaId',
-                DB::raw("DATE_FORMAT(students.birthday, \"%Y-%m-%d\")      as birthday"),
-                DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
-                'students.formaObuch                               as formaObuch',
-                'prikazs.N                                         as prikaz',
-                DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
-                'g.id                                              as group',
-                'g.name                                            as groupName',
-                'g.groupType                                       as groupType',
-                'g.kurs                                            as kurs',
-                'g.startDate                                       as startDate',
-                'g.finishDate                                      as finishDate',
-                'users.role                                        as role',
-            ])
-            ->join('users', 'students.userId', '=', 'users.id')
-            ->join('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
-            ->join('groups as g', 'students.group', '=', 'g.id');
+    public static function getList(array|null $filters = null, array|null $sort = null): Builder {
+        $query = self::query()->select([
+            'students.id                                       as id',
+            'students.userId                                   as userId',
+            'students.surname                                  as surname',
+            'students.name                                     as name',
+            'students.patronymic                               as patronymic',
+            'students.gender                                   as gender',
+            'students.diplomaId                                as diplomaId',
+            DB::raw("DATE_FORMAT(students.birthday, \"%Y-%m-%d\")      as birthday"),
+            DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
+            'students.formaObuch                               as formaObuch',
+            'prikazs.N                                         as prikaz',
+            DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
+            'g.id                                              as group',
+            'g.name                                            as groupName',
+            'g.groupType                                       as groupType',
+            'g.kurs                                            as kurs',
+            'g.startDate                                       as startDate',
+            'g.finishDate                                      as finishDate',
+            'users.role                                        as role',
+        ])
+            ->leftJoin('users', 'students.userId', '=', 'users.id')
+            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
+            ->leftJoin('groups as g', 'students.group', '=', 'g.id');
+
 
         if (!empty($filters)) {
             $query->whereFilter($filters);
@@ -189,7 +193,7 @@ class Student extends Model {
                 $query->where($key, 'like', "%$value%");
             }
 
-           dd($key);
+//            dd($key);
         }
 
         return $query;

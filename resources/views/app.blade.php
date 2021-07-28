@@ -21,6 +21,6 @@
 <body>
 <div id="root"></div>
 
-<script src="{{ asset('js/index.js') }}"></script>
+<script src="{{ mix('js/index.js') }}"></script>
 </body>
 </html>

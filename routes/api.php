@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\DocumentRequestController;
 use App\Http\Controllers\PrikazController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);
+
+    Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
 
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);

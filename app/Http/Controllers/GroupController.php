@@ -15,6 +15,10 @@ use Illuminate\Http\JsonResponse;
  * @mixin Builder
  */
 class GroupController extends Controller {
+    public function all(){
+
+    }
+
     public function create(GroupCreateRequest $request): JsonResponse {
         $vars = $request->validated();
 

@@ -13,9 +13,9 @@ class StudentController extends Controller {
         return Student::find($id);
     }
 
-    public function getInfo(UserInfoGetRequest $request) {
+    public function getInfo(UserInfoGetRequest $request): \Illuminate\Http\JsonResponse {
         $userInfo = Student::findSelf();
-        return $this->success($userInfo[0]);
+        return $this->success($userInfo);
     }
 
     public function findOneByUserId(StudentFindOneRequest $request): \Illuminate\Http\JsonResponse {
