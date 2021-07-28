@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrdersCreateRequest;
 use App\Http\Requests\OrdersLkRequest;
 use App\Models\DocumentRequest;
 use App\Models\User;
@@ -24,6 +25,31 @@ class DocumentRequestController extends Controller {
 
         return $this->error();
 
+    }
+
+    public function createOrder(OrdersCreateRequest $request) {
+        $vars = $request->validated();
+        $user = Auth::user();
+        $allowedCounts = [
+            'spravka_ob_obuchenii' => 2
+        ];
+
+        //проверка на лимит заказов
+        if (DocumentRequest::orderCount($user->id, $vars['type'])->total >= $allowedCounts[$vars['type']] ) {
+            return $this->error('Order limit reached');
+        }
+
+       try {
+           DocumentRequest::create([
+               'userId' => $user->id,
+               'documentName' => $vars['type'],
+               'comment' => $vars['comment'],
+           ]);
+       } catch (\Exception $e) {
+           return $this->error('Order creation error');
+       }
+
+        return $this->success();
     }
 
 }

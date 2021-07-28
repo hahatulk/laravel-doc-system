@@ -14,8 +14,8 @@ class CreateStudentsTable extends Migration
     public function up(): void {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('userId');
-            $table->foreign('userId')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('userId')
+                ->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('surname');
             $table->string('name');
             $table->string('patronymic')->nullable();
@@ -25,7 +25,7 @@ class CreateStudentsTable extends Migration
             $table->integer('zachislenPoPrikazu');
             $table->foreign('zachislenPoPrikazu')->references('N')->on('prikazs')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('formaObuch');
-            $table->integer('diplomaId');
+            $table->integer('diplomaId')->nullable();
             $table->integer('status');
             $table->timestamps();
         });

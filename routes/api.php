@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/student/list', [StudentController::class, 'getList']);
 
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
+    Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
 
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);

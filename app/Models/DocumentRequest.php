@@ -40,6 +40,15 @@ use Illuminate\Support\Carbon;
 class DocumentRequest extends Model {
     use HasFactory;
 
+    protected $fillable = [
+        'userId',
+        'documentName',
+        'status',
+        'fullFilled',
+        'fullFilledAt',
+        'comment',
+    ];
+
     public static function summary(): \Illuminate\Support\Collection {
         return self::select([
             DB::raw("COUNT(*) as total"),
@@ -51,7 +60,20 @@ class DocumentRequest extends Model {
             ->get();
     }
 
-    public static function getList(array|null $filters = null, array|null $sort = null): \Illuminate\Database\Eloquent\Builder {
+    public static function orderCount(int $userId, string $orderType)  {
+        return self::select([
+            DB::raw("COUNT(*) as total"),
+        ])
+            ->join('users', 'document_requests.userId', '=', 'users.id')
+            ->where([
+                ['document_requests.documentName', '=', $orderType],
+                ['users.id', '=', $userId],
+            ])
+            ->first();
+    }
+
+    //дефолтный запрос на список
+    public static function getList(array|null $filters = null, array|null $sort = null): Builder {
         $query = self::select([
             "document_requests.id           as id",
             "default_documents.title        as title",
@@ -77,7 +99,8 @@ class DocumentRequest extends Model {
         return $query;
     }
 
-    public function scopeWhereFilter(Builder $query, array $filters): Builder {
+    //обработка фильтров при поиске
+    protected function scopeWhereFilter(Builder $query, array $filters): Builder {
         if (empty($filters)) {
             return $query;
         }
