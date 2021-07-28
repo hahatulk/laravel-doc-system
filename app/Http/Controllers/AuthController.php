@@ -52,8 +52,7 @@ class AuthController extends Controller
      * @throws JsonException
      * @throws Exception
      */
-    public function refreshToken(Request $request): Application|ResponseFactory|Response
-    {
+    public function refreshToken(Request $request): JsonResponse {
         $client = DB::table('oauth_clients')
             ->where('password_client', true)
             ->first();
@@ -63,7 +62,6 @@ class AuthController extends Controller
             'refresh_token' => $request->cookie('refresh_token'),
             'client_id' => $client->id,
             'client_secret' => $client->secret,
-            'scope' => Auth::user()->role
         ];
         $response = Request::create('/oauth/token', 'POST', $data);
         $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -71,10 +69,15 @@ class AuthController extends Controller
         $accessExpire = (int)env('ACCESS_TOKEN_HOURS');
         $refreshExpire = (int)env('REFRESH_TOKEN_DAYS');
 
-        Cookie::queue('access_token', $tokens['access_token'], $accessExpire);
-        Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshExpire);
+        try {
+            Cookie::queue('access_token', $tokens['access_token'], $accessExpire);
+            Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshExpire);
+        } catch (\Exception $e) {
+            return $this->error('Refresh token failure');
+        }
 
-        return response($tokens);
+
+        return $this->success();
     }
 
     public function logout(Request $request): bool
