@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderCancelRequest;
 use App\Http\Requests\OrdersCreateRequest;
+use App\Http\Requests\OrdersListRequest;
 use App\Http\Requests\OrdersLkRequest;
 use App\Models\DocumentRequest;
 use App\Models\User;
@@ -90,4 +91,9 @@ class DocumentRequestController extends Controller {
         return $this->success();
     }
 
+    public function getOrdersList(OrdersListRequest $request): JsonResponse {
+        $vars = $request->validated();
+        $list = DocumentRequest::getList($request->filters, $request->sort);
+        return $this->success($list->paginate(6));
+    }
 }

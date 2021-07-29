@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
 
+    Route::get('/group/all', [GroupController::class, 'getAll']);
     Route::get('/group/list', [GroupController::class, 'getList']);
     Route::post('/group/edit', [GroupController::class, 'edit']);
     Route::post('/group/create', [GroupController::class, 'create']);
@@ -44,6 +45,7 @@ Route::middleware('auth:api')->group(function () {
 
 
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
+    Route::get('/orders/list', [DocumentRequestController::class, 'getOrdersList']);
     Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
     Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
 

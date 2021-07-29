@@ -110,11 +110,6 @@ class DocumentRequest extends Model {
         }
 
         foreach ($filters as $key => $value) {
-            // Пустые значения пропускаем
-            if (empty($value)) {
-                continue;
-            }
-
             if ($key === 'gender') {
                 if (str_contains('женский', $value)) {
                     $query->where('students.gender', 'женский');

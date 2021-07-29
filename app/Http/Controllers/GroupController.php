@@ -6,6 +6,7 @@ use App\Http\Requests\GroupCreateRequest;
 use App\Http\Requests\GroupDeleteRequest;
 use App\Http\Requests\GroupEditRequest;
 use App\Http\Requests\GroupListRequest;
+use App\Http\Requests\GroupsAllRequest;
 use App\Models\Group;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,8 +17,16 @@ use Illuminate\Http\JsonResponse;
  * @mixin Builder
  */
 class GroupController extends Controller {
-    public function all(){
+    public function getAll(GroupsAllRequest $request): JsonResponse {
+        $vars = $request->validated();
 
+       if ((int)$vars['inProgress'] > 0) {
+           $groups = Group::where('inProgress', $vars['inProgress']);
+       } else {
+           $groups = Group::all();
+       }
+
+        return $this->success($groups);
     }
 
     public function create(GroupCreateRequest $request): JsonResponse {
