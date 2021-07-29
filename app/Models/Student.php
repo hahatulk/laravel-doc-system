@@ -11,7 +11,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function auth;
 
 
 /**
@@ -69,7 +68,7 @@ class Student extends Model {
     ];
 
     protected $hidden = [
-        'userId',
+//        'userId',
         'zachislenPoPrikazu',
     ];
 
@@ -172,24 +171,42 @@ class Student extends Model {
             return $query;
         }
 
-        foreach ($filters as $key => $value) {
+        foreach ($filters as $filter) {
+            $key = $filter['columnName'];
+            $value = $filter['value'];
+
             // Пустые значения пропускаем
-            if (empty($value)) {
+            if (empty($filter['value'])) {
                 continue;
             }
 
-            // Если поиск по мастеру, обращаемся через связь
             if ($key === 'gender') {
-                if (str_contains('женский', $value)) {
+                if (str_contains('женский', strtolower($value))) {
                     $query->where('students.gender', 'женский');
-                } elseif (str_contains('мужской', $value)) {
+
+                } elseif (str_contains('мужской', strtolower($value))) {
                     $query->where('students.gender', 'мужской');
+
+                } else {
+                    $query->where('students.gender', 'гендерофлюид');
                 }
-            } // Если поиск по ID, то используем точное соответствие
-//            elseif ($key === 'id') {
-//                $query->where('tasks.id', $value);
-//            } // Если поиск по ID, то используем точное соответствие
-            else {
+
+            } elseif ($key === 'groupName') {
+                $query->where('g.name', $value);
+
+            } elseif ($key === 'surname') {
+                $string = ucfirst($value);
+                $query->where('students.surname', 'like', "%$string%");
+
+            } elseif ($key === 'name') {
+                $string = ucfirst($value);
+                $query->where('students.name', 'like', "%$string%");
+
+            } elseif ($key === 'patronymic') {
+                $string = ucfirst($value);
+                $query->where('students.patronymic', 'like', "%$string%");
+
+            } else {
                 $query->where($key, 'like', "%$value%");
             }
 

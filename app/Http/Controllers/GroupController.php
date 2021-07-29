@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GroupCreateRequest;
 use App\Http\Requests\GroupDeleteRequest;
 use App\Http\Requests\GroupEditRequest;
+use App\Http\Requests\GroupListRequest;
 use App\Models\Group;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,5 +52,12 @@ class GroupController extends Controller {
         } catch (\Exception $e) {
             return $this->error($e);
         }
+    }
+
+    public function getList(GroupListRequest $request): \Illuminate\Http\JsonResponse {
+
+        $students = Group::getList($request->filters, $request->sort);
+
+        return $this->success($students->paginate(6));
     }
 }

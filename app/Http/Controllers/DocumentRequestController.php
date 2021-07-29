@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderCancelRequest;
 use App\Http\Requests\OrdersCreateRequest;
 use App\Http\Requests\OrdersLkRequest;
 use App\Models\DocumentRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentRequestController extends Controller {
     public function lk(OrdersLkRequest $request): JsonResponse {
         if (Auth::user()->role === User::ROLE_ADMIN) {
-            $query = DocumentRequest::summary();
+            $query = DocumentRequest::summary()->get();
 
             return $this->success($query);
         }
@@ -27,37 +29,58 @@ class DocumentRequestController extends Controller {
 
     }
 
-    public function createOrder(OrdersCreateRequest $request) {
+    public function createOrder(OrdersCreateRequest $request): JsonResponse {
         $vars = $request->validated();
         $user = Auth::user();
         $allowedCounts = [
             'spravka_ob_obuchenii' => 2
         ];
 
-        $usedCount = DocumentRequest::orderCount($user->id, $vars['type'])->total;
+        $usedCount = DocumentRequest::orderCount($user->id, $vars['type'])->get()[0]->total;
 
         //проверка на лимит заказов
-        if ($vars['count'] > $allowedCounts[$vars['type']] ) {
+        if ($usedCount >= $allowedCounts[$vars['type']]) {
+            return $this->error('Orders limit reached');
+        }
+
+        if ($vars['count'] > $allowedCounts[$vars['type']] - $usedCount) {
             return $this->error('Orders count is more than can order', [
                 'left' => $usedCount
             ]);
         }
 
-        if ($usedCount >= $allowedCounts[$vars['type']] ) {
-            return $this->error('Orders limit reached');
+        try {
+            for ($i = 0; $i < $vars['count']; $i++) {
+                DocumentRequest::create([
+                    'userId' => $user->id,
+                    'documentName' => $vars['type'],
+                    'comment' => $vars['comment'],
+                ]);
+            }
+        } catch (Exception $e) {
+            return $this->error('Order creation error');
         }
 
-       try {
-          for ($i = 0; $i < $vars['count']; $i++) {
-              DocumentRequest::create([
-                  'userId' => $user->id,
-                  'documentName' => $vars['type'],
-                  'comment' => $vars['comment'],
-              ]);
-          }
-       } catch (\Exception $e) {
-           return $this->error('Order creation error');
-       }
+        return $this->success();
+    }
+
+    public function cancelOrder(OrderCancelRequest $request): JsonResponse {
+        $vars = $request->validated();
+        $user = Auth::user();
+        $userRequests = count(DocumentRequest::where([
+            ['id', '=', $vars['orderId']],
+            ['userId', '=', $user->id],
+        ])->get());
+
+        if (($user->role !== User::ROLE_ADMIN) && !$userRequests) {
+            return $this->error('Forbidden', [], 403);
+        }
+
+        try {
+            DocumentRequest::destroy($vars['orderId']);
+        } catch (Exception $e) {
+            return $this->error('Order destruction error');
+        }
 
         return $this->success();
     }

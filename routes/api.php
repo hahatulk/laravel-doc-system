@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\DocumentRequestController;
+use App\Http\Controllers\FacultetController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PrikazController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/logout/full', [AuthController::class, 'revokeAllTokens']);
 
-//    Route::post('/group/list', [GroupController::class, 'findAllWithSortFilter']);
+    Route::get('/group/list', [GroupController::class, 'getList']);
     Route::post('/group/edit', [GroupController::class, 'edit']);
     Route::post('/group/create', [GroupController::class, 'create']);
     Route::delete('/group/delete', [GroupController::class, 'delete']);
@@ -36,9 +37,11 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);
+    Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
     Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
+    Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
 
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);

@@ -40,6 +40,10 @@ use Illuminate\Support\Carbon;
 class DocumentRequest extends Model {
     use HasFactory;
 
+    public int $ORDER_COMPLETED= 1;
+    public int $ORDER_ACTIVE = 0;
+    public int $ORDER_CLOSED= -1;
+
     protected $fillable = [
         'userId',
         'documentName',
@@ -49,7 +53,7 @@ class DocumentRequest extends Model {
         'comment',
     ];
 
-    public static function summary(): \Illuminate\Support\Collection {
+    public static function summary(): Builder {
         return self::select([
             DB::raw("COUNT(*) as total"),
             DB::raw("SUM(CASE WHEN document_requests.status IN ('1') THEN 1 ELSE 0 END)  as pending"),
@@ -57,10 +61,11 @@ class DocumentRequest extends Model {
             DB::raw("SUM(CASE WHEN document_requests.status IN ('0') THEN 1 ELSE 0 END)  as successful"),
         ])
             ->join('students', 'document_requests.userId', '=', 'students.userId')
-            ->get();
+            ;
     }
 
-    public static function orderCount(int $userId, string $orderType)  {
+    //дефолтный запрос на count
+    public static function orderCount(int $userId, string $orderType): Builder {
         return self::select([
             DB::raw("COUNT(*) as total"),
         ])
@@ -68,8 +73,7 @@ class DocumentRequest extends Model {
             ->where([
                 ['document_requests.documentName', '=', $orderType],
                 ['users.id', '=', $userId],
-            ])
-            ->first();
+            ]);
     }
 
     //дефолтный запрос на список

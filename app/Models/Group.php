@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,8 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class Group extends Model
-{
+class Group extends Model {
     use HasFactory;
 
     protected $fillable = [
@@ -49,4 +49,71 @@ class Group extends Model
         'groupType',
         'facultet',
     ];
+
+    //    дефолт запрос на данные студента
+    public static function getList(array|null $filters = null, array|null $sort = null): Builder {
+        $query = self::query()->select([
+            'id         as id',
+            'name       as groupName',
+            'kurs       as kurs',
+            'inProgress as inProgress',
+            'groupType  as groupType',
+            'facultet   as facultet',
+            'startDate  as startDate',
+            'finishDate as finishDate',
+        ]);
+
+
+        if (!empty($filters)) {
+            $query->whereFilter($filters);
+        }
+
+        if (!empty($sort)) {
+            $query->orderBy($sort['columnName'], $sort['direction']);
+        }
+
+        return $query;
+    }
+
+    //обработка фильтров при поиске
+    protected function scopeWhereFilter(Builder $query, array $filters): Builder {
+        if (empty($filters)) {
+            return $query;
+        }
+
+        foreach ($filters as $filter) {
+            $key = $filter['columnName'];
+            $value = $filter['value'];
+
+            // Пустые значения пропускаем
+            if (empty($filter['value'])) {
+                continue;
+            }
+
+            if ($key === 'groupName') {
+                $query->where('name', $value);
+            } elseif ($key === 'groupType') {
+                if (str_contains('очная', strtolower($value))) {
+                    $query->where('groupType', 0);
+                } elseif (str_contains('заочная', strtolower($value))) {
+                    $query->where('groupType', 1);
+                } else {
+                    $query->where('groupType', -999);
+                }
+            } elseif ($key === 'inProgress') {
+                if (str_contains('учится', strtolower($value))) {
+                    $query->where('inProgress', 1);
+                } elseif (str_contains('выпущена', strtolower($value))) {
+                    $query->where('inProgress', 0);
+                } else {
+                    $query->where('inProgress', -999);
+                }
+            } else {
+                $query->where($key, 'like', "%$value%");
+            }
+
+        }
+
+        return $query;
+    }
 }
