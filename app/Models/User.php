@@ -66,11 +66,15 @@ class User extends Authenticatable {
 //        'email_verified_at' => 'datetime',
 //    ];
 
-    public static function find(string $username): Model|Builder|null {
+    public static function findByUsername(string $username): Model|Builder|null {
         return self::whereUsername($username)->first();
     }
 
-    public static function findCredentials(string $username, string $password): Model|Builder|null {
+    public static function verifyCredentials(string $username, string $password): Model|Builder|null {
+        return self::whereUsername($username)->wherePassword($password)->first();
+    }
+
+    public static function editCredentials(string $username, string $password): Model|Builder|null {
         return self::whereUsername($username)->wherePassword($password)->first();
     }
 

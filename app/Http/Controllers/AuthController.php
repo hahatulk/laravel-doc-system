@@ -30,7 +30,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::findCredentials($vars['username'], $vars['password']);
+        $user = User::verifyCredentials($vars['username'], $vars['password']);
 
         if (!$user) {
             return response()->json([
@@ -128,7 +128,7 @@ class AuthController extends Controller
             ->where('password_client', true)
             ->first();
 
-        $user = User::find($username);
+        $user = User::findByUsername($username);
 
         $data = [
             'grant_type' => 'password',
