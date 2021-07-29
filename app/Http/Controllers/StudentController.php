@@ -33,7 +33,6 @@ class StudentController extends Controller {
     }
 
     public function getList(StudentListRequest $request): \Illuminate\Http\JsonResponse {
-
         $students = Student::getList($request->filters, $request->sort);
 
         return $this->success($students->paginate(6));

@@ -175,11 +175,6 @@ class Student extends Model {
             $key = $filter['columnName'];
             $value = $filter['value'];
 
-            // Пустые значения пропускаем
-            if (empty($filter['value'])) {
-                continue;
-            }
-
             if ($key === 'gender') {
                 if (str_contains('женский', strtolower($value))) {
                     $query->where('students.gender', 'женский');
@@ -192,7 +187,7 @@ class Student extends Model {
                 }
 
             } elseif ($key === 'groupName') {
-                $query->where('g.name', $value);
+                $query->where('g.name', '=', $value);
 
             } elseif ($key === 'surname') {
                 $string = ucfirst($value);
@@ -206,11 +201,19 @@ class Student extends Model {
                 $string = ucfirst($value);
                 $query->where('students.patronymic', 'like', "%$string%");
 
+            } elseif ($key === 'inProgress') {
+                $query->where('g.inProgress', '=', $value);
+
+            } elseif ($key === 'age') {
+                $query->whereRaw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) = $value");
+
+            } elseif ($key === 'prikaz') {
+                $query->where("students.zachislenPoPrikazu", $value);
+
             } else {
                 $query->where($key, 'like', "%$value%");
             }
 
-//            dd($key);
         }
 
         return $query;
