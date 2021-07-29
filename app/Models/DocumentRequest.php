@@ -79,13 +79,13 @@ class DocumentRequest extends Model {
     //дефолтный запрос на список
     public static function getList(array|null $filters = null, array|null $sort = null): Builder {
         $query = self::select([
+            "users.id                       as userId",
             "document_requests.id           as id",
             "default_documents.title        as title",
             "document_requests.documentName as documentName",
-            "document_requests.created_at    as createdAt",
+            "document_requests.created_at   as createdAt",
             "document_requests.status       as status",
             "document_requests.comment      as comment",
-            "users.id                       as userId",
             "document_requests.fullFilled   as fullFilled",
             "document_requests.fullFilledAt as fullFilledAt",
         ])

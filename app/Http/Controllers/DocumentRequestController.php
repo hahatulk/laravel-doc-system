@@ -13,14 +13,19 @@ use Illuminate\Support\Facades\Auth;
 
 class DocumentRequestController extends Controller {
     public function lk(OrdersLkRequest $request): JsonResponse {
-        if (Auth::user()->role === User::ROLE_ADMIN) {
+        $user = Auth::user();
+        if ($user->role === User::ROLE_ADMIN) {
             $query = DocumentRequest::summary()->get();
 
             return $this->success($query);
         }
 
-        if (Auth::user()->role === User::ROLE_STUDENT) {
-            $query = DocumentRequest::getList()->get();
+        if ($user->role === User::ROLE_STUDENT) {
+            $query = DocumentRequest::getList()
+                ->where(
+                    'userId', $user->id
+                )
+                ->get();
 
             return $this->success($query);
         }
