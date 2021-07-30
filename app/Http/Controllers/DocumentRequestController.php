@@ -6,6 +6,7 @@ use App\Http\Requests\OrderCancelRequest;
 use App\Http\Requests\OrdersCreateRequest;
 use App\Http\Requests\OrdersListRequest;
 use App\Http\Requests\OrdersLkRequest;
+use App\Http\Requests\OrderUpdateRequest;
 use App\Models\DocumentRequest;
 use App\Models\User;
 use Exception;
@@ -91,6 +92,21 @@ class DocumentRequestController extends Controller {
         }
 
         return $this->success();
+    }
+
+    public function updateOrder(OrderUpdateRequest $request): JsonResponse {
+        $vars = $request->validated();
+        $user = Auth::user();
+
+        try {
+            $order = DocumentRequest::find($vars['orderId']);
+            $order->status = (int)$vars['status'];
+            $order->save();
+        } catch (Exception $e) {
+            return $this->error('Order update error');
+        }
+
+        return $this->success($order);
     }
 
     public function getOrdersList(OrdersListRequest $request): JsonResponse {

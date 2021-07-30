@@ -89,6 +89,7 @@ class DocumentRequest extends Model {
             "document_requests.comment      as comment",
             "document_requests.fullFilled   as fullFilled",
             "document_requests.fullFilledAt as fullFilledAt",
+            "document_requests.updated_at   as updatedAt",
         ])
             ->join('users', 'document_requests.userId', '=', 'users.id')
             ->join('default_documents', 'document_requests.documentName', '=', 'default_documents.name');
@@ -128,7 +129,14 @@ class DocumentRequest extends Model {
             $key = $filter['columnName'];
             $value = $filter['value'];
 
-            $query->where($key, 'like', "%$value%");
+            if ($key === 'createdAt') {
+                $query->where('document_requests.created_at', 'like', "%$value%");
+            } elseif ($key === 'id') {
+                $query->where('document_requests.id', 'like', "%$value%");
+            } else {
+                $query->where($key, 'like', "%$value%");
+
+            }
 
         }
 

@@ -20,8 +20,8 @@ class GroupController extends Controller {
     public function getAll(GroupsAllRequest $request): JsonResponse {
         $vars = $request->validated();
 
-       if ((int)$vars['inProgress'] > 0) {
-           $groups = Group::where('inProgress', $vars['inProgress']);
+       if ($vars['inProgress'] >= 0) {
+           $groups = Group::where('inProgress', $vars['inProgress'])->get();
        } else {
            $groups = Group::all();
        }

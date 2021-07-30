@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentFindOneRequest;
 use App\Http\Requests\StudentListRequest;
 use App\Http\Requests\UserInfoGetRequest;
 use App\Models\Student;
+use Exception;
 
 class StudentController extends Controller {
     public function findAll(int $id) {
@@ -43,6 +45,18 @@ class StudentController extends Controller {
         }
 
         return $this->success($students->paginate(6));
+    }
+    public function editStudent(StudentEditRequest $request): \Illuminate\Http\JsonResponse {
+        $vars = $request->except('userId');
+        $userId = $request->only('userId');
+
+        try {
+            Student::where('userId', '=', $userId)->update($vars);
+
+        } catch (Exception $e) {
+            return $this->error('Student edit error');
+        }
+        return $this->success();
     }
 
 }

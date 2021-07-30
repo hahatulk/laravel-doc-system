@@ -42,12 +42,14 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);
+    Route::post('/student/edit', [StudentController::class, 'editStudent']);
 
     Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
     Route::get('/orders/list', [DocumentRequestController::class, 'getOrdersList']);
     Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
+    Route::post('/orders/update', [DocumentRequestController::class, 'updateOrder']);
     Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
 
 
