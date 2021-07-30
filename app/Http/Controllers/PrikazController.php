@@ -7,6 +7,7 @@ use App\Http\Requests\PrikazCreateRequest;
 use App\Http\Requests\PrikazDeleteRequest;
 use App\Http\Requests\PrikazEditRequest;
 use App\Http\Requests\PrikazListRequest;
+use App\Http\Requests\PrikazStudentsList;
 use App\Http\Requests\PrikazZachislenieRequest;
 use App\Models\DefaultDocument;
 use App\Models\Group;
@@ -16,6 +17,7 @@ use App\Models\User;
 use Error;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PrikazController extends Controller {
@@ -106,6 +108,14 @@ class PrikazController extends Controller {
 
         $prikazList = Prikaz::getList($request->filters, $request->sort);
 
+        return $this->success($prikazList->paginate(6));
+    }
+
+    public function getLinkedStudentList(PrikazStudentsList $request): JsonResponse {
+        $vars = $request->validated();
+//        DB::enableQueryLog();
+        $prikazList = Prikaz::getLinkedStudentsList($request->filters, $request->sort, $vars['prikazNumber']);
+//        dd(DB::getQueryLog());
         return $this->success($prikazList->paginate(6));
     }
 

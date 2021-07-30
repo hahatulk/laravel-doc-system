@@ -60,6 +60,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/prikaz/types', [DefaultDocumentsController::class, 'getPrikazTypes']);
     Route::post('/prikaz/edit', [PrikazController::class, 'editPrikaz']);
     Route::post('/prikaz/create', [PrikazController::class, 'createPrikaz']);
+    Route::get('/prikaz/students', [PrikazController::class, 'getLinkedStudentList']);
 });
 
 

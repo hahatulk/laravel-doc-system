@@ -128,8 +128,11 @@ class Student extends Model {
     }
 
     //дефолт запрос на данные студента
-    public static function getList(array|null $filters = null, array|null $sort = null): Builder {
-        $query = self::query()->select([
+    public static function getList(array|null $filters = null,
+                                   array|null $sort = null,
+    ): Builder {
+
+        $query = self::select([
             'students.id                                       as id',
             'students.userId                                   as userId',
             'students.surname                                  as surname',
