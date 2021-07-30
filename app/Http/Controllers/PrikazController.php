@@ -2,26 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Class\StudentImportExcelReadFilter;
 use App\Class\Util;
+use App\Http\Requests\PrikazCreateRequest;
 use App\Http\Requests\PrikazDeleteRequest;
+use App\Http\Requests\PrikazEditRequest;
+use App\Http\Requests\PrikazListRequest;
 use App\Http\Requests\PrikazZachislenieRequest;
 use App\Models\DefaultDocument;
 use App\Models\Group;
 use App\Models\Prikaz;
 use App\Models\Student;
 use App\Models\User;
+use Error;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 class PrikazController extends Controller {
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
     public function createZachislenie(PrikazZachislenieRequest $request): JsonResponse {
         $vars = $request->validated();
 
-        $students = $this->exctractStudents($vars['excelFile']);
+        $students = Prikaz::exctractStudents($vars['excelFile']);
 
         $prikazInstance = DefaultDocument::whereName(Prikaz::PRIKAZ_ZACHISLENIE)->first();
         $kursNumber = Group::find($vars['group'])->kurs;
@@ -32,7 +37,7 @@ class PrikazController extends Controller {
 
         $prikazTitle = "Приказ №$prikazNumber $prikazDefaultTitle на $kursFormatted курс";
 
-        $this->createPrikaz(
+        Prikaz::createPrikaz(
             $vars['prikazNumber'],
             $prikazName,
             $prikazTitle,
@@ -52,7 +57,7 @@ class PrikazController extends Controller {
             } else if (str_contains('мужской', strtolower($student['gender']))) {
                 $gender = 'мужской';
             } else {
-                throw new \Error('Ошибка валидации gender');
+                throw new Error('Ошибка валидации gender');
             }
 
             if (str_contains('платная', strtolower($student['formaObuch']))) {
@@ -60,7 +65,7 @@ class PrikazController extends Controller {
             } else if (str_contains('бюджетная', strtolower($student['formaObuch']))) {
                 $formaObuch = 0;
             } else {
-                throw new \Error('Ошибка валидации formaObuch');
+                throw new Error('Ошибка валидации formaObuch');
             }
 
             $insert = [
@@ -89,81 +94,58 @@ class PrikazController extends Controller {
         ]);
     }
 
-    private function exctractStudents($file): array {
-        $fileName = $file->getClientOriginalName();
-        $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-
-        $filterSubset = new StudentImportExcelReadFilter();
-
-        $reader = IOFactory::createReader(ucfirst($fileExt));
-        $reader->setReadFilter($filterSubset);
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($file);
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $highestRow = $worksheet->getHighestDataRow(); // e.g. 10
-        $highestColumn = Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); // e.g. 5
-
-        $columns = [
-            'surname',
-            'name',
-            'patronymic',
-            'gender',
-            'birthday',
-//            'group',
-//            'zachislenPoPrikazu',
-            'formaObuch',
-//            'status',
-        ];
-        $students = [];
-
-        //проход по строкам
-        for ($row = 2; $row <= $highestRow; $row++) {
-            $student = [];
-
-            //проход по столбам
-            for ($col = 1; $col <= $highestColumn; $col++) {
-                $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
-                $student[$columns[$col - 1]] = trim($value);
-            }
-
-            $students[] = $student;
-        }
-
-        return $students;
-    }
-
-    private function createPrikaz(int $N,
-                                  string $name,
-                                  string $title,
-                                  string $date,
-                                  array $userIds = []
-    ): void {
-        $prikazCount = Prikaz::where('N', '=', $N)->count();
-
-        if ($prikazCount === 0) {
-            Prikaz::create([
-                'N' => $N,
-                'name' => $name,
-                'title' => $title,
-                'date' => $date,
-                'userId' => ($userIds),
-            ]);
-        }
-    }
 
     public function deletePrikaz(PrikazDeleteRequest $request): JsonResponse {
-
-        $prikaz = Prikaz::select('id')
-            ->where('N', '=', $request->get('prikazNumber'))
-            ->get();
-
-        if (!count($prikaz)) {
-            return $this->error('Prikaz not found');
-        }
-
-        Prikaz::destroy($prikaz[0]->id);
+        Prikaz::destroy($request->get('id'));
 
         return $this->success();
     }
+
+    public function getList(PrikazListRequest $request): JsonResponse {
+        $vars = $request->validated();
+
+        $prikazList = Prikaz::getList($request->filters, $request->sort);
+
+        return $this->success($prikazList->paginate(6));
+    }
+
+    public function editPrikaz(PrikazEditRequest $request): \Illuminate\Http\JsonResponse {
+        $vars = $request->except('prikazId');
+        $prikazId = $request->only('prikazId');
+        Prikaz::where('id', '=', $prikazId)->update($vars);
+
+        try {
+
+        } catch (Exception $e) {
+            return $this->error('Prikaz edit error');
+        }
+        return $this->success();
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function createPrikaz(PrikazCreateRequest $request): \Illuminate\Http\JsonResponse {
+        $vars = $request->validated();
+        $studentIds = json_decode($vars['studentIds'], true, 512, JSON_THROW_ON_ERROR);
+
+        try {
+            $created = Prikaz::createPrikaz(
+                $vars['N'],
+                $vars['name'],
+                '',
+                $vars['date'],
+                $studentIds,
+            );
+
+            if (!$created) {
+                return $this->error('Prikaz duplicate', [], 400);
+            }
+        } catch (Exception $e) {
+            return $this->error('Prikaz creation error');
+        }
+
+        return $this->success();
+    }
+
 }

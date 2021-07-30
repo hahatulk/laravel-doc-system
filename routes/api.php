@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DefaultDocumentsController;
 use App\Http\Controllers\DocumentRequestController;
 use App\Http\Controllers\FacultetController;
 use App\Http\Controllers\GroupController;
@@ -55,6 +56,10 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
     Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);
+    Route::get('/prikaz/list', [PrikazController::class, 'getList']);
+    Route::get('/prikaz/types', [DefaultDocumentsController::class, 'getPrikazTypes']);
+    Route::post('/prikaz/edit', [PrikazController::class, 'editPrikaz']);
+    Route::post('/prikaz/create', [PrikazController::class, 'createPrikaz']);
 });
 
 

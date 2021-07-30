@@ -24,7 +24,7 @@ class PrikazDeleteRequest extends FormRequest
     public function rules()
     {
         return [
-            'prikazNumber' => 'required|numeric'
+            'id' => 'required|exists:prikazs,id'
         ];
     }
 }

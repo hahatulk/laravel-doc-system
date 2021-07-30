@@ -46,6 +46,7 @@ class StudentController extends Controller {
 
         return $this->success($students->paginate(6));
     }
+
     public function editStudent(StudentEditRequest $request): \Illuminate\Http\JsonResponse {
         $vars = $request->except('userId');
         $userId = $request->only('userId');

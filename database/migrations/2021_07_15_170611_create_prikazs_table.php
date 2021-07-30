@@ -18,6 +18,7 @@ class CreatePrikazsTable extends Migration
             $table->integer('N');
             $table->index('N');
             $table->string('name');
+            $table->foreign('name')->references('name')->on('default_documents')->onUpdate('cascade')->onDelete('cascade');
             $table->string('title');
             $table->date('date')->default(now());
             $table->json('userId')->nullable();

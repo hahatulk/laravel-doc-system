@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,4 +39,19 @@ class DefaultDocument extends Model
         'type',
         'path',
     ];
+
+    public static function getPrikazTypes(): Builder {
+        $query = self::select([
+            'default_documents.id    as id',
+            'default_documents.name  as name',
+            'default_documents.title as title',
+        ])
+            ->where([
+                ['default_documents.type', '=', 'приказ'],
+                ['default_documents.name', '!=', Prikaz::PRIKAZ_ZACHISLENIE],
+            ]);
+
+        return $query;
+    }
+
 }

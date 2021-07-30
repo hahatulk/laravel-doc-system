@@ -9,9 +9,10 @@ class StudentEditRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return Authenticatable
+     * @return \Illuminate\Contracts\Auth\Authenticatable
      */
-    public function authorize(): Authenticatable {
+    public function authorize()
+    {
         return auth()->user();
     }
 
@@ -20,17 +21,10 @@ class StudentEditRequest extends FormRequest {
      *
      * @return array
      */
-    public function rules(): array {
+    public function rules()
+    {
         return [
-            'userId' => 'required|numeric',
-            'surname' => 'string',
-            'name' => 'string',
-            'patronymic' => 'string',
-            'gender' => 'string',
-            'birthday' => 'string',
-            'status' => 'numeric',
-            'group' => 'numeric',
-            'formaObuch' => 'numeric',
+            'prikazNumber' => 'required|numeric'
         ];
     }
 }
