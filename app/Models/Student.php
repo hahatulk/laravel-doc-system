@@ -127,7 +127,7 @@ class Student extends Model {
         return $q;
     }
 
-//    дефолт запрос на данные студента
+    //дефолт запрос на данные студента
     public static function getList(array|null $filters = null, array|null $sort = null): Builder {
         $query = self::query()->select([
             'students.id                                       as id',
@@ -164,6 +164,40 @@ class Student extends Model {
         }
 
         return $query;
+    }
+
+    public static function whereInactive(Builder $query): Builder {
+        return $query
+            ->where([
+                ['g.inProgress', '=', '0']
+            ])
+            ->orWhere(function ($query) {
+                $query->select('COUNT(*)')
+                    ->from('prikazs')
+                    ->where([
+                        ['prikazs.name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+                    ])
+                    ->whereRaw(
+                        'JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
+                    );
+            });
+    }
+
+    public static function whereActive(Builder $query): Builder {
+        return $query
+            ->where([
+                ['g.inProgress', '=', '1']
+            ])
+            ->where(function ($query) {
+                $query->select('COUNT(*)')
+                    ->from('prikazs')
+                    ->where([
+                        ['prikazs.name', '!=', Prikaz::PRIKAZ_OTCHISLENIE]
+                    ])
+                    ->whereRaw(
+                        '!JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
+                    );
+            });
     }
 
     public function scopeWhereFilter(Builder $query, array $filters): Builder {
@@ -218,5 +252,4 @@ class Student extends Model {
 
         return $query;
     }
-
 }

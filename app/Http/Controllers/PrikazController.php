@@ -18,25 +18,27 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 class PrikazController extends Controller {
-    /**
-     * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     */
     public function createZachislenie(PrikazZachislenieRequest $request): JsonResponse {
         $vars = $request->validated();
 
         $students = $this->exctractStudents($vars['excelFile']);
 
-        $prikazInstance = DefaultDocument::whereName('prikaz_o_zachislenii')->first();
+        $prikazInstance = DefaultDocument::whereName(Prikaz::PRIKAZ_ZACHISLENIE)->first();
         $kursNumber = Group::find($vars['group'])->kurs;
         $kursFormatted = Util::numberToRomanRepresentation($kursNumber);
-        $prikazName = 'prikaz_o_zachislenii';
+        $prikazName = Prikaz::PRIKAZ_ZACHISLENIE;
         $prikazNumber = $vars['prikazNumber'];
         $prikazDefaultTitle = strtolower($prikazInstance->title);
 
         $prikazTitle = "Приказ №$prikazNumber $prikazDefaultTitle на $kursFormatted курс";
 
-        $this->createPrikaz($vars['prikazNumber'], $prikazName, $prikazTitle, $vars['prikazDate']);
+        $this->createPrikaz(
+            $vars['prikazNumber'],
+            $prikazName,
+            $prikazTitle,
+            $vars['prikazDate'],
+            []
+        );
 
         foreach ($students as $student) {
             $user = User::create([
@@ -87,10 +89,6 @@ class PrikazController extends Controller {
         ]);
     }
 
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws Exception
-     */
     private function exctractStudents($file): array {
         $fileName = $file->getClientOriginalName();
         $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -135,7 +133,12 @@ class PrikazController extends Controller {
         return $students;
     }
 
-    private function createPrikaz(int $N, string $name, string $title, string $date): void {
+    private function createPrikaz(int $N,
+                                  string $name,
+                                  string $title,
+                                  string $date,
+                                  array $userIds = []
+    ): void {
         $prikazCount = Prikaz::where('N', '=', $N)->count();
 
         if ($prikazCount === 0) {
@@ -144,6 +147,7 @@ class PrikazController extends Controller {
                 'name' => $name,
                 'title' => $title,
                 'date' => $date,
+                'userId' => ($userIds),
             ]);
         }
     }

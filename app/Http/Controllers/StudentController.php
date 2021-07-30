@@ -6,7 +6,6 @@ use App\Http\Requests\StudentFindOneRequest;
 use App\Http\Requests\StudentListRequest;
 use App\Http\Requests\UserInfoGetRequest;
 use App\Models\Student;
-use Illuminate\Database\Eloquent\Builder;
 
 class StudentController extends Controller {
     public function findAll(int $id) {
@@ -33,7 +32,15 @@ class StudentController extends Controller {
     }
 
     public function getList(StudentListRequest $request): \Illuminate\Http\JsonResponse {
+        $vars = $request->validated();
+
         $students = Student::getList($request->filters, $request->sort);
+
+        if ((int)$vars['inProgress'] === 1) {
+            $students = Student::whereActive($students);
+        } elseif ((int)$vars['inProgress'] === 0) {
+            $students = Student::whereInactive($students);
+        }
 
         return $this->success($students->paginate(6));
     }

@@ -16,7 +16,7 @@ class PrikazSeeder extends Seeder
     {
 //        Prikaz::factory()->create([
 //            'N' => '1',
-//            'name' => 'prikaz_o_zachislenii',
+//            'name' => Prikaz::PRIKAZ_ZACHISLENIE,
 //        ]);
     }
 }

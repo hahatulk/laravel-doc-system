@@ -40,9 +40,11 @@ use Illuminate\Support\Carbon;
 class DocumentRequest extends Model {
     use HasFactory;
 
-    public int $ORDER_COMPLETED= 1;
-    public int $ORDER_ACTIVE = 0;
-    public int $ORDER_CLOSED= -1;
+    public const ORDER_COMPLETED = 1;
+    public const ORDER_ACTIVE = 0;
+    public const ORDER_CLOSED = -1;
+
+    public const SPRAVKA_OB_OBUCHENII = 'spravka_ob_obuchenii';
 
     protected $fillable = [
         'userId',
@@ -60,8 +62,7 @@ class DocumentRequest extends Model {
             DB::raw("SUM(CASE WHEN document_requests.status IN ('-1') THEN 1 ELSE 0 END) as canceled"),
             DB::raw("SUM(CASE WHEN document_requests.status IN ('0') THEN 1 ELSE 0 END)  as successful"),
         ])
-            ->join('students', 'document_requests.userId', '=', 'students.userId')
-            ;
+            ->join('students', 'document_requests.userId', '=', 'students.userId');
     }
 
     //дефолтный запрос на count

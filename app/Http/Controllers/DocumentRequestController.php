@@ -39,7 +39,7 @@ class DocumentRequestController extends Controller {
         $vars = $request->validated();
         $user = Auth::user();
         $allowedCounts = [
-            'spravka_ob_obuchenii' => 2
+            DocumentRequest::SPRAVKA_OB_OBUCHENII => 2
         ];
 
         $usedCount = DocumentRequest::orderCount($user->id, $vars['type'])->get()[0]->total;

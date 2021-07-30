@@ -24,6 +24,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
     Route::post('/token/refresh', [AuthController::class, 'refreshToken'])->withoutMiddleware('auth:api');
     Route::get('/token/check', [AuthController::class, 'tokenCheck']);
+
     Route::get('/user/credentials', [UserController::class, 'credentials']);
     Route::post('/user/credentials/edit', [UserController::class, 'editCredentials']);
 
@@ -41,8 +42,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);
-    Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
+    Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
     Route::get('/orders/list', [DocumentRequestController::class, 'getOrdersList']);

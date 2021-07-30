@@ -42,7 +42,7 @@ class GroupController extends Controller {
      */
     public function edit(GroupEditRequest $request): JsonResponse {
         $vars = $request->validated();
-        $vars['values'] = json_decode($vars['values'], JSON_THROW_ON_ERROR | true, 512, JSON_THROW_ON_ERROR);
+//        $vars['values'] = json_decode($vars['values'], JSON_THROW_ON_ERROR | true, 512, JSON_THROW_ON_ERROR);
 
         Group::whereId($vars['groupId'])->update($vars['values']);
 

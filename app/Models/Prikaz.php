@@ -30,14 +30,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title
  * @method static \Illuminate\Database\Eloquent\Builder|Prikaz whereTitle($value)
  */
-class Prikaz extends Model
-{
+class Prikaz extends Model {
     use HasFactory;
+
+    public const  PRIKAZ_OTCHISLENIE = 'prikaz_ob_otchislenii';
+    public const PRIKAZ_ZACHISLENIE = 'prikaz_o_zachislenii';
+    public const PRIKAZ_BUDGET = 'prikaz_na_budget';
 
     protected $fillable = [
         'N',
         'name',
         'title',
         'date',
+        'userId',
+    ];
+
+    protected $casts = [
+        'userId' => 'json',
     ];
 }

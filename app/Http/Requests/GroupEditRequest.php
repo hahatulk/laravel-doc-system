@@ -23,7 +23,7 @@ class GroupEditRequest extends FormRequest {
     public function rules(): array {
         return [
             'groupId' => 'required|numeric',
-            'values' => 'required|json',
+            'values' => 'required|array',
         ];
     }
 }

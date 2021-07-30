@@ -50,6 +50,7 @@ class StudentListRequest extends FormRequest {
             'per_page' => 'numeric',
             'filters' => 'array',
             'sort' => 'array',
+            'inProgress' => 'required|numeric'
         ];
     }
 }

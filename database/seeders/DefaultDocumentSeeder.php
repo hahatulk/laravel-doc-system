@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\DefaultDocument;
+use App\Models\DocumentRequest;
+use App\Models\Prikaz;
 use Illuminate\Database\Seeder;
 
 class DefaultDocumentSeeder extends Seeder {
@@ -11,17 +13,17 @@ class DefaultDocumentSeeder extends Seeder {
      *
      * @return void
      */
-    public function run() {
+    public function run(): void {
         DefaultDocument::factory()->create([
             'title' => 'Об обучении',
-            'name' => 'spravka_ob_obuchenii',
+            'name' => DocumentRequest::SPRAVKA_OB_OBUCHENII,
             'type' => 'справка',
             'path' => '',
         ]);
 
         DefaultDocument::factory()->create([
             'title' => 'О зачислении',
-            'name' => 'prikaz_o_zachislenii',
+            'name' => Prikaz::PRIKAZ_ZACHISLENIE,
             'type' => 'приказ',
             'path' => '',
         ]);

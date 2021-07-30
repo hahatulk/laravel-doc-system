@@ -16,7 +16,8 @@ class UserController extends Controller {
 
     public function credentials(UserCredentialsRequest $request): JsonResponse {
         $vars = $request->validated();
-        $credentials = User::find($vars['userId'])->makeVisible(['password']);
+        $credentials = User::find($vars['userId'])
+            ->makeVisible(['password']);
 
         return $this->success($credentials);
     }
