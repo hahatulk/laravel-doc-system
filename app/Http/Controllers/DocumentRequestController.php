@@ -37,7 +37,9 @@ class DocumentRequestController extends Controller {
 
     public function createOrder(OrdersCreateRequest $request): JsonResponse {
         $vars = $request->validated();
+
         $user = Auth::user();
+
         $allowedCounts = [
             DocumentRequest::SPRAVKA_OB_OBUCHENII => 2
         ];
@@ -93,7 +95,17 @@ class DocumentRequestController extends Controller {
 
     public function getOrdersList(OrdersListRequest $request): JsonResponse {
         $vars = $request->validated();
-        $list = DocumentRequest::getList($request->filters, $request->sort);
-        return $this->success($list->paginate(6));
+        $orders = DocumentRequest::getList($request->filters, $request->sort);
+
+        if (isset($vars['active'])) {
+            if ((int)$vars['active'] === 1) {
+                $orders = DocumentRequest::whereActive($orders);
+            } elseif ((int)$vars['active'] === 0) {
+                $orders = DocumentRequest::whereInactive($orders);
+            }
+        }
+
+
+        return $this->success($orders->paginate(6));
     }
 }

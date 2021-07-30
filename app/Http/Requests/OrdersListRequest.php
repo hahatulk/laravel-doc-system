@@ -39,6 +39,7 @@ class OrdersListRequest extends FormRequest {
             'per_page' => 'numeric',
             'filters' => 'array',
             'sort' => 'array',
+            'active' => 'numeric',
         ];
     }
 }

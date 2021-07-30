@@ -69,7 +69,7 @@ class Group extends Model {
         }
 
         if (!empty($sort)) {
-            $query->orderBy($sort['columnName'], $sort['direction']);
+            $query->orderBy($sort[0]['columnName'], $sort[0]['direction']);
         }
 
         return $query;

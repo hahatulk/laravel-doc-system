@@ -98,34 +98,38 @@ class DocumentRequest extends Model {
         }
 
         if (!empty($sort)) {
-            $query->orderBy($sort['columnName'], $sort['direction']);
+            $query->orderBy($sort[0]['columnName'], $sort[0]['direction']);
         }
 
         return $query;
     }
 
+    public static function whereInactive(Builder $query): Builder {
+        return $query
+            ->where([
+                ['document_requests.status', '!=', '0']
+            ]);
+    }
+
+    public static function whereActive(Builder $query): Builder {
+        return $query
+            ->where([
+                ['document_requests.status', '=', '0']
+            ]);
+    }
+
     //обработка фильтров при поиске
-    protected function scopeWhereFilter(Builder $query, array $filters): Builder {
+    public function scopeWhereFilter(Builder $query, array $filters): Builder {
         if (empty($filters)) {
             return $query;
         }
 
-        foreach ($filters as $key => $value) {
-            if ($key === 'gender') {
-                if (str_contains('женский', $value)) {
-                    $query->where('students.gender', 'женский');
-                } elseif (str_contains('мужской', $value)) {
-                    $query->where('students.gender', 'мужской');
-                }
-            }
-//            elseif ($key === 'id') {
-//                $query->where('tasks.id', $value);
-//            }
-            else {
-                $query->where($key, 'like', "%$value%");
-            }
+        foreach ($filters as $filter) {
+            $key = $filter['columnName'];
+            $value = $filter['value'];
 
-//            dd($key);
+            $query->where($key, 'like', "%$value%");
+
         }
 
         return $query;
