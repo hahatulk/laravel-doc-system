@@ -48,10 +48,13 @@ use Laravel\Passport\Token;
  */
 class User extends Authenticatable {
     use HasApiTokens, HasFactory, Notifiable;
+    use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_STUDENT = 'student';
-
+    public function prikazs() {
+        return $this->belongsToJson(Prikaz::class, 'userId[]->id');
+    }
     protected $fillable = [
         'username',
         'password',

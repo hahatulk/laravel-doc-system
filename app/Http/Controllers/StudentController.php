@@ -6,7 +6,9 @@ use App\Http\Requests\StudentEditRequest;
 use App\Http\Requests\StudentFindOneRequest;
 use App\Http\Requests\StudentListRequest;
 use App\Http\Requests\UserInfoGetRequest;
+use App\Models\Prikaz;
 use App\Models\Student;
+use App\Models\User;
 use Exception;
 
 class StudentController extends Controller {
@@ -44,6 +46,7 @@ class StudentController extends Controller {
             $students = Student::whereInactive($students);
         }
 
+//        return $this->success(Student::find(3)->prikazs);
         return $this->success($students->paginate(6));
     }
 

@@ -17,7 +17,6 @@ use App\Models\User;
 use Error;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PrikazController extends Controller {
@@ -30,12 +29,12 @@ class PrikazController extends Controller {
 
         $students = Prikaz::exctractStudents($vars['excelFile']);
 
-        $prikazInstance = DefaultDocument::whereName(Prikaz::PRIKAZ_ZACHISLENIE)->first();
+        $prikazTemplate = DefaultDocument::whereName(Prikaz::PRIKAZ_ZACHISLENIE)->first();
         $kursNumber = Group::find($vars['group'])->kurs;
         $kursFormatted = Util::numberToRomanRepresentation($kursNumber);
         $prikazName = Prikaz::PRIKAZ_ZACHISLENIE;
         $prikazNumber = $vars['prikazNumber'];
-        $prikazDefaultTitle = strtolower($prikazInstance->title);
+        $prikazDefaultTitle = strtolower($prikazTemplate->title);
 
         $prikazTitle = "Приказ №$prikazNumber $prikazDefaultTitle на $kursFormatted курс";
 
@@ -47,13 +46,21 @@ class PrikazController extends Controller {
             []
         );
 
+        $prikaz = Prikaz::where('N', '=', $vars['prikazNumber'])->first();
+
+        $studentIds = [];
+
         foreach ($students as $student) {
             $user = User::create([
                 'username' => (int)User::max('username') + 1,
                 'password' => Str::random(10),
                 'role' => 'student',
             ]);
+//            $studentIds[] = [
+//                'id' => $user->id
+//            ];
 
+            $studentIds[] = $user->id;
             if (str_contains('женский', strtolower($student['gender']))) {
                 $gender = 'женский';
             } else if (str_contains('мужской', strtolower($student['gender']))) {
@@ -88,14 +95,22 @@ class PrikazController extends Controller {
             );
 
         }
+        $editPrikaz = Prikaz::find($prikaz->id);
+        $editPrikaz->N = $vars['prikazNumber'];
+        $editPrikaz->name = $prikazName;
+        $editPrikaz->title = $prikazTitle;
+        $editPrikaz->date = $vars['prikazDate'];
+        $editPrikaz->userId = $studentIds;
+        $editPrikaz->save();
+
 
         return $this->success([
             'prikazName' => $prikazName,
             'prikazNumber' => $prikazNumber,
             'prikazTitle' => $prikazTitle,
+            'ids' => $studentIds,
         ]);
     }
-
 
     public function deletePrikaz(PrikazDeleteRequest $request): JsonResponse {
         Prikaz::destroy($request->get('id'));

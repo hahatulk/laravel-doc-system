@@ -8,10 +8,12 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 /**
  * App\Models\Prikaz
@@ -40,6 +42,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
  */
 class Prikaz extends Model {
     use HasFactory;
+//    use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
     public const  PRIKAZ_OTCHISLENIE = 'prikaz_ob_otchislenii';
     public const PRIKAZ_ZACHISLENIE = 'prikaz_o_zachislenii';
@@ -57,7 +60,6 @@ class Prikaz extends Model {
         'userId' => 'json',
     ];
 
-    //дефолтный запрос на список
     public static function getList(array|null $filters = null, array|null $sort = null): Builder {
         $query = self::select([
             'prikazs.id               as id',
@@ -79,9 +81,11 @@ class Prikaz extends Model {
         return $query;
     }
 
+    //дефолтный запрос на список
+
     public static function getLinkedStudentsList(array|null $filters = null,
-                                   array|null $sort = null,
-                                   int $prikazNumber = -9999
+                                                 array|null $sort = null,
+                                                 int $prikazNumber = -9999
     ): Builder {
 
         $query = self::select([
@@ -112,7 +116,7 @@ class Prikaz extends Model {
         if (!empty($filters)) {
             $query->whereFilter($filters);
         }
-//todo подсос прикзаов из subquery
+        //todo подсос прикзаов из subquery
         if (!empty($sort)) {
             $query->orderBy($sort[0]['columnName'], $sort[0]['direction']);
         }
@@ -121,33 +125,31 @@ class Prikaz extends Model {
     }
 
     public static function createPrikaz(int $N,
-                                 string $name,
-                                 string $title,
-                                 string $date,
-                                 array $userIds = []
-    ): bool {
+                                        string $name,
+                                        string $title,
+                                        string $date,
+                                        array $userIds
+    ) {
         $prikazCount = self::where('N', '=', $N)->count();
 
         if ($prikazCount === 0 && $name === self::PRIKAZ_ZACHISLENIE) {
-            self::create([
+            return self::create([
                 'N' => $N,
                 'name' => $name,
                 'title' => $title,
                 'date' => $date,
                 'userId' => $userIds,
             ]);
-            return true;
         }
 
         if ($prikazCount === 0) {
-            self::create([
+            return self::create([
                 'N' => $N,
                 'name' => $name,
                 'title' => $title,
                 'date' => $date,
                 'userId' => ($userIds),
             ]);
-            return true;
         }
 
         return false;
@@ -155,7 +157,7 @@ class Prikaz extends Model {
 
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws Exception
      */
     public static function exctractStudents($file): array {
         $fileName = $file->getClientOriginalName();
@@ -201,7 +203,9 @@ class Prikaz extends Model {
         return $students;
     }
 
+
     //обработка фильтров при поиске
+
     public function scopeWhereFilter(Builder $query, array $filters): Builder {
         if (empty($filters)) {
             return $query;

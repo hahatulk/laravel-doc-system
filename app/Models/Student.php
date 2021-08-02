@@ -7,11 +7,11 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
 
 /**
  * App\Models\Student
@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Student whereFilter(array $filters)
  */
 class Student extends Model {
-    use HasFactory;
+    use HasFactory, \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
     protected $fillable = [
         'userId',
@@ -66,7 +66,6 @@ class Student extends Model {
         'formaObuch',
         'status',
     ];
-
     protected $hidden = [
 //        'userId',
         'zachislenPoPrikazu',
@@ -127,12 +126,11 @@ class Student extends Model {
         return $q;
     }
 
-    //дефолт запрос на данные студента
     public static function getList(array|null $filters = null,
                                    array|null $sort = null,
-    ): Builder {
+    ) {
 
-        $query = self::select([
+        $query = self::with('prikazs')->select([
             'students.id                                       as id',
             'students.userId                                   as userId',
             'students.surname                                  as surname',
@@ -143,8 +141,8 @@ class Student extends Model {
             DB::raw("DATE_FORMAT(students.birthday, \"%Y-%m-%d\")      as birthday"),
             DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
             'students.formaObuch                               as formaObuch',
-            'prikazs.N                                         as prikaz',
-            DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
+            'zachislenPoPrikazu                                as prikaz',
+//            DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
             'g.id                                              as group',
             'g.name                                            as groupName',
             'g.groupType                                       as groupType',
@@ -154,7 +152,7 @@ class Student extends Model {
             'users.role                                        as role',
         ])
             ->leftJoin('users', 'students.userId', '=', 'users.id')
-            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
+//            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
             ->leftJoin('groups as g', 'students.group', '=', 'g.id');
 
 
@@ -170,37 +168,43 @@ class Student extends Model {
     }
 
     public static function whereInactive(Builder $query): Builder {
-        return $query
-            ->where([
-                ['g.inProgress', '=', '0']
-            ])
-            ->orWhere(function ($query) {
-                $query->select('COUNT(*)')
-                    ->from('prikazs')
-                    ->where([
-                        ['prikazs.name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
-                    ])
-                    ->whereRaw(
-                        'JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
-                    );
-            });
+        return $query;
+//            ->where([
+//                ['g.inProgress', '=', '0']
+//            ])
+//            ->orWhere(function ($query) {
+//                $query->select('COUNT(*)')
+//                    ->from('prikazs')
+//                    ->where([
+//                        ['prikazs.name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+//                    ])
+//                    ->whereRaw(
+//                        'JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
+//                    );
+//            });
     }
 
+    //дефолт запрос на данные студента
+
     public static function whereActive(Builder $query): Builder {
-        return $query
-            ->where([
-                ['g.inProgress', '=', '1']
-            ])
-            ->where(function ($query) {
-                $query->select('COUNT(*)')
-                    ->from('prikazs')
-                    ->where([
-                        ['prikazs.name', '!=', Prikaz::PRIKAZ_OTCHISLENIE]
-                    ])
-                    ->whereRaw(
-                        '!JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
-                    );
-            });
+        return $query;
+//            ->where([
+//                ['g.inProgress', '=', '1']
+//            ])
+//            ->where(function ($query) {
+//                $query->select('COUNT(*)')
+//                    ->from('prikazs')
+//                    ->where([
+//                        ['prikazs.name', '!=', Prikaz::PRIKAZ_OTCHISLENIE]
+//                    ])
+//                    ->whereRaw(
+//                        '!JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
+//                    );
+//            });
+    }
+
+    public function prikazs() {
+        return $this->hasManyJson(Prikaz::class, 'userId', 'userId');
     }
 
     public function scopeWhereFilter(Builder $query, array $filters): Builder {
