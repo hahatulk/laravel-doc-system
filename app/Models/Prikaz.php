@@ -55,7 +55,10 @@ class Prikaz extends Model {
         'date',
         'userId',
     ];
-
+    protected $hidden = [
+        'userId',
+        'zachislenPoPrikazu',
+    ];
     protected $casts = [
         'userId' => 'json',
     ];
@@ -68,7 +71,7 @@ class Prikaz extends Model {
             'prikazs.N                as N',
             'prikazs.date             as prikazDate'
         ])
-            ->join('default_documents', 'prikazs.name', '=', 'default_documents.name');
+            ->leftJoin('default_documents', 'prikazs.name', '=', 'default_documents.name');
 
         if (!empty($filters)) {
             $query->whereFilter($filters);

@@ -56,11 +56,9 @@ class PrikazController extends Controller {
                 'password' => Str::random(10),
                 'role' => 'student',
             ]);
-//            $studentIds[] = [
-//                'id' => $user->id
-//            ];
-
+//
             $studentIds[] = $user->id;
+
             if (str_contains('женский', strtolower($student['gender']))) {
                 $gender = 'женский';
             } else if (str_contains('мужской', strtolower($student['gender']))) {

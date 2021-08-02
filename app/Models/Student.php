@@ -7,7 +7,6 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -130,7 +129,7 @@ class Student extends Model {
                                    array|null $sort = null,
     ) {
 
-        $query = self::with('prikazs')->select([
+        $query = self::query()->select([
             'students.id                                       as id',
             'students.userId                                   as userId',
             'students.surname                                  as surname',
@@ -142,7 +141,6 @@ class Student extends Model {
             DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
             'students.formaObuch                               as formaObuch',
             'zachislenPoPrikazu                                as prikaz',
-//            DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
             'g.id                                              as group',
             'g.name                                            as groupName',
             'g.groupType                                       as groupType',
@@ -151,6 +149,16 @@ class Student extends Model {
             'g.finishDate                                      as finishDate',
             'users.role                                        as role',
         ])
+            ->whereHas('prikazList', function ($query) {
+                $query->select('N', 'name', 'title', 'date', 'userId')
+                    ->where('N', '=', '1');
+            })
+//            ->selectSub(function ($query) {
+//                $query
+//                    ->from('prikazs')
+//                    ->selectRaw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")")
+//                    ->where('prikazs.N', '=', 'students.zachislenPoPrikazu');
+//            }, 'prikazDate')
             ->leftJoin('users', 'students.userId', '=', 'users.id')
 //            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
             ->leftJoin('groups as g', 'students.group', '=', 'g.id');
@@ -203,7 +211,7 @@ class Student extends Model {
 //            });
     }
 
-    public function prikazs() {
+    public function prikazList() {
         return $this->hasManyJson(Prikaz::class, 'userId', 'userId');
     }
 
