@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
  * App\Models\Student
@@ -51,7 +52,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Student whereFilter(array $filters)
  */
 class Student extends Model {
-    use HasFactory, \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+    use HasFactory, HasJsonRelationships;
 
     protected $fillable = [
         'userId',
@@ -127,6 +128,8 @@ class Student extends Model {
 
     public static function getList(array|null $filters = null,
                                    array|null $sort = null,
+                                   int $prikazNumber = -1
+
     ) {
 
         $query = self::query()->select([
@@ -149,9 +152,12 @@ class Student extends Model {
             'g.finishDate                                      as finishDate',
             'users.role                                        as role',
         ])
-            ->whereHas('prikazList', function ($query) {
-                $query->select('N', 'name', 'title', 'date', 'userId')
-                    ->where('N', '=', '1');
+            ->whereHas('prikazList', function ($query) use ($prikazNumber) {
+                $query->select('N', 'name', 'title', 'date', 'userId');
+
+                if ($prikazNumber >= 0) {
+                    $query->where('N', '=', $prikazNumber);
+                }
             })
 //            ->selectSub(function ($query) {
 //                $query
