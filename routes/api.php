@@ -44,6 +44,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);
     Route::post('/student/edit', [StudentController::class, 'editStudent']);
+    Route::get('/student/export', [StudentController::class, 'exportStudents']);
 
     Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
