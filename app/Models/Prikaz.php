@@ -84,49 +84,6 @@ class Prikaz extends Model {
         return $query;
     }
 
-    //дефолтный запрос на список
-
-    public static function getLinkedStudentsList(array|null $filters = null,
-                                                 array|null $sort = null,
-                                                 int $prikazNumber = -9999
-    ): Builder {
-
-        $query = self::select([
-            'students.id                                       as id',
-            'students.userId                                   as userId',
-            'students.surname                                  as surname',
-            'students.name                                     as name',
-            'students.patronymic                               as patronymic',
-            'students.gender                                   as gender',
-            'students.diplomaId                                as diplomaId',
-            DB::raw("DATE_FORMAT(students.birthday, \"%Y-%m-%d\")      as birthday"),
-            DB::raw("TIMESTAMPDIFF(YEAR, students.birthday, CURDATE()) as age"),
-            'students.formaObuch                               as formaObuch',
-            'prikazs.N                                         as prikaz',
-            DB::raw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")   as prikazDate"),
-            'g.id                                              as group',
-            'g.name                                            as groupName',
-            'g.groupType                                       as groupType',
-            'g.kurs                                            as kurs',
-            'g.startDate                                       as startDate',
-            'g.finishDate                                      as finishDate',
-            'users.role                                        as role',
-        ])
-            ->leftJoin('users', 'students.userId', '=', 'users.id')
-            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
-            ->leftJoin('groups as g', 'students.group', '=', 'g.id');
-
-        if (!empty($filters)) {
-            $query->whereFilter($filters);
-        }
-        //todo подсос прикзаов из subquery
-        if (!empty($sort)) {
-            $query->orderBy($sort[0]['columnName'], $sort[0]['direction']);
-        }
-
-        return $query;
-    }
-
     public static function createPrikaz(int $N,
                                         string $name,
                                         string $title,
@@ -206,9 +163,7 @@ class Prikaz extends Model {
         return $students;
     }
 
-
     //обработка фильтров при поиске
-
     public function scopeWhereFilter(Builder $query, array $filters): Builder {
         if (empty($filters)) {
             return $query;

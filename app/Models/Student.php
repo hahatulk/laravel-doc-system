@@ -159,14 +159,7 @@ class Student extends Model {
                     $query->where('N', '=', $prikazNumber);
                 }
             })
-//            ->selectSub(function ($query) {
-//                $query
-//                    ->from('prikazs')
-//                    ->selectRaw("DATE_FORMAT(prikazs.date, \"%Y-%m-%d\")")
-//                    ->where('prikazs.N', '=', 'students.zachislenPoPrikazu');
-//            }, 'prikazDate')
             ->leftJoin('users', 'students.userId', '=', 'users.id')
-//            ->leftJoin('prikazs', 'students.zachislenPoPrikazu', '=', 'prikazs.N')
             ->leftJoin('groups as g', 'students.group', '=', 'g.id');
 
 
@@ -182,41 +175,33 @@ class Student extends Model {
     }
 
     public static function whereInactive(Builder $query): Builder {
-        return $query;
-//            ->where([
-//                ['g.inProgress', '=', '0']
-//            ])
-//            ->orWhere(function ($query) {
-//                $query->select('COUNT(*)')
-//                    ->from('prikazs')
-//                    ->where([
-//                        ['prikazs.name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
-//                    ])
-//                    ->whereRaw(
-//                        'JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
-//                    );
-//            });
+        return $query
+            ->where([
+                ['g.inProgress', '=', '1']
+            ])
+            ->whereHas('prikazList', function ($query) {
+                $query
+                    ->where([
+                        ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+                    ]);
+            });
     }
 
     //дефолт запрос на данные студента
-
     public static function whereActive(Builder $query): Builder {
-        return $query;
-//            ->where([
-//                ['g.inProgress', '=', '1']
-//            ])
-//            ->where(function ($query) {
-//                $query->select('COUNT(*)')
-//                    ->from('prikazs')
-//                    ->where([
-//                        ['prikazs.name', '!=', Prikaz::PRIKAZ_OTCHISLENIE]
-//                    ])
-//                    ->whereRaw(
-//                        '!JSON_CONTAINS(prikazs.userId, CAST(students.userId as CHAR(255)), \'$\')'
-//                    );
-//            });
+        return $query
+            ->where([
+                ['g.inProgress', '=', '1']
+            ])
+            ->whereDoesntHave('prikazList', function ($query) {
+                $query
+                    ->where([
+                        ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+                    ]);
+            });
     }
 
+    //отношения
     public function prikazList() {
         return $this->hasManyJson(Prikaz::class, 'userId', 'userId');
     }
