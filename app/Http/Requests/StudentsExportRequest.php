@@ -6,7 +6,17 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 use JsonException;
 
-class OrdersListRequest extends FormRequest {
+/**
+ * @property-read array $filters
+ * @property-read array sort
+ * @property-read int per_page
+ */
+class StudentsExportRequest extends FormRequest {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return Authenticatable
+     */
     public function authorize() {
         return auth()->user();
     }
@@ -25,6 +35,10 @@ class OrdersListRequest extends FormRequest {
             $input['sort'] = json_decode($this->get('sort'), true, 512, JSON_THROW_ON_ERROR);
         }
 
+        if (isset($input['restrictedColumns'])) {
+            $input['restrictedColumns'] = json_decode($this->get('restrictedColumns'), true, 512, JSON_THROW_ON_ERROR);
+        }
+
         return $input;
     }
 
@@ -35,11 +49,10 @@ class OrdersListRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'page' => 'required|numeric',
-            'per_page' => 'numeric',
+            'restrictedColumns' => 'array',
             'filters' => 'array',
             'sort' => 'array',
-            'active' => 'numeric',
+            'inProgress' => 'numeric',
         ];
     }
 }

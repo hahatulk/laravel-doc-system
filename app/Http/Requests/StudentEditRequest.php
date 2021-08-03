@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
+
 class StudentEditRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable
+     * @return Authenticatable
      */
-    public function authorize()
-    {
+    public function authorize() {
         return auth()->user();
     }
 

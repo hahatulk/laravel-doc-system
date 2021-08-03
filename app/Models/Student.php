@@ -131,7 +131,7 @@ class Student extends Model {
                                    array|null $sort = null,
                                    int $prikazNumber = -1
 
-    ) {
+    ): Builder {
 
         $query = self::query()->select([
             'students.id                                       as id',
@@ -188,7 +188,6 @@ class Student extends Model {
             });
     }
 
-    //дефолт запрос на данные студента
     public static function whereActive(Builder $query): Builder {
         return $query
             ->where([
@@ -201,6 +200,7 @@ class Student extends Model {
                     ]);
             });
     }
+
 
     //отношения
     public function prikazList() {

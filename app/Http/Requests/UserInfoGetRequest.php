@@ -11,7 +11,7 @@ class UserInfoGetRequest extends FormRequest {
      *
      * @return bool
      */
-    public function authorize(): Authenticatable {
+    public function authorize() {
         return auth()->user();
     }
 

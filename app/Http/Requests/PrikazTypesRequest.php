@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PrikazTypesRequest extends FormRequest {
-    public function authorize(): Authenticatable {
+    public function authorize() {
         return auth()->user();
     }
 

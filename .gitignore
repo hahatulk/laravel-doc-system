@@ -11,5 +11,10 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+_ide_helper.php
+.phpstorm.meta.php
 /.idea
-/.vscode
+/public/css/*
+/public/js/*
+/public/mix-manifest.json
+/public/images/*

@@ -12,7 +12,7 @@ class GroupListRequest extends FormRequest {
      *
      * @return Authenticatable
      */
-    public function authorize(): Authenticatable {
+    public function authorize() {
         return auth()->user();
     }
 
