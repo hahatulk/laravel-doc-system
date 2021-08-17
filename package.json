@@ -14,6 +14,8 @@
         "idehelper": "docker-compose run workspace php artisan ide-helper:generate && docker-compose run workspace php artisan ide-helper:models -W && docker-compose run workspace php artisan ide-helper:meta"
     },
     "dependencies": {
+        "@babel/core": "^7.15.0",
+        "@babel/preset-env": "^7.15.0",
         "@date-io/date-fns": "^1.3.13",
         "@date-io/moment": "^2.10.8",
         "@devexpress/dx-core": "^2.7.5",
@@ -27,7 +29,7 @@
         "@material-ui/x-grid": "^4.0.0-alpha.26",
         "animate.css": "^4.1.1",
         "axios": "0.19.2",
-        "babel-loader": "8.1.0",
+        "babel-loader": "^8.1.0",
         "cross-env": "^7.0.3",
         "date-fns": "^2.21.3",
         "dotenv": "8.2.0",
@@ -35,7 +37,7 @@
         "formik": "^2.2.6",
         "js-file-download": "^0.4.12",
         "jwt-decode": "2.2.0",
-        "laravel-mix": "^5.0.1",
+        "laravel-mix": "^6.0.6",
         "lodash": "latest",
         "moment": "^2.29.1",
         "notistack": "^1.0.5",
@@ -52,11 +54,10 @@
         "react-scripts": "4.0.1",
         "redux": "4.0.5",
         "redux-promise": "0.6.0",
-        "redux-thunk": "2.3.0",
-        "ts-loader": "^8.0.5",
-        "typescript": "^4.0.3"
+        "redux-thunk": "2.3.0"
     },
     "devDependencies": {
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.0",
         "@types/lodash": "latest",
         "@types/node": "^12.0.0",
         "@types/qs": "^6.9.7",
@@ -67,8 +68,11 @@
         "@types/react-router": "^5.1.8",
         "@types/react-router-dom": "^5.1.6",
         "@types/react-virtualized": "^9.21.10",
+        "react-refresh": "^0.8.3",
         "redux-devtools-extension": "2.13.8",
-        "sass": "^1.27.0",
-        "sass-loader": "^10.0.3"
+        "sass": "^1.38.0",
+        "sass-loader": "^12.1.0",
+        "ts-loader": "^9.2.5",
+        "typescript": "^4.3.5"
     }
 }

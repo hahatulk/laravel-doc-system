@@ -12,7 +12,7 @@ const path = require('path');
  |
  */
 
-mix.ts('resources/js/index.tsx', 'public/js/app.js')
+mix.ts('resources/js/index.tsx', 'public/js')
     .sass('resources/css/app.scss', 'public/css', [
         //
     ]).options({
@@ -30,12 +30,7 @@ mix.options({
 // // fix css files 404 issue
 mix.webpackConfig({
     // add any webpack dev server config here
-    resolve: {
-        modules: [
-            "node_modules",
-            path.join(__dirname, './resources/js')
-        ]
-    },
+
     devServer: {
         proxy: {
             host: '127.0.0.1',  // host machine ip
@@ -49,8 +44,8 @@ mix.webpackConfig({
     }
 });
 
-mix.override((config) => {
-    delete config.watchOptions;
-});
-
 mix.disableSuccessNotifications();
+
+if (mix.inProduction()) {
+    mix.version();
+}

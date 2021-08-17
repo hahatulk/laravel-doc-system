@@ -10,12 +10,12 @@
     <title>EDO Педколледж</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="root"></div>
-
 <script src="{{ mix('/js/index.js') }}" defer></script>
 </body>
 </html>
