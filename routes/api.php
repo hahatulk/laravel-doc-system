@@ -8,6 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PrikazController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +41,9 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/group/delete', [GroupController::class, 'delete']);
 
     Route::get('/user/info', [StudentController::class, 'getInfo']);
+    Route::get('/user/admins', [UserController::class, 'getAdminsList']);
+    Route::put('/user/admins', [UserController::class, 'createAdmin']);
+    Route::delete('/user/admins', [UserController::class, 'deleteAdmin']);
 
     Route::get('/student/find', [StudentController::class, 'findOneByUserId']);
     Route::get('/student/list', [StudentController::class, 'getList']);

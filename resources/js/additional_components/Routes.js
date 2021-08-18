@@ -49,9 +49,9 @@ export const
     REACT_APP_ADMIN_PRIKAZ_EDIT=`${H_DOMAIN}/api/prikaz/edit`,
     REACT_APP_ADMIN_PRIKAZ_DELETE=`${H_DOMAIN}/api/prikaz/delete`,
 
-    REACT_APP_ADMIN_MODERATORS_GET=`${H_DOMAIN}/api/admin/getall`,
-    REACT_APP_ADMIN_MODERATORS_DELETE=`${H_DOMAIN}/api/admin/delete`,
-    REACT_APP_ADMIN_MODERATORS_CREATE=`${H_DOMAIN}/api/admin/create`,
+    REACT_APP_ADMIN_MODERATORS_GET=`${H_DOMAIN}/api/user/admins`,
+    REACT_APP_ADMIN_MODERATORS_DELETE=`${H_DOMAIN}/api/user/admins`,
+    REACT_APP_ADMIN_MODERATORS_CREATE=`${H_DOMAIN}/api/user/admins`,
 
     REACT_APP_SERVER_RESTART=`${H_DOMAIN}/restart.php`
 

@@ -142,11 +142,13 @@ export function getModeratorsList(
 ): any {
     return async (dispatch: any) => {
         dispatch(getModeratorsListLoadingStateToRedux(true))
-        return await axios.post(REACT_APP_ADMIN_MODERATORS_GET + ``,
+        return await axios.get(REACT_APP_ADMIN_MODERATORS_GET + ``,
             {
-                page: Number(page) + 1,
-                sort: sort?.length ? JSON.stringify(sort) : undefined,
-                filters: filters?.length ? JSON.stringify(filters) : undefined,
+                params:{
+                    page: Number(page) + 1,
+                    sort: sort?.length ? JSON.stringify(sort) : undefined,
+                    filters: filters?.length ? JSON.stringify(filters) : undefined,
+                }
             }
         )
             .then((res) => {
@@ -406,9 +408,11 @@ export function deleteModerator(
     cb?: Function | undefined,
 ): any {
     return async (dispatch: any) => {
-        return await axios.post(REACT_APP_ADMIN_MODERATORS_DELETE + ``,
+        return await axios.delete(REACT_APP_ADMIN_MODERATORS_DELETE + ``,
             {
-                userId: userId,
+                params:{
+                    userId: userId,
+                }
             }
         )
             .then((res) => {

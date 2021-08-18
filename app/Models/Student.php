@@ -11,8 +11,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+use Staudenmeir\EloquentJsonRelations\Relations\HasManyJson;
 
 /**
  * App\Models\Student
@@ -129,7 +129,7 @@ class Student extends Model {
 
     public static function getList(array|null $filters = null,
                                    array|null $sort = null,
-                                   int $prikazNumber = -1
+                                   int        $prikazNumber = -1
 
     ): Builder {
 
@@ -203,7 +203,7 @@ class Student extends Model {
 
 
     //отношения
-    public function prikazList() {
+    public function prikazList(): HasManyJson {
         return $this->hasManyJson(Prikaz::class, 'userId', 'userId');
     }
 

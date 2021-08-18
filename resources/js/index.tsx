@@ -18,7 +18,7 @@ const notistackRef: Ref<any> = React.createRef();
 const onClickDismiss = (key: any) => () => {
     notistackRef.current.closeSnackbar(key);
 }
-console.log('cihmb a')
+
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>

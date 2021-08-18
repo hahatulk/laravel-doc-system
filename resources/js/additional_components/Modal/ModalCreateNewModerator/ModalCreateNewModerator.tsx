@@ -44,7 +44,7 @@ function ModalCreateNewModerator(props: any) {
 
     function handleSubmit(): void {
         setLoading(true)
-        axios.post(REACT_APP_ADMIN_MODERATORS_CREATE + ``,
+        axios.put(REACT_APP_ADMIN_MODERATORS_CREATE + ``,
             {
                 fio: fio,
                 password: password,

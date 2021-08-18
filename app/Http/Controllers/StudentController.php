@@ -104,59 +104,24 @@ class StudentController extends Controller {
         ];
         $restrictedColumns = $vars['restrictedColumns'];
 
-//        $allowedColumnsCount = count($allowedColumns);
-//        for ($i = 0; $i < $allowedColumnsCount; $i++) {
-//            $columnKey = array_keys($allowedColumns)[$i];
-//            $columnValue = $allowedColumns[$i];
-//
-//            if ($columnKey === $columnValue) {
-//                $sheet->setCellValue('B1', 'Фамилия');
-//            }
-//        }
 
-//        if (!in_array('name', $restrictedColumns, true)) {
-//            $sheet->setCellValue('B1', 'Фамилия');
-//        }
-//        if (!in_array('surname', $restrictedColumns, true)) {
-//            $sheet->setCellValue('C1', 'Имя');
-//        }
-//        if (!in_array('patronymic', $restrictedColumns, true)) {
-//            $sheet->setCellValue('D1', 'Отчество');
-//        }
-//        if (!in_array('gender', $restrictedColumns, true)) {
-//            $sheet->setCellValue('E1', 'Пол');
-//        }
-
-////            if (!in_array('name', $restrictedColumns, true)) {
-////                $sheet->setCellValue('B' . $rowIndex, $student->name);
-////            }
-////            if (!in_array('surname', $restrictedColumns, true)) {
-////                $sheet->setCellValue('C' . $rowIndex, $student->surname);
-////            }
-////            if (!in_array('patronymic', $restrictedColumns, true)) {
-////                $sheet->setCellValue('D' . $rowIndex, $student->patronymic);
-////            }
-////            if (!in_array('gender', $restrictedColumns, true)) {
-////                $sheet->setCellValue('E' . $rowIndex, $student->gender);
-////            }
-
-        for ($i = 0, $iMax = count($students); $i < $iMax; $i++) {
+        foreach ($students as $i => $iValue) {
             $rowIndex = $i + 2;
-            $keys = array_keys($students[$i]);
-            $student = $students[$i];
+            $keys = array_keys($iValue);
+            $student = $iValue;
 
             $columnIndex = 1;
-            for ($j = 0, $jMax = count($keys); $j < $jMax; $j++) {
+            foreach ($keys as $jValue) {
                 $allowedColumnsKeys = array_keys($allowedColumns);
                 $columnTitle = '';
 
-                if (!in_array($keys[$j], (array)$allowedColumnsKeys)) {
+                if (!in_array($jValue, (array)$allowedColumnsKeys)) {
                     continue;
                 }
-                if (in_array($keys[$j], $restrictedColumns, true)) {
+                if (in_array($jValue, $restrictedColumns, true)) {
                     $columnTitle = '';
                 } else {
-                    $columnTitle = $allowedColumns[$keys[$j]];
+                    $columnTitle = $allowedColumns[$jValue];
                 }
 
                 if (!empty($columnTitle)) {
@@ -166,19 +131,31 @@ class StudentController extends Controller {
                         $columnTitle,
                     );
 
-                    $sheet->setCellValueByColumnAndRow(
-                        $columnIndex,
-                        $rowIndex,
-                        $student[$keys[$j]],
-                    );
+                    if ($jValue === 'formaObuch') {
+                        $sheet->setCellValueByColumnAndRow(
+                            $columnIndex,
+                            $rowIndex,
+                            $student[$jValue] === 1 ? 'платная' : 'бюджетная',
+                        );
+                    } elseif ($jValue === 'groupType') {
+                        $sheet->setCellValueByColumnAndRow(
+                            $columnIndex,
+                            $rowIndex,
+                            $student[$jValue] === 0 ? 'очная' : 'заочная',
+                        );
+                    } else {
+                        $sheet->setCellValueByColumnAndRow(
+                            $columnIndex,
+                            $rowIndex,
+                            $student[$jValue],
+                        );
+                    }
+
 
                     $columnIndex++;
                 }
 
             }
-
-
-
         }
 
         foreach (range('A', 'G') as $columnID) {
