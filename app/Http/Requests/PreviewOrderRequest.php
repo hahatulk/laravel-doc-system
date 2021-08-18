@@ -6,6 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PreviewOrderRequest extends FormRequest
 {
+    public function authorize()
+    {
+        return auth()->user();
+    }
     /**
      * Get the validation rules that apply to the request.
      *

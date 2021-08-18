@@ -16,7 +16,11 @@ class BearerToken
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->headers->set('Authorization', 'Bearer ' . $request->cookie('access_token'));
+        if (!empty($request->route()->parameter('access_token'))) {
+            $request->headers->set('Authorization', 'Bearer ' . $request->route()->parameter('access_token'));
+        } else {
+            $request->headers->set('Authorization', 'Bearer ' . $request->cookie('access_token'));
+        }
         return $next($request);
     }
 }
