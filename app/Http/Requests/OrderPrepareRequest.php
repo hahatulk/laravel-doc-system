@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
-
-class StudentEditRequest extends FormRequest {
-
-
+class OrderPrepareRequest extends FormRequest
+{
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,7 +14,8 @@ class StudentEditRequest extends FormRequest {
     public function rules()
     {
         return [
-            'userId' => 'required|numeric'
+            'orderId' => 'required|numeric|exists:document_requests,id',
+            'fullFilled' => 'required|numeric',
         ];
     }
 }

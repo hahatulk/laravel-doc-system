@@ -10,8 +10,7 @@ class OrdersListRequest extends FormRequest {
     public function authorize() {
         return auth()->user();
     }
-
-    /**
+     /**
      * @throws JsonException
      */
     public function all($keys = null): array {

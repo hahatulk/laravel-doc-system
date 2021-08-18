@@ -7,7 +7,6 @@ import {getLocalPlainDateTime} from "../../additional_components/Dates";
 import {
     REACT_APP_ADMIN_DOWNLOAD_EXCEL_DOCUMENT_BY_PATH,
     REACT_APP_ADMIN_EXPORT_DATA,
-    REACT_APP_ADMIN_EXPORT_DATA_WITH_CREDENTIALS,
     REACT_APP_ADMIN_GROUPS_DELETE,
     REACT_APP_ADMIN_GROUPS_EDIT,
     REACT_APP_ADMIN_GROUPS_LIST_GET,
@@ -464,7 +463,7 @@ export function exportStudents(restrictedColumns: any[], filters: any[], inProgr
                     `экспорт_${getLocalPlainDateTime(new Date())}.xlsx`,
                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 );
-                dispatch(downloadExcelFile(r.data.data.path))
+                // dispatch(downloadExcelFile(r.data.data.path))
             })
             .catch(res => {
                 //check if tokens expired already
@@ -477,15 +476,24 @@ export function exportStudents(restrictedColumns: any[], filters: any[], inProgr
 
 export function exportStudentsWithCredentials(restrictedColumns: any[], filters: any[], inProgress: number): any {
     return async (dispatch: any) => {
-        return await axios.post(REACT_APP_ADMIN_EXPORT_DATA_WITH_CREDENTIALS + ``,
+        return await axios.get(REACT_APP_ADMIN_EXPORT_DATA + ``,
             {
-                restrictedColumns: restrictedColumns,
-                filters: filters,
-                inProgress: inProgress,
+                responseType: 'blob',
+                params: {
+                    restrictedColumns: restrictedColumns?.length ? JSON.stringify(restrictedColumns) : undefined,
+                    filters: filters?.length ? JSON.stringify(filters) : undefined,
+                    inProgress: inProgress,
+                    credentials: true
+                }
             }
         )
             .then((r) => {
-                dispatch(downloadExcelFile(r.data.data.path))
+                fileDownload(
+                    r.data,
+                    `экспорт_${getLocalPlainDateTime(new Date())}.xlsx`,
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                );
+                // dispatch(downloadExcelFile(r.data.data.path))
             })
             .catch(res => {
                 //check if tokens expired already

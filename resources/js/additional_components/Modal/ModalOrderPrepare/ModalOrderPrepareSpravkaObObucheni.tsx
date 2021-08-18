@@ -262,24 +262,24 @@ function PrepareOrder(props: any) {
                                 </FormGroup>
                             </Grid>
 
-                            <Grid item xs={12} md={12}>
-                                <FormGroup>
-                                    <TextField
-                                        margin="normal"
-                                        name="outputDocName"
-                                        label="Название файла"
-                                        value={preparedData["outputDocName"]}
-                                        disabled={true}
-                                        onChange={(e) => {
-                                            if (e.target.value !== undefined) {
-                                                let _preparedData = _.cloneDeep(preparedData)
-                                                _preparedData["outputDocName"] = e.target.value
-                                                setPreparedData(_preparedData)
-                                            }
-                                        }}
-                                    />
-                                </FormGroup>
-                            </Grid>
+                            {/*<Grid item xs={12} md={12}>*/}
+                            {/*    <FormGroup>*/}
+                            {/*        <TextField*/}
+                            {/*            margin="normal"*/}
+                            {/*            name="outputDocName"*/}
+                            {/*            label="Название файла"*/}
+                            {/*            value={preparedData["outputDocName"]}*/}
+                            {/*            disabled={true}*/}
+                            {/*            onChange={(e) => {*/}
+                            {/*                if (e.target.value !== undefined) {*/}
+                            {/*                    let _preparedData = _.cloneDeep(preparedData)*/}
+                            {/*                    _preparedData["outputDocName"] = e.target.value*/}
+                            {/*                    setPreparedData(_preparedData)*/}
+                            {/*                }*/}
+                            {/*            }}*/}
+                            {/*        />*/}
+                            {/*    </FormGroup>*/}
+                            {/*</Grid>*/}
 
                         </Grid>
                     </DialogContent>

@@ -7,6 +7,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,7 @@ use Staudenmeir\EloquentJsonRelations\Relations\HasManyJson;
  * @method static Builder|Student whereZachislenPoPrikazu($value)
  * @mixin Eloquent
  * @method static Builder|Student whereFilter(array $filters)
+ * @property-read \App\Models\Group $groups
  */
 class Student extends Model {
     use HasFactory, HasJsonRelationships;
@@ -153,7 +155,7 @@ class Student extends Model {
             'g.finishDate                                      as finishDate',
             'users.role                                        as role',
         ])
-            ->whereHas('prikazList', function ($query) use ($prikazNumber) {
+            ->whereHas('prikazs', function ($query) use ($prikazNumber) {
                 $query->select('N', 'name', 'title', 'date', 'userId');
 
                 if ($prikazNumber >= 0) {
@@ -180,7 +182,7 @@ class Student extends Model {
             ->where([
                 ['g.inProgress', '=', '1']
             ])
-            ->whereHas('prikazList', function ($query) {
+            ->whereHas('prikazs', function ($query) {
                 $query
                     ->where([
                         ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
@@ -193,7 +195,7 @@ class Student extends Model {
             ->where([
                 ['g.inProgress', '=', '1']
             ])
-            ->whereDoesntHave('prikazList', function ($query) {
+            ->whereDoesntHave('prikazs', function ($query) {
                 $query
                     ->where([
                         ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
@@ -203,7 +205,11 @@ class Student extends Model {
 
 
     //отношения
-    public function prikazList(): HasManyJson {
+    public function groups(): BelongsTo {
+        return $this->belongsTo(Group::class, 'group', 'id');
+    }
+
+    public function prikazs(): HasManyJson {
         return $this->hasManyJson(Prikaz::class, 'userId', 'userId');
     }
 

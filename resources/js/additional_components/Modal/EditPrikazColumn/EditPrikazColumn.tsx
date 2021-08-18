@@ -62,6 +62,7 @@ export const Popup = React.memo(({
                                 type={''}
                                 value={row.N || ''}
                                 style={{width: '100%'}}
+                                disabled={true}
                                 onChange={(e: any) => {
                                     const value = e.target.value
                                     if (!isNaN(parseInt(value)) || value === '') {

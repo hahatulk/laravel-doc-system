@@ -8,6 +8,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Exception;
  * @mixin Eloquent
  * @property string $title
  * @method static Builder|Prikaz whereTitle($value)
+ * @property-read \App\Models\DefaultDocument $default_document
+ * @method static Builder|Prikaz whereFilter(array $filters)
  */
 class Prikaz extends Model {
     use HasFactory;
@@ -189,4 +192,7 @@ class Prikaz extends Model {
         return $query;
     }
 
+    public function default_document(): BelongsTo {
+        return $this->belongsTo(DefaultDocument::class, 'name', 'name');
+    }
 }

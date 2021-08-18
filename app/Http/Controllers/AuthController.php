@@ -18,8 +18,7 @@ use Laravel\Passport\RefreshTokenRepository;
 
 class AuthController extends Controller
 {
-
-    /**
+     /**
      * @throws JsonException
      */
     public function login(Request $request): Response|JsonResponse|Application|ResponseFactory

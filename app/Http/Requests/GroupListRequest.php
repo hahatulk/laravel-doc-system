@@ -7,16 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use JsonException;
 
 class GroupListRequest extends FormRequest {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return Authenticatable
-     */
-    public function authorize() {
-        return auth()->user();
-    }
 
-    /**
+     /**
      * @throws JsonException
      */
     public function all($keys = null): array {

@@ -52,12 +52,13 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 
+    Route::get('/orders/prepare', [DocumentRequestController::class, 'prepareOrder']);
     Route::get('/orders/lk', [DocumentRequestController::class, 'lk']);
     Route::get('/orders/list', [DocumentRequestController::class, 'getOrdersList']);
     Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
     Route::post('/orders/update', [DocumentRequestController::class, 'updateOrder']);
     Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
-
+    Route::get('/order/preview', [DocumentRequestController::class, 'previewOrder']);
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
     Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);

@@ -9,8 +9,7 @@ class PrikazStudentsList extends FormRequest {
     public function authorize(): \Illuminate\Contracts\Auth\Authenticatable {
         return auth()->user();
     }
-
-    /**
+     /**
      * @throws JsonException
      */
     public function all($keys = null): array {

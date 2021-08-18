@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 use JsonException;
+use Request;
 
 /**
  * @property-read array $filters
@@ -12,14 +12,6 @@ use JsonException;
  * @property-read int per_page
  */
 class StudentsExportRequest extends FormRequest {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return Authenticatable
-     */
-    public function authorize() {
-        return auth()->user();
-    }
 
     /**
      * @throws JsonException
@@ -39,6 +31,10 @@ class StudentsExportRequest extends FormRequest {
             $input['restrictedColumns'] = json_decode($this->get('restrictedColumns'), true, 512, JSON_THROW_ON_ERROR);
         }
 
+        if (isset($input['credentials'])) {
+            $input['credentials'] = Request::boolean('credentials');
+        }
+
         return $input;
     }
 
@@ -53,6 +49,7 @@ class StudentsExportRequest extends FormRequest {
             'filters' => 'array',
             'sort' => 'array',
             'inProgress' => 'numeric',
+            'credentials' => 'boolean',
         ];
     }
 }

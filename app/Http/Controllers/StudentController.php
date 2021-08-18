@@ -78,7 +78,11 @@ class StudentController extends Controller {
             $students = Student::whereInactive($students);
         }
 
-        $students = $students->get()->toArray();
+        if ($request->credentials === true) {
+            $students->addSelect('users.username','users.password');
+        }
+
+        $students = $students->get()->makeVisible(['username', 'password'])->toArray();
 
         // Create new Spreadsheet object
         $spreadsheet = new Spreadsheet();
@@ -101,6 +105,8 @@ class StudentController extends Controller {
             "kurs" => 'Курс',
             "startDate" => 'Год зачисления',
             "finishDate" => 'Год выпуска',
+            "username" => 'Логин',
+            "password" => 'Пароль',
         ];
         $restrictedColumns = $vars['restrictedColumns'];
 

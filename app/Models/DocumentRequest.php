@@ -8,6 +8,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -36,6 +37,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|DocumentRequest whereUpdatedAt($value)
  * @method static Builder|DocumentRequest whereUserId($value)
  * @mixin Eloquent
+ * @property-read \App\Models\DefaultDocument $default_document
+ * @method static Builder|DocumentRequest whereFilter(array $filters)
  */
 class DocumentRequest extends Model {
     use HasFactory;
@@ -141,6 +144,10 @@ class DocumentRequest extends Model {
         }
 
         return $query;
+    }
+
+    public function default_document(): BelongsTo {
+        return $this->belongsTo(DefaultDocument::class, 'documentName', 'name');
     }
 
 }
