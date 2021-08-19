@@ -7,8 +7,8 @@ function PrepareOrder(props: any) {
     const previewedURL: string = props.previewedURL
 
     const [open, setOpen] = useState(false);
-    const [link, setLink] = useState(`https://docs.google.com/viewer?embedded=true&url=${(previewedURL)}`);
-    // console.log(previewedURL)
+    const [link, setLink] = useState(`https://docs.google.com/viewer?embedded=true&url=${encodeURI(previewedURL)}`);
+
     function openDialog() {
         setOpen(true)
     }
