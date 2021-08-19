@@ -432,6 +432,9 @@ export function deleteModerator(
 export function downloadImportStudentsTemplate(): any {
     return async (dispatch: any) => {
         return await axios.get(REACT_APP_ADMIN_IMPORT_STUDENTS_TEMPLATE_PATH + ``,
+            {
+                responseType: 'blob'
+            }
         )
             .then((r) => {
                 fileDownload(
