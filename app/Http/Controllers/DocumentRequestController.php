@@ -16,7 +16,6 @@ use App\Models\Prikaz;
 use App\Models\Student;
 use App\Models\User;
 use Carbon\Carbon;
-use Debugbar;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -210,8 +209,6 @@ class DocumentRequestController extends Controller {
         if (empty($order)) {
             abort('order not found', 404);
         }
-
-        \DebugBar::error('$object');
 
         $docType = $order->documentName;
         $fileName = $order->id;
