@@ -1,5 +1,6 @@
 const HTTP_PROTOCOL = 'http'
 const DOMAIN = 'localhost'
+// const DOMAIN = 'edo.pedcollchelny.ru'
 const H_DOMAIN = `${HTTP_PROTOCOL}://${DOMAIN}`
 
 export const

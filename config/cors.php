@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost/', 'https://docs.google.com/', 'https://edo.pedcollchelny.ru/'],
+    'allowed_origins' => ['*.localhost/', '*.google.com:*', '*.edo.pedcollchelny.ru:*'],
 
     'allowed_origins_patterns' => [],
 
