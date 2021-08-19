@@ -18,7 +18,7 @@ class PreviewOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'orderId' => 'required|numeric|exists:document_requests,id',
+            'orderId' => 'required|numeric',
             'AccessToken' => 'string',
         ];
     }

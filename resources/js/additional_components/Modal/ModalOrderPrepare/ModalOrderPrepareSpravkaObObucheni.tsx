@@ -111,8 +111,8 @@ function PrepareOrder(props: any) {
                             <Grid item xs={12} md={12}>
                                 {preparedData.previewToken?.length > 0
                                     ? <ModalPreviewDocument
-                                        previewedURL={encodeURIComponent(REACT_APP_ADMIN_DOWNLOAD_PREVIEW +
-                                            `?orderId=${(preparedData.orderId)}&AccessToken=${(preparedData.previewToken)}`)}
+                                        previewedURL={(REACT_APP_ADMIN_DOWNLOAD_PREVIEW +
+                                            `?orderId=${preparedData.orderId}&access_token=${preparedData.previewToken}`)}
                                     />
                                     : 'Ожидание деталей...'}
                             </Grid>

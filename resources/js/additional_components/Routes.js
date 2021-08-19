@@ -1,5 +1,5 @@
 const HTTP_PROTOCOL = 'http'
-const DOMAIN = 'localhost:3000'
+const DOMAIN = 'localhost'
 const H_DOMAIN = `${HTTP_PROTOCOL}://${DOMAIN}`
 
 export const
@@ -27,7 +27,7 @@ export const
     REACT_APP_ADMIN_ORDERS_LIST = `${H_DOMAIN}/api/orders/list`,
     REACT_APP_ADMIN_ORDERS_UPDATE = `${H_DOMAIN}/api/orders/update`,
     REACT_APP_ADMIN_ORDER_GENERATE_DOCUMENT = `${H_DOMAIN}/api/orders/prepare`,
-    REACT_APP_ADMIN_ORDER_FULLFILL_DOCUMENT = `${H_DOMAIN}/api/create/spravka_ob_obuchenii`,
+    REACT_APP_ADMIN_ORDER_FULLFILL_DOCUMENT = `${H_DOMAIN}/api/orders/fullfill`,
 
     REACT_APP_ADMIN_DOWNLOAD = `${H_DOMAIN}/api/download`,
     REACT_APP_ADMIN_DOWNLOAD_PREVIEW = `${H_DOMAIN}/api/order/preview`,

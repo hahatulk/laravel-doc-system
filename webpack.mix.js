@@ -37,20 +37,22 @@ mix.webpackConfig({
             port: 8080,
         },
         watchOptions: {
-            hot: true,
             aggregateTimeout: 200,
             poll: 5000
         },
     },
-    // plugins: [
-    //     new BrowserSyncPlugin({
-    //         host: 'localhost',
-    //         port: 3000,
-    //         proxy: 'http://localhost/'
-    //     })
-    // ]
+    plugins: [
+        new BrowserSyncPlugin({
+            // browse to http://localhost:3000/ during development,
+            // ./public directory is being served
+            host: 'localhost',
+            proxy: 'http://localhost/',
+            port: 3000,
+            files: ["resources/*"]
+        })
+    ]
 });
-mix.browserSync('localhost');
+// mix.browserSync('localhost');
 mix.disableSuccessNotifications();
 
 if (mix.inProduction()) {

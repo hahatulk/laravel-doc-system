@@ -186,7 +186,12 @@ class DocumentRequestController extends Controller {
         $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
         $templateProcessor->setValues($vars);
 
-        $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
+        if ($order->fullFilled === 1) {
+            abort('order already fullfilled', 403);
+        } else {
+            $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
+        }
+
         return $this->success([
             'orderId' => $order->id,
             'previewToken' => $request->cookie('access_token'),
@@ -242,6 +247,9 @@ class DocumentRequestController extends Controller {
         $templateProcessor->setValues($vars);
 
         $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
+
+        $order->fullFilled = 1;
+        $order->fullFilledAt = date('Y-m-d H:i:s');
         return $this->success();
     }
 
