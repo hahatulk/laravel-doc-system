@@ -44,7 +44,6 @@ class Kernel extends HttpKernel
 
         'api' => [
 //            'throttle:200,1',
-            AlwaysDecodeURI::class,
             BearerToken::class,
 //            AlwaysReturnJson::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -81,7 +80,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
-        AlwaysDecodeURI::class,
         BearerToken::class,
     ];
 }
