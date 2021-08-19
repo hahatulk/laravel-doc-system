@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PreviewOrderRequest extends FormRequest
+class OrderDownloadRequest extends FormRequest
 {
     public function authorize()
     {
@@ -19,7 +19,6 @@ class PreviewOrderRequest extends FormRequest
     {
         return [
             'orderId' => 'required|numeric',
-            'AccessToken' => 'string',
         ];
     }
 }

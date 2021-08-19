@@ -16,6 +16,8 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
     'mix_url' => env('MIX_ASSET_URL', 'localhost'),
 
+    'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

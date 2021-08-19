@@ -29,7 +29,7 @@ export const
     REACT_APP_ADMIN_ORDER_GENERATE_DOCUMENT = `${H_DOMAIN}/api/orders/prepare`,
     REACT_APP_ADMIN_ORDER_FULLFILL_DOCUMENT = `${H_DOMAIN}/api/orders/fullfill`,
 
-    REACT_APP_ADMIN_DOWNLOAD = `${H_DOMAIN}/api/download`,
+    REACT_APP_ADMIN_DOWNLOAD = `${H_DOMAIN}/api/orders/download`,
     REACT_APP_ADMIN_DOWNLOAD_PREVIEW = `${H_DOMAIN}/api/order/preview`,
     REACT_APP_ADMIN_DOWNLOAD_EXCEL_DOCUMENT_BY_PATH = `${H_DOMAIN}/api/file_Excel`,
     REACT_APP_ADMIN_DOWNLOAD_WORD_DOCUMENT_BY_PATH = `${H_DOMAIN}/api/file_Word`,

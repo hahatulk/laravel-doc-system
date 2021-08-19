@@ -24,34 +24,34 @@ mix.ts('resources/js/index.tsx', 'public/js')
 mix.options({
     hmrOptions: {
         host: '127.0.0.1',  // site's host name
-        port: 8080,
+        port: 80,
     }
 });
 
 // // fix css files 404 issue
-mix.webpackConfig({
-    // add any webpack dev server config here
-    devServer: {
-        proxy: {
-            host: '127.0.0.1',  // host machine ip
-            port: 8080,
-        },
-        watchOptions: {
-            aggregateTimeout: 200,
-            poll: 5000
-        },
-    },
-    plugins: [
-        new BrowserSyncPlugin({
-            // browse to http://localhost:3000/ during development,
-            // ./public directory is being served
-            host: 'localhost',
-            proxy: 'http://localhost/',
-            port: 3000,
-            files: ["resources/*"]
-        })
-    ]
-});
+// mix.webpackConfig({
+//     // add any webpack dev server config here
+//     // devServer: {
+//     //     proxy: {
+//     //         host: '127.0.0.1',  // host machine ip
+//     //         port: 8080,
+//     //     },
+//     //     watchOptions: {
+//     //         aggregateTimeout: 200,
+//     //         poll: 5000
+//     //     },
+//     //     hot: true,
+//     // },
+//     // plugins: [
+//     //     new BrowserSyncPlugin({
+//     //         // browse to http://localhost:3000/ during development,
+//     //         // ./public directory is being served
+//     //         host: 'localhost',
+//     //         port: 3000,
+//     //         server: { baseDir: ['public'] }
+//     //     })
+//     // ]
+// });
 // mix.browserSync('localhost');
 mix.disableSuccessNotifications();
 

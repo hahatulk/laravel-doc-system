@@ -176,7 +176,7 @@ function Orders_list(props: any) {
                 <Table.Cell {...cellProps}>
 
                     <PrepareOrder updateList={updateList} row={row}/>
-                    {row.documentPath && row.fullFilled
+                    {row.fullFilled
                         ? (
                             <Button color={'default'}
                                     variant={'contained'}
@@ -184,10 +184,10 @@ function Orders_list(props: any) {
                                         // setIsSubmitting(true)
                                         axios.get(REACT_APP_ADMIN_DOWNLOAD + `?orderId=${row.id}`,
                                             {
-                                                responseType: 'arraybuffer'
+                                                responseType: 'blob'
                                             })
                                             .then((r: AxiosResponse) => {
-                                                fileDownload(r.data, row.documentPath);
+                                                fileDownload(r.data, `Заказ №${row.id} ${row.groupName}  ${row.surname} ${row.name} ${row.patronymic}.docx`);
                                             })
                                             .catch(() => {
                                                 SnackBarUtils.error('Ошибка получения данных')

@@ -4,23 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Class\PatchedTemplateProcessor;
 use App\Http\Requests\OrderCancelRequest;
+use App\Http\Requests\OrderDownloadRequest;
+use App\Http\Requests\OrderFullfillRequest;
 use App\Http\Requests\OrderPrepareRequest;
 use App\Http\Requests\OrdersCreateRequest;
 use App\Http\Requests\OrdersListRequest;
 use App\Http\Requests\OrdersLkRequest;
 use App\Http\Requests\OrderUpdateRequest;
-use App\Http\Requests\PreviewOrderRequest;
 use App\Models\DocumentRequest;
 use App\Models\Prikaz;
 use App\Models\Student;
 use App\Models\User;
 use Carbon\Carbon;
+use Debugbar;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Petrovich;
-use PhpOffice\PhpWord\TemplateProcessor;
-use Request;
+use PhpOffice\PhpWord\Exception\CopyFileException;
+use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -186,11 +188,7 @@ class DocumentRequestController extends Controller {
         $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
         $templateProcessor->setValues($vars);
 
-        if ($order->fullFilled === 1) {
-            abort('order already fullfilled', 403);
-        } else {
-            $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
-        }
+        $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
 
         return $this->success([
             'orderId' => $order->id,
@@ -199,7 +197,13 @@ class DocumentRequestController extends Controller {
         ]);
     }
 
-    public function fullFillOrder(OrderPrepareRequest $request): JsonResponse {
+    /**
+     * @throws CopyFileException
+     * @throws CreateTemporaryFileException
+     */
+    public function fullFillOrder(OrderFullfillRequest $request): JsonResponse {
+        $vars = $request->only('vars');
+
         $order = DocumentRequest::whereId($request->orderId)
             ->with(['default_document'])
             ->first();
@@ -207,40 +211,10 @@ class DocumentRequestController extends Controller {
             abort('order not found', 404);
         }
 
-        $student = Student::where('userId', $order->userId)
-            ->with(['prikazs.default_document', 'groups'])
-            ->first();
+        \DebugBar::error('$object');
 
-        if (empty($student)) {
-            abort('student not found', 404);
-        }
-
-        $petrovich = new Petrovich();
         $docType = $order->documentName;
         $fileName = $order->id;
-        $studentName = 'TestName';
-        $gender = $student->gender === 'мужской' ? Petrovich::GENDER_MALE : Petrovich::GENDER_FEMALE;
-        $case = Petrovich::CASE_GENITIVE;
-
-        $vars = [
-            'Фамилия' => $petrovich->firstname($student->surname, $case, $gender),
-            'Имя' => $petrovich->lastname($student->name, $case, $gender),
-            'Отчество' => $petrovich->middlename($student->patronymic, $case, $gender),
-            'Курс' => $student->groups->kurs,
-            'Группа' => $student->groups->name,
-            'ФормаОбучения' => $student->groups->groupType ? 'заочного' : 'очного (дневного)',
-            'БюджетПлат' => $student->formaObuch ? 'платной' : 'бюджетной',
-            'НачалоУчебы' => Carbon::createFromDate($student->groups->startDate)->format('d.m.Y'),
-            'КонецУчебы' => Carbon::createFromDate($student->groups->finishDate)->format('d.m.Y'),
-            'Приказы' => collect($student->prikazs)->map(function (Prikaz $el) {
-                $defaultTitle = $el->default_document->title;
-                return [
-                    'Номер' => $el->N,
-                    "Название" => $defaultTitle,
-                    "Дата" => Carbon::createFromDate($el->date)->format('d.m.Y'),
-                ];
-            }),
-        ];
 
         $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
         $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
@@ -248,17 +222,19 @@ class DocumentRequestController extends Controller {
 
         $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
 
+//        $order->status = 1;
         $order->fullFilled = 1;
         $order->fullFilledAt = date('Y-m-d H:i:s');
+        $order->save();
         return $this->success();
     }
 
-    public function previewOrder(PreviewOrderRequest $request): BinaryFileResponse {
+    public function downloadOrder(OrderDownloadRequest $request): BinaryFileResponse {
         $headers = [
             'Content-type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Disposition' => 'attachment; filename="order.docx"',
         ];
 
-        return response()->download(Storage::path("orders/$request->orderId.docx"), 'preview.docx', $headers);
+        return response()->download(Storage::path("orders/$request->orderId.docx"), 'order.docx', $headers);
     }
 }
