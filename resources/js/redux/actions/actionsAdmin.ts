@@ -434,7 +434,11 @@ export function downloadImportStudentsTemplate(): any {
         return await axios.get(REACT_APP_ADMIN_IMPORT_STUDENTS_TEMPLATE_PATH + ``,
         )
             .then((r) => {
-                dispatch(downloadExcelFile(r.data.data.path, 'шаблон_импорт_студентов.xlsx'))
+                fileDownload(
+                    r.data,
+                    'шаблон_импорт_студентов.xlsx',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                );
             })
             .catch(res => {
                 //check if tokens expired already
@@ -494,30 +498,6 @@ export function exportStudentsWithCredentials(restrictedColumns: any[], filters:
                     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 );
                 // dispatch(downloadExcelFile(r.data.data.path))
-            })
-            .catch(res => {
-                //check if tokens expired already
-                if (res.status !== 200) {
-                    dispatch(tokenCheck())
-                }
-            })
-    }
-}
-
-export function downloadExcelFile(path: string, fileName?: string): any {
-    return async (dispatch: any) => {
-        return await axios.get(REACT_APP_ADMIN_DOWNLOAD_EXCEL_DOCUMENT_BY_PATH + `?path=${encodeURIComponent(path)}`,
-            {
-                responseType: 'blob'
-            }
-        )
-            .then((r) => {
-                fileDownload(
-                    r.data,
-                    `${fileName ? fileName : `экспорт_${getLocalPlainDateTime(new Date())}.xlsx`}`,
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                );
-
             })
             .catch(res => {
                 //check if tokens expired already
