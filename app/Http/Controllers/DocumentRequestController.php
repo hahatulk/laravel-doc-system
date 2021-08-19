@@ -251,6 +251,6 @@ class DocumentRequestController extends Controller {
             'Content-Disposition' => 'attachment; filename="order.docx"',
         ];
 
-        return response()->download(Storage::path($request->orderId . '.docx'), 'preview.docx', $headers);
+        return response()->download(Storage::path("orders/$request->orderId.docx"), 'preview.docx', $headers);
     }
 }

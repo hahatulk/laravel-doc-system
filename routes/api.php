@@ -59,7 +59,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/orders/update', [DocumentRequestController::class, 'updateOrder']);
     Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
     Route::get('/order/preview', [DocumentRequestController::class, 'previewOrder']);
-    Route::get('/order/preview/{access_token}', [DocumentRequestController::class, 'previewOrder'])->withoutMiddleware('auth:api');;
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
     Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);

@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 const path = require('path');
+const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 
 /*
  |--------------------------------------------------------------------------
@@ -30,20 +31,26 @@ mix.options({
 // // fix css files 404 issue
 mix.webpackConfig({
     // add any webpack dev server config here
-
     devServer: {
         proxy: {
             host: '127.0.0.1',  // host machine ip
             port: 8080,
         },
         watchOptions: {
+            hot: true,
             aggregateTimeout: 200,
             poll: 5000
         },
-
-    }
+    },
+    // plugins: [
+    //     new BrowserSyncPlugin({
+    //         host: 'localhost',
+    //         port: 3000,
+    //         proxy: 'http://localhost/'
+    //     })
+    // ]
 });
-
+mix.browserSync('localhost');
 mix.disableSuccessNotifications();
 
 if (mix.inProduction()) {
