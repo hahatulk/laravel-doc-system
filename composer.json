@@ -55,18 +55,18 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@/opt/php/8.0/bin/php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
-            "@/opt/php/8.0/bin/php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@/opt/php/8.0/bin/php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "@/opt/php/8.0/bin/php artisan ide-helper:generate",
-            "@/opt/php/8.0/bin/php artisan ide-helper:meta"
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
         ]
     },
     "extra": {
