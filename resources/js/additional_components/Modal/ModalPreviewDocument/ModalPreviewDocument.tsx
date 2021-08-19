@@ -11,6 +11,8 @@ function PrepareOrder(props: any) {
 
     function openDialog() {
         setOpen(true)
+        console.log(`https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(previewedURL)}`)
+        console.log(encodeURIComponent(previewedURL))
     }
 
     function closeDialog() {
