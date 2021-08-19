@@ -1,5 +1,5 @@
 const HTTP_PROTOCOL = 'http'
-const DOMAIN = 'localhost'
+const DOMAIN = window.location.hostname
 // const DOMAIN = 'edo.pedcollchelny.ru'
 const H_DOMAIN = `${HTTP_PROTOCOL}://${DOMAIN}`
 
