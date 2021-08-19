@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\AlwaysDecodeURI;
 use App\Http\Middleware\AlwaysReturnJson;
 use App\Http\Middleware\BearerToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
