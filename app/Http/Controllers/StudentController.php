@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller {
     public function findAll(int $id) {
@@ -68,7 +70,7 @@ class StudentController extends Controller {
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function exportStudents(StudentsExportRequest $request) {
+    public function exportStudents(StudentsExportRequest $request): BinaryFileResponse {
         $vars = $request->validated();
         $students = Student::getList($request->filters, $request->sort);
 
@@ -79,7 +81,7 @@ class StudentController extends Controller {
         }
 
         if ($request->credentials === true) {
-            $students->addSelect('users.username','users.password');
+            $students->addSelect('users.username', 'users.password');
         }
 
         $students = $students->get()->makeVisible(['username', 'password'])->toArray();
@@ -178,6 +180,5 @@ class StudentController extends Controller {
 
         return response()->download(Storage::path('export.xlsx'), 'export.xlsx', $headers);
     }
-
 
 }

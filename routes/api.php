@@ -8,7 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\PrikazController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
+use App\Models\DefaultDocument;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +49,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/student/list', [StudentController::class, 'getList']);
     Route::post('/student/edit', [StudentController::class, 'editStudent']);
     Route::get('/student/export', [StudentController::class, 'exportStudents']);
+    Route::get('/student/import_template', [DefaultDocument::class, 'importTemplateDownload']);
 
     Route::get('/facultet/list', [FacultetController::class, 'getAll']);
 

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * App\Models\DefaultDocument
@@ -52,6 +54,15 @@ class DefaultDocument extends Model
             ]);
 
         return $query;
+    }
+
+    public function importTemplateDownload(): BinaryFileResponse {
+        $headers = [
+            'Content-type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="import.xlsx"',
+        ];
+
+        return response()->download(Storage::path('templates/import.xlsx'), 'import.xlsx', $headers);
     }
 
 }

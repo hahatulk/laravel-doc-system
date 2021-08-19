@@ -40,7 +40,7 @@ export const
     REACT_APP_ADMIN_GROUPS_DELETE = `${H_DOMAIN}/api/group/delete`,
     REACT_APP_ADMIN_GROUPS_CREATE = `${H_DOMAIN}/api/group/create`,
     REACT_APP_ADMIN_PRIKAZ_ZACHISLENIE = `${H_DOMAIN}/api/prikaz/zachislenie`,
-    REACT_APP_ADMIN_IMPORT_STUDENTS_TEMPLATE_PATH = `${H_DOMAIN}/api/file_path/import_students`,
+    REACT_APP_ADMIN_IMPORT_STUDENTS_TEMPLATE_PATH = `${H_DOMAIN}/api/student/import_template`,
 
     REACT_APP_ADMIN_PRIKAZ_LIST = `${H_DOMAIN}/api/prikaz/list`,
     REACT_APP_ADMIN_PRIKAZ_TYPES = `${H_DOMAIN}/api/prikaz/types`,
