@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AlwaysDecodeURI;
 use App\Http\Middleware\AlwaysReturnJson;
 use App\Http\Middleware\BearerToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -43,6 +44,7 @@ class Kernel extends HttpKernel
 
         'api' => [
 //            'throttle:200,1',
+            AlwaysDecodeURI::class,
             BearerToken::class,
 //            AlwaysReturnJson::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -79,6 +81,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        AlwaysDecodeURI::class,
         BearerToken::class,
     ];
 }
