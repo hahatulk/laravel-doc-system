@@ -214,7 +214,7 @@ class DocumentRequestController extends Controller {
         $fileName = $order->id;
 
         $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
-        $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
+        $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['vars']['Приказы']->toArray());
         $templateProcessor->setValues($vars);
 
         $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
