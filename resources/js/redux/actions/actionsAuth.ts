@@ -2,8 +2,6 @@ import axios, {AxiosResponse} from "axios"
 import {clearUserInfoToRedux} from "./actionsLk";
 import {SnackBarUtils} from "../../additional_components/SnackBarUtils/SnackBarUtils";
 import {REACT_APP_LOGIN, REACT_APP_LOGOUT, REACT_APP_SERVER_RESTART, REACT_APP_TOKENCHECK} from "../../additional_components/Routes";
-//все запросы включают токен
-axios.defaults.withCredentials = true
 
 export function loginToRedux(r: AxiosResponse): object {
     return {
@@ -61,19 +59,10 @@ export function tokenCheck(cb?: Function | undefined): any {
             .catch(async (e: any) => {
                 dispatch(tokenCheckToRedux(e.response))
                 dispatch(clearUserInfoToRedux())
+
                 // if (cb) {
                 //     cb()
                 // }
-
-                //TODO ВНИМАНИЕ КОСТЫЛЬ !!!
-                //Рестартнуть бекенд на хосте если ответ плохой
-                if (!e.response) {
-                    await axios.get(
-                        REACT_APP_SERVER_RESTART + ''
-                    )
-                }
-
-
             })
     }
 }

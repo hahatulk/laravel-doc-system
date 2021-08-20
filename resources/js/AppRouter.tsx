@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect} from 'react'
 import {Switch, withRouter} from "react-router-dom"
-import {Route} from 'react-router'
+import {Redirect, Route} from 'react-router'
 import "./App.scss"
 import "./themes.scss"
 import 'animate.css/animate.min.css';
@@ -29,8 +29,6 @@ function AppRouter(props: any) {
     return (
         <Fragment>
             <Switch>
-
-
                 <Route exact path='/' component={
                     requireAuth(<Lk {...props}/>)
                 }/>
@@ -47,8 +45,7 @@ function AppRouter(props: any) {
                         : ''
                 }
 
-                {
-                    props.role === 'admin'
+                {props.role === 'admin'
                         ? (
                             <>
                                 <Route exact path='/students' component={
@@ -80,13 +77,13 @@ function AppRouter(props: any) {
                                 }/>
                             </>
                         )
-                        : ''
-                }
+                        : ''}
 
                 <Route exact path='/login' component={
                     alreadyAuthed(<Login {...props}/>)
                 }/>
 
+                {!props.isAuthenticated && <Redirect to={'/login'}/>}
 
             </Switch>
         </Fragment>

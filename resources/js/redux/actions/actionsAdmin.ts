@@ -20,9 +20,6 @@ import {
     REACT_APP_ADMIN_STUDENTS_LIST_GET
 } from "../../additional_components/Routes";
 
-//все запросы включают токен
-axios.defaults.withCredentials = true
-
 
 export function clearStudentsListToRedux(): object {
     return {
