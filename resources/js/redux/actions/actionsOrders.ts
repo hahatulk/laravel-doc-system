@@ -4,8 +4,7 @@ import {SnackBarUtils} from "../../additional_components/SnackBarUtils/SnackBarU
 import {Filter, Sorting} from "@devexpress/dx-react-grid";
 import {REACT_APP_ADMIN_ORDERS_LIST, REACT_APP_ORDER_CANCEL, REACT_APP_ORDER_CREATE_SPRAVKA_OB_OBUCHENII} from "../../additional_components/Routes";
 
-//все запросы включают токен
-axios.defaults.withCredentials = true
+
 
 export function orderSpravkaObObuchenii(count: number, comment: string | undefined, cb?: Function | undefined): any {
     return async (dispatch: any) => {

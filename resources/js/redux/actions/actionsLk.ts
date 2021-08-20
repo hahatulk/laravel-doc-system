@@ -2,8 +2,7 @@ import axios, {AxiosResponse} from "axios"
 import {tokenCheck} from "./actionsAuth";
 import {Sorting} from "@devexpress/dx-react-grid";
 import {REACT_APP_ORDERS, REACT_APP_USER_INFO_GET} from "../../additional_components/Routes";
-//все запросы включают токен
-axios.defaults.withCredentials = true
+
 
 export function clearUserInfoToRedux(): object {
     return {
