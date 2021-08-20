@@ -1,103 +1,102 @@
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-# Требования:
-- Composer
-- Docker (рекомендуемый способ)
+## Laravel React Boilerplate
 
-### Инструкция по установке через Docker
+<p>
+<a href="https://packagist.org/packages/nilanth/laravel-react-boilerplate"><img src="https://img.shields.io/packagist/v/nilanth/laravel-react-redux" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/nilanth/laravel-react-boilerplate"><img src="https://img.shields.io/packagist/l/nilanth/laravel-react-redux" alt="License"></a>
+</p>
 
-Копируем файл конфигурации
-```shell
-cp .env.example .env
+Laravel React Boilerplate helps to fasten your development, Instead of spending more time on configuring React and SPA Authentication.
+
+### Pre-Configured with
+
+- Laravel 8
+- Laravel Sanctum for SPA Auth
+- React 17
+- Redux 
+- React Router
+- Route-Level Code-Splitting
+- Axios
+- [Ant Design](https://github.com/ant-design/ant-design)
+- [Redux Saga](https://redux-saga.js.org/)
+- [Sass](https://sass-lang.com/)
+- [ESLint](https://github.com/eslint/eslint)
+- Preconfigured redux store, actions and saga.
+
+### Pre-Configured Modules
+
+- User Login
+- User SignUp
+- Auth Routes
+
+## Quick Start
+
+### Laravel Development Environment setup
+
+You can choose either one for your development
+1. [Laravel Homestead](https://laravel.com/docs/8.x/homestead)
+2. [Laravel Sail](https://laravel.com/docs/8.x/sail)
+
+### Required setup before clone
+1. [Composer 2](https://getcomposer.org/download/). 
+2. [Node](https://nodejs.org/en/) stable version.
+
+## Usage
+
+### Option 1
+
+1. Install using composer
+
+```
+composer create-project nilanth/laravel-react-boilerplate
 ```
 
-Заполняем поля в `.env`:
-```
-DB_DATABASE=<любое значение>
-DB_USERNAME=<любое значение>
-DB_PASSWORD=<любое значение>
-```
+2. `cd laravel-react-boilerplate`
+3. Run `yarn install`
+4. Create a Database
+5. Update the Database credential to .env file
+6. Run `php artisan migrate` -> To create needed tables.
+7. Run `php artisan db:seed` -> To seed some fake users.
+8. Run `yarn run dev`
+9. Update API HOST_URL in `resources/js/config/constant.js` file
 
-Поля `DOCKER_COMPOSE_UID` и `DOCKER_COMPOSE_GID` нужно заполнить UID и GID значениями локального пользователя.
+### Option 2
 
-- Linux/Mac узнать UID/GID можно командой `id`
-- Windows попробовать использовать значение `1000` для uid, gid (не тестировалось)
 
-Собираем контейнеры и запускаем:
-```shell
-docker-compose up --build -d
-или
-npm run docker
-```
+1. Clone this Repo
+2. `cd laravel-react-boilerplate`
+3. Create a .env by copying .env.example and Update the required fields.
+4. Run `composer install`
+5. Run `php artisan key:gen`
+6. Run `yarn install`
+7. Create a Database
+8. Update the Database credential to .env file
+9. Run `php artisan migrate` -> To create needed tables.
+10. Run `php artisan db:seed` -> To seed some fake users.
+11. Run `yarn run dev`
+12. Update API HOST_URL in `resources/js/config/constant.js` file
 
-Устанавливаем зависимости:
-```shell
-docker-compose run workspace composer i
-или
-npm run dep
-```
+### Coming Up 
 
-Генерируем ключ приложения:
-```shell
-docker-compose run workspace composer run-script post-create-project-cmd
-или
-npm run larkey
-```
+- Tests
+- Custom Error response for API request
+- Reset Password
+- Email Verification
 
-Накатываем базу и тестовые данные:
-```shell
-docker-compose run workspace php artisan migrate:fresh --seed
-или
-npm run migrate
-```
+## Contributing
 
-# Сборка frontend
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-Для сборки фронта сначала качаем все зависимости
-```shell
-npm install
-```
+## Security Vulnerabilities
 
-Запускаем в watch режиме
-```shell
-npm run watch
-```
+Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
-Запускаем в hot-reload режиме, более удобен для разработки
-```shell
-npm run hot
-```
+## Credits
 
-Сборка для прода
-```shell
-npm run prod
-```
+-   [Nilanth](https://github.com/nilanth)
+-   [All Contributors](../../contributors)
 
-# Инструкция по установке зависимостей на Ubuntu 20.04+
+## License
 
-### PHP 8.0
-
-```shell
-sudo add-apt-repository ppa:ondrej/php -y
-sudo apt-get install -y php8.0-cli php8.0-mysql php8.0-mbstring php8.0-pgsql php8.0-sqlite3 php8.0-gd php8.0-sybase php8.0-bz2 php8.0-curl php8.0-xml php8.0-intl php8.0-zip
-```
-
-### Composer
-
-```shell
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-```
-
-### NodeJS
-
-```shell
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-### Docker
-
-```shell
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-```
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

@@ -39,6 +39,7 @@ use Illuminate\Support\Carbon;
  * @mixin Eloquent
  * @property-read \App\Models\DefaultDocument $default_document
  * @method static Builder|DocumentRequest whereFilter(array $filters)
+ * @property-read \App\Models\Student $student
  */
 class DocumentRequest extends Model {
     use HasFactory;

@@ -14,13 +14,13 @@ class BearerToken
      * @param \Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
-    {
+    public function handle(Request $request, Closure $next): mixed {
         if (!empty($request->get('access_token'))) {
             $request->headers->set('Authorization', 'Bearer ' . $request->get('access_token'));
         } else {
             $request->headers->set('Authorization', 'Bearer ' . $request->cookie('access_token'));
         }
+
         return $next($request);
     }
 }

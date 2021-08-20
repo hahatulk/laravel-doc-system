@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 
-class BaseRequest extends Request
+class AlwaysJSONRequest extends Request
 {
     public function expectsJson(): bool
     {

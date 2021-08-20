@@ -1,6 +1,5 @@
 const mix = require('laravel-mix');
-const path = require('path');
-const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
@@ -8,52 +7,33 @@ const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
  |--------------------------------------------------------------------------
  |
  | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel applications. By default, we are compiling the CSS
+ | for your Laravel application. By default, we are compiling the Sass
  | file for the application as well as bundling up all the JS files.
  |
  */
 
-mix.ts('resources/js/index.tsx', 'public/js')
-    .sass('resources/css/app.scss', 'public/css', [
-        //
-    ]).options({
-    // processCssUrls: false
-});
+mix.ts('resources/js/index.tsx', 'public/js/app.js')
+    .react()
+    .sass('resources/sass/app.scss', 'public/css');
 
-
-mix.options({
-    hmrOptions: {
-        host: '127.0.0.1',  // site's host name
-        port: 80,
-    }
-});
-
+// mix.options({
+//     hmrOptions: {
+//         host: '127.0.0.1',  // site's host name
+//         port: 80,
+//     }
+// });
+//
 // // fix css files 404 issue
 // mix.webpackConfig({
 //     // add any webpack dev server config here
-//     // devServer: {
-//     //     proxy: {
-//     //         host: '127.0.0.1',  // host machine ip
-//     //         port: 8080,
-//     //     },
-//     //     watchOptions: {
-//     //         aggregateTimeout: 200,
-//     //         poll: 5000
-//     //     },
-//     //     hot: true,
-//     // },
-//     // plugins: [
-//     //     new BrowserSyncPlugin({
-//     //         // browse to http://localhost:3000/ during development,
-//     //         // ./public directory is being served
-//     //         host: 'localhost',
-//     //         port: 3000,
-//     //         server: { baseDir: ['public'] }
-//     //     })
-//     // ]
+//     resolve: {
+//         modules: [
+//             "node_modules",
+//             path.join(__dirname, './resources/js')
+//         ]
+//     },
+//
 // });
-// mix.browserSync('localhost');
-mix.disableSuccessNotifications();
 
 if (mix.inProduction()) {
     mix.version();
