@@ -44,7 +44,7 @@ class Kernel extends HttpKernel
         'api' => [
 //            'throttle:200,1',
             BearerToken::class,
-//            AlwaysReturnJson::class,
+            AlwaysReturnJson::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,

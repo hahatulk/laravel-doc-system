@@ -49,8 +49,7 @@ $app = require __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Kernel::class);
 
 $response = tap($kernel->handle(
-//    хак для принятия json всегда (маньякич)
-    $request = \App\Http\Requests\BaseRequest::capture()
+    $request = Request::capture()
 ))->send();
 
 $kernel->terminate($request, $response);
