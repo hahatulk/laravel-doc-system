@@ -123,7 +123,10 @@ class DocumentRequestController extends Controller {
 
     public function getOrdersList(OrdersListRequest $request): JsonResponse {
         $vars = $request->validated();
-        $orders = DocumentRequest::getList($request->filters, $request->sort);
+        $orders = DocumentRequest::getList($request->filters, $request->sort)
+        ->with(['student' => function($enrolledQuery) {
+            $enrolledQuery->with('groups');
+        }]);
 
         if (isset($vars['active'])) {
             if ((int)$vars['active'] === 1) {

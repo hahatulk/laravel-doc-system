@@ -203,7 +203,6 @@ class Student extends Model {
             });
     }
 
-
     //отношения
     public function groups(): BelongsTo {
         return $this->belongsTo(Group::class, 'group', 'id');

@@ -187,7 +187,7 @@ function Orders_list(props: any) {
                                                 responseType: 'blob'
                                             })
                                             .then((r: AxiosResponse) => {
-                                                fileDownload(r.data, `Заказ №${row.id} ${row.groupName}  ${row.surname} ${row.name} ${row.patronymic}.docx`);
+                                                fileDownload(r.data, `Заказ №${row.id} ${row.student.groups.name}  ${row.student.surname} ${row.student.name} ${row.student.patronymic}.docx`);
                                             })
                                             .catch(() => {
                                                 SnackBarUtils.error('Ошибка получения данных')

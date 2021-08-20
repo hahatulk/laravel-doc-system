@@ -150,4 +150,8 @@ class DocumentRequest extends Model {
         return $this->belongsTo(DefaultDocument::class, 'documentName', 'name');
     }
 
+    public function student(): BelongsTo {
+        return $this->belongsTo(Student::class, 'userId', 'userId');
+    }
+
 }
