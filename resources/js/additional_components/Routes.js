@@ -2,7 +2,7 @@ const HTTP_PROTOCOL = location.protocol + '//'
 const DOMAIN = location.hostname
 // const DOMAIN = 'localhost'
 // const DOMAIN = 'edo.pedcollchelny.ru'
-const H_DOMAIN = `${HTTP_PROTOCOL}://${DOMAIN}`
+const H_DOMAIN = `${HTTP_PROTOCOL}${DOMAIN}`
 
 export const
     REACT_APP_LOGIN = `${H_DOMAIN}/api/login`,
