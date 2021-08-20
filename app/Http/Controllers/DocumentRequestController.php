@@ -201,8 +201,7 @@ class DocumentRequestController extends Controller {
      * @throws CreateTemporaryFileException
      */
     public function fullFillOrder(OrderFullfillRequest $request): JsonResponse {
-        $vars = $request->only('vars');
-
+        $vars = $request->get('vars');
         $order = DocumentRequest::whereId($request->orderId)
             ->with(['default_document'])
             ->first();
@@ -214,8 +213,16 @@ class DocumentRequestController extends Controller {
         $fileName = $order->id;
 
         $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
-        $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
-        $templateProcessor->setValues($vars);
+        $templateProcessor->cloneBlock('Приказ', 0, true, false, $vars['Приказы']);
+        $templateProcessor->setValue('Фамилия', $vars['Фамилия']);
+        $templateProcessor->setValue('Имя', $vars['Имя']);
+        $templateProcessor->setValue('Отчество', $vars['Имя']);
+        $templateProcessor->setValue('ФормаОбучения', $vars['ФормаОбучения']);
+        $templateProcessor->setValue('Группа', $vars['Группа']);
+        $templateProcessor->setValue('Курс', $vars['Курс']);
+        $templateProcessor->setValue('НачалоУчебы', $vars['НачалоУчебы']);
+        $templateProcessor->setValue('КонецУчебы', $vars['КонецУчебы']);
+        $templateProcessor->setValue('БюджетПлат', $vars['БюджетПлат']);
 
         $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
 
