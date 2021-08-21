@@ -8,7 +8,7 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "dep": "docker-compose run web composer update",
+        "dep": "docker-compose run web composer update && docker-compose run web npm i",
         "docker": "docker-compose up --build -d",
         "cache": "docker-compose run web php artisan config:clear",
         "migrate": "docker-compose run web php artisan migrate:fresh --seed",
