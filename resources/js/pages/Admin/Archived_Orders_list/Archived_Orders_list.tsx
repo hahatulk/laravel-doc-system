@@ -151,7 +151,7 @@ function Archived_Orders_list(props: any) {
             return (
                 <Table.Cell {...cellProps}>
                     <span>
-                        {(row.createdAt)}
+                        {row.createdAt}
                     </span>
                 </Table.Cell>
             )
@@ -161,7 +161,7 @@ function Archived_Orders_list(props: any) {
             return (
                 <Table.Cell {...cellProps}>
                     <span>
-                        {(row.updatedAt)}
+                        {row.updatedAt}
                     </span>
                 </Table.Cell>
             )

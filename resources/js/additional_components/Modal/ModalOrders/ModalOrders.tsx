@@ -125,7 +125,7 @@ function ModalOrders(props: any) {
             return (
                 <Table.Cell {...cellProps}>
                     <span>
-                        {getLocalPlainDateTime(row.createdAt)}
+                        {row.createdAt}
                     </span>
                 </Table.Cell>
             )
