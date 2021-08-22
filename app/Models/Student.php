@@ -180,7 +180,7 @@ class Student extends Model {
     public static function whereInactive(Builder $query): Builder {
         return $query
             ->where([
-                ['g.inProgress', '=', '1']
+                ['g.inProgress', '=', '0']
             ])
             ->whereHas('prikazs', function ($query) {
                 $query
