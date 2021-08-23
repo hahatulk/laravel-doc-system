@@ -375,7 +375,8 @@ function Students_list(props: any) {
                                     {...p}/>
                             )}
                         />
-                        <PopupEditing popupComponent={Popup}/>
+                        <PopupEditing popupComponent={Popup}
+                                      inProgress={1}/>
                         <PagingPanel/>
                         <ColumnChooser/>
 
@@ -407,7 +408,7 @@ const mapDispatchToProps = (dispatch: any) => {
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getStudentsList( page, sort, filters))
+            dispatch(getStudentsList(page, sort, filters))
         },
     }
 }

@@ -13,9 +13,10 @@ import {
     TableEditColumn,
     TableFilterRow,
     TableHeaderRow,
+    TableSelection,
     Toolbar
 } from "@devexpress/dx-react-grid-material-ui";
-import {Column, CustomPaging, EditingState, Filter, FilteringState, PagingState, Sorting, SortingState, TableColumnWidthInfo} from "@devexpress/dx-react-grid";
+import {Column, CustomPaging, EditingState, Filter, FilteringState, PagingState, SelectionState, Sorting, SortingState, TableColumnWidthInfo} from "@devexpress/dx-react-grid";
 import {getLocalDate} from "../../Dates";
 import axios from "axios";
 import {SnackBarUtils} from "../../SnackBarUtils/SnackBarUtils";
@@ -27,10 +28,13 @@ import {editStudent, exportStudents, exportStudentsWithCredentials} from "../../
 import ModalPrikazZachislenie from "../ModalPrikazZachislenie/ModalPrikazZachislenie";
 import {DxCustomFilter} from "../../DxCustomFilter";
 import {editColumnMessages, filterRowMessages} from "../../DxGridLocaleConfig";
-import {REACT_APP_ADMIN_STUDENTS_LIST_GET} from "../../Routes";
+import {REACT_APP_ADMIN_STUDENTS_LINKED_TO_PRIKAZ, REACT_APP_ADMIN_STUDENTS_LIST_GET} from "../../Routes";
 
 function ModalStudents(props: any) {
-    const [groupName, setGroupName] = useState<string>('')
+    const [groupId] = useState<string>(props.groupId ? props.groupId : '')
+    const [groupName] = useState<string>(props.groupName ? props.groupName : '')
+    const [inProgress] = useState<string>(props.inProgress !== undefined ? props.inProgress : -1)
+    const [prikazNumber] = useState<string>(props.prikazNumber)
 
     const [open, setOpen] = useState<boolean>(false)
 
@@ -90,10 +94,10 @@ function ModalStudents(props: any) {
     ])
     const [currentHiddenColumnNames, setCurrentHiddenColumnNames] = useState<string[]>(defaultHiddenColumnNames)
 
-    const [defaultFilters] = useState<Filter[]>([{
+    const [defaultFilters] = useState<Filter[]>(props.groupName && [{
         columnName: 'groupName',
         operation: 'contains',
-        value: props.groupName,
+        value: groupName,
     }])
     const [filters, setFilters] = useState<Filter[]>(defaultFilters)
     const [filtersNeedReset, setFiltersNeedReset] = useState<boolean>(false)
@@ -125,27 +129,53 @@ function ModalStudents(props: any) {
 
         setLoading(true)
 
-        axios.get(REACT_APP_ADMIN_STUDENTS_LIST_GET + ``,
-            {
-                params: {
-                    page: Number(page) + 1,
-                    sort: sorting?.length ? JSON.stringify(sorting) : undefined,
-                    filters: filters?.length ? JSON.stringify(filters) : undefined,
-                    inProgress: props.inProgress
-                },
-            }
-        )
-            .then((res) => {
-                setRows(res.data.data.data)
-                setRowCount(res.data.data.total)
-                setLoading(false)
-            })
-            .catch(e => {
-                const res = e.response
-                //check if tokens expired already
-                SnackBarUtils.error('Ошибка загрузки списка')
+        //если список нужен по выбранному приказу
+        if (prikazNumber !== undefined) {
+            axios.get(REACT_APP_ADMIN_STUDENTS_LINKED_TO_PRIKAZ + ``,
+                {
+                    params:{
+                        page: Number(page) + 1,
+                        sort: sorting?.length ? JSON.stringify(sorting) : undefined,
+                        filters: filters?.length ? JSON.stringify(filters) : undefined,
+                        inProgress: inProgress,
+                        prikazNumber: props.prikazNumber
+                    }
+                }
+            )
+                .then((res) => {
+                    setRows(res.data.data.data)
+                    setRowCount(res.data.data.total)
+                    setLoading(false)
+                })
+                .catch(e => {
+                    const res = e.response
+                    //check if tokens expired already
+                    SnackBarUtils.error('Ошибка загрузки списка')
 
-            })
+                })
+        } else{
+            axios.get(REACT_APP_ADMIN_STUDENTS_LIST_GET + ``,
+                {
+                    params: {
+                        page: Number(page) + 1,
+                        sort: sorting?.length ? JSON.stringify(sorting) : undefined,
+                        filters: filters?.length ? JSON.stringify(filters) : undefined,
+                        inProgress: inProgress
+                    },
+                }
+            )
+                .then((res) => {
+                    setRows(res.data.data.data)
+                    setRowCount(res.data.data.total)
+                    setLoading(false)
+                })
+                .catch(e => {
+                    const res = e.response
+                    //check if tokens expired already
+                    SnackBarUtils.error('Ошибка загрузки списка')
+
+                })
+        }
     }
 
     //задержка перед фильтрацией
@@ -172,6 +202,15 @@ function ModalStudents(props: any) {
         }
 
     }, [rows])
+
+    //если список с выделением, кидать выделенные через функц
+    const [selectable] = useState<string>(props.selectable)
+    const [selection, setSelection] = useState([]);
+    useEffect(() => {
+        if (open && selectable) {
+            props.selectStudents(selection)
+        }
+    }, [selection])
 
     //кастомный хендлер сортинга для сброса сортировки на 3-е нажатие
     const onSortingChange = (newColumnsSort: Array<any>) => {
@@ -319,15 +358,15 @@ function ModalStudents(props: any) {
                 <DialogTitle id="form-dialog-title" style={{padding: '16px 24px 0 24px'}}>
                     <div className={"table-description"}>
                         <Typography variant={'h6'}>
-                            Студенты группы {props.groupName}
+                            Студенты группы {groupName}
                         </Typography>
                         <div className={'table-controls'}>
 
                             {
-                                props.groupId !== undefined
+                                groupName !== undefined
                                     ? <>
                                         <ModalPrikazZachislenie
-                                            groupId={props.groupId}
+                                            groupId={groupId}
                                             groupName={props.groupName}
                                             updateList={() => {
                                                 updateList()
@@ -395,7 +434,11 @@ function ModalStudents(props: any) {
                         <EditingState
                             onCommitChanges={commitChanges}
                         />
-
+                        {selectable && <SelectionState
+                            selection={selection}
+                            // @ts-ignore
+                            onSelectionChange={setSelection}
+                        />}
                         <Table
                             cellComponent={Cell}
                         />
@@ -414,7 +457,11 @@ function ModalStudents(props: any) {
                             showEditCommand
                             messages={editColumnMessages}
                         />
-                        <PopupEditing popupComponent={Popup}/>
+
+
+                        {selectable && <TableSelection/>}
+                        <PopupEditing popupComponent={Popup}
+                                      inProgress={inProgress}/>
                         <TableFilterRow
                             messages={filterRowMessages}
                             editorComponent={(p: any) => (

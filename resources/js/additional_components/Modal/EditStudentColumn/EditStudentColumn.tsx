@@ -14,11 +14,13 @@ export const Popup = React.memo(({
                                      onChange,
                                      onApplyChanges,
                                      onCancelChanges,
+                                     inProgress,
                                      open,
                                  }: any) => {
     const [student, setStudent] = useState<string>('')
     const [groups, setGroups] = useState<any>([])
     const [groupsLoading, setGroupsLoading] = useState<boolean>(true);
+    const [_inProgress] = useState<boolean>(inProgress !== undefined ? inProgress : -1);
 
     useEffect(() => {
         if (open) {
@@ -26,9 +28,9 @@ export const Popup = React.memo(({
             setGroupsLoading(true)
             setStudent(`${row.surname} ${row.name} ${row.patronymic}`)
 
-            axios.get(REACT_APP_ADMIN_GROUPS,{
-                params:{
-                    inProgress: 1
+            axios.get(REACT_APP_ADMIN_GROUPS, {
+                params: {
+                    inProgress: _inProgress
                 }
             })
                 .then((res: AxiosResponse) => {
@@ -197,7 +199,11 @@ export const Popup = React.memo(({
         </Dialog>)
 })
 
-export const PopupEditing = React.memo(({popupComponent: Popup}: any) => (
+export const PopupEditing = React.memo((
+    {
+        popupComponent: Popup,
+        inProgress,
+    }: any) => (
     <Plugin>
         <Template name="popupEditing">
             <TemplateConnector>
@@ -262,6 +268,7 @@ export const PopupEditing = React.memo(({popupComponent: Popup}: any) => (
                         <Popup
                             open={open}
                             row={editedRow}
+                            inProgress={inProgress}
                             onChange={processValueChange}
                             onApplyChanges={applyChanges}
                             onCancelChanges={cancelChanges}

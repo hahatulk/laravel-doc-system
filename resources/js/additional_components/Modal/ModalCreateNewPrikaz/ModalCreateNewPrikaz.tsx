@@ -6,11 +6,11 @@ import './ModalCreateNewPrikaz.scss'
 import {Loading} from "../../Loading/Loading";
 import {DatePicker} from "@material-ui/pickers";
 import {downloadImportStudentsTemplate} from "../../../redux/actions/actionsAdmin";
-import ModalStudentsCreatePrikazStudentsSelect from "../ModalStudentsCreatePrikazStudentsSelect/ModalStudentsCreatePrikazStudentsSelect";
 import axios, {AxiosResponse} from "axios";
 import {SnackBarUtils} from "../../SnackBarUtils/SnackBarUtils";
 import {REACT_APP_ADMIN_PRIKAZ_CREATE, REACT_APP_ADMIN_PRIKAZ_TYPES} from "../../Routes";
 import moment from "moment";
+import ModalStudents from "../ModalStudents/ModalStudents";
 
 function ModalCreateNewPrikaz(props: any) {
     const [open, setOpen] = useState(false);
@@ -191,7 +191,8 @@ function ModalCreateNewPrikaz(props: any) {
                                 <Typography variant={'body1'} style={{marginBottom: '5px'}}>
                                     Выберите студентов, относящихся к приказу:
                                 </Typography>
-                                <ModalStudentsCreatePrikazStudentsSelect
+                                <ModalStudents
+                                    selectable
                                     selectStudents={(list: number[]) => {
                                         selectStudents(list)
                                     }}

@@ -23,10 +23,10 @@ import './Prikaz_list.scss'
 import _ from "lodash";
 import {getLocalDate} from "../../../additional_components/Dates";
 import {getRowId, Popup, PopupEditing} from '../../../additional_components/Modal/EditPrikazColumn/EditPrikazColumn';
-import ModalStudentsPrikazLinked from "../../../additional_components/Modal/ModalStudentsPrikazLinked/ModalStudentsPrikazLinked";
 import ModalCreateNewPrikaz from "../../../additional_components/Modal/ModalCreateNewPrikaz/ModalCreateNewPrikaz";
 import {DxCustomFilter} from "../../../additional_components/DxCustomFilter";
 import {editColumnMessages, filterRowMessages} from "../../../additional_components/DxGridLocaleConfig";
+import ModalStudents from "../../../additional_components/Modal/ModalStudents/ModalStudents";
 
 function Prikaz_list(props: any) {
     const [page, setPage] = useState<number>(0)
@@ -173,7 +173,8 @@ function Prikaz_list(props: any) {
         if (column.name === 'linkedStudents') {
             return (
                 <Table.Cell {...cellProps}>
-                    <ModalStudentsPrikazLinked prikazNumber={row.N}/>
+                    <ModalStudents prikazNumber={row.N}
+                                   inProgress={-1}/>
                 </Table.Cell>
             )
         }
@@ -329,7 +330,7 @@ const mapDispatchToProps = (dispatch: any) => {
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getPrikazList( page, sort, filters))
+            dispatch(getPrikazList(page, sort, filters))
         },
     }
 }
