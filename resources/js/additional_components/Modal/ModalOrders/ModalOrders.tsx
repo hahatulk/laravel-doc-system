@@ -5,13 +5,12 @@ import {Loading} from '../../Loading/Loading';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@material-ui/core";
 import {Grid as DxGrid, PagingPanel, Table, TableColumnResizing, TableHeaderRow} from "@devexpress/dx-react-grid-material-ui";
 import {Column, CustomPaging, Filter, PagingState, Sorting, SortingState, TableColumnWidthInfo} from "@devexpress/dx-react-grid";
-import {getLocalPlainDateTime} from "../../Dates";
 import axios, {AxiosResponse} from "axios";
 import {SnackBarUtils} from "../../SnackBarUtils/SnackBarUtils";
 import fileDownload from 'js-file-download';
 import PrepareOrder from "../ModalOrderPrepare/ModalOrderPrepareSpravkaObObucheni";
 import ModalStudentData from "../ModalStudentData/ModalStudentData";
-import {REACT_APP_ADMIN_DOWNLOAD, REACT_APP_ADMIN_ORDERS_LIST, REACT_APP_ADMIN_ORDERS_UPDATE, REACT_APP_ORDERS} from "../../Routes";
+import {REACT_APP_ADMIN_DOWNLOAD, REACT_APP_ADMIN_ORDERS_LIST, REACT_APP_ADMIN_ORDERS_UPDATE} from "../../Routes";
 
 function ModalOrders(props: any) {
     const userId = props.userId
@@ -78,12 +77,13 @@ function ModalOrders(props: any) {
         setOpen(false)
     }
 
-    function updateList() {
+    function updateList(): void {
         setOrderListLoading(true)
         axios.get(REACT_APP_ADMIN_ORDERS_LIST + ``,
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: pageSize,
                     sort: sorting?.length ? JSON.stringify(sorting) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                 }

@@ -5,7 +5,6 @@ import {Filter, Sorting} from "@devexpress/dx-react-grid";
 import {REACT_APP_ADMIN_ORDERS_LIST, REACT_APP_ORDER_CANCEL, REACT_APP_ORDER_CREATE_SPRAVKA_OB_OBUCHENII} from "../../additional_components/Routes";
 
 
-
 export function orderSpravkaObObuchenii(count: number, comment: string | undefined, cb?: Function | undefined): any {
     return async (dispatch: any) => {
         return await axios.post(REACT_APP_ORDER_CREATE_SPRAVKA_OB_OBUCHENII,
@@ -89,6 +88,7 @@ export function getOrdersListLoadingStateToRedux(loading: boolean): object {
 
 export function getOrdersList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -98,6 +98,7 @@ export function getOrdersList(
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                     active: 1
@@ -136,6 +137,7 @@ export function getArchivedOrdersListLoadingStateToRedux(loading: boolean): obje
 
 export function getArchivedOrdersList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -145,6 +147,7 @@ export function getArchivedOrdersList(
             {
                params:{
                    page: Number(page) + 1,
+                   per_page: per_page,
                    sort: sort?.length ? JSON.stringify(sort) : undefined,
                    filters: filters?.length ? JSON.stringify(filters) : undefined,
                    active: 0

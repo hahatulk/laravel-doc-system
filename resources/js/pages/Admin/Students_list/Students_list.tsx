@@ -104,6 +104,7 @@ function Students_list(props: any) {
     function updateList(): void {
         props.getStudentsList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -133,10 +134,8 @@ function Students_list(props: any) {
         setRowCount(props.Admin.studentsList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.studentsList.count <= pageSize && filters?.length) {
+        if (props.Admin.studentsList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.studentsList.list])
@@ -405,10 +404,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getStudentsList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getStudentsList(page, sort, filters))
+            dispatch(getStudentsList(page, per_page, sort, filters))
         },
     }
 }

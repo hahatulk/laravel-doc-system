@@ -31,7 +31,7 @@ import {editColumnMessages, filterRowMessages} from "../../../additional_compone
 
 function Archived_Students_list(props: any) {
     const [page, setPage] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(5);
+    const [pageSize, setPageSize] = useState<number>(6);
 
     const [rows, setRows] = useState<[]>([]);
     const [rowCount, setRowCount] = useState<number>(0);
@@ -100,6 +100,7 @@ function Archived_Students_list(props: any) {
     function updateList(): void {
         props.getArchivedStudentsList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -107,7 +108,7 @@ function Archived_Students_list(props: any) {
 
     //задержка перед фильтрацией
     const debouncedSetFilters = useCallback(_.debounce((e) => {
-              setFilters(e)
+        setFilters(e)
     }, 400), [])
 
     //получать новый лист при изменении параметров
@@ -127,10 +128,8 @@ function Archived_Students_list(props: any) {
         setRowCount(props.Admin.archivedStudentsList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.archivedStudentsList.count <= pageSize && filters?.length) {
+        if (props.Admin.archivedStudentsList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.archivedStudentsList.list])
@@ -384,10 +383,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getArchivedStudentsList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getArchivedStudentsList( page, sort, filters))
+            dispatch(getArchivedStudentsList(page, per_page, sort, filters))
         },
     }
 }

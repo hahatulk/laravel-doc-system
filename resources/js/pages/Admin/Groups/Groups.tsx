@@ -30,7 +30,7 @@ import {editColumnMessages, filterRowMessages} from "../../../additional_compone
 
 function Groups(props: any) {
     const [page, setPage] = useState<number>(0)
-    const [pageSize, setPageSize] = useState<number>(7)
+    const [pageSize, setPageSize] = useState<number>(6)
 
     const [rows, setRows] = useState<any>([])
     const [rowCount, setRowCount] = useState<number>(0)
@@ -85,6 +85,7 @@ function Groups(props: any) {
     function updateList(): void {
         props.getGroupsList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -113,10 +114,8 @@ function Groups(props: any) {
         setRowCount(props.Admin.groupsList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.groupsList.count <= pageSize && filters?.length) {
+        if (props.Admin.groupsList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
     }, [props.Admin.groupsList.list])
 
@@ -365,10 +364,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getGroupsList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getGroupsList( page, sort, filters))
+            dispatch(getGroupsList(page, per_page, sort, filters))
         },
     }
 }

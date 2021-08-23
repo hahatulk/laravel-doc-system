@@ -61,6 +61,7 @@ function Moderators_list(props: any) {
     function updateList(): void {
         props.getModeratorsList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -88,10 +89,8 @@ function Moderators_list(props: any) {
         setRowCount(props.Admin.moderatorsList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.moderatorsList.count <= pageSize && filters?.length) {
+        if (props.Admin.moderatorsList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.moderatorsList.list])
@@ -261,10 +260,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getModeratorsList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getModeratorsList( page, sort, filters))
+            dispatch(getModeratorsList(page, per_page, sort, filters))
         },
     }
 }

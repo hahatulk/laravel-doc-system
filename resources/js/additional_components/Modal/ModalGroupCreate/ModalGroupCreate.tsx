@@ -49,14 +49,14 @@ function ModalGroupCreate(props: any) {
                     inProgress: inProgress,
                     facultet: facultet,
                     startDate: moment(startDate).format('YYYY-MM-DD'),
-                    finishDate: moment(startDate).format('YYYY-MM-DD'),
+                    finishDate: moment(finishDate).format('YYYY-MM-DD'),
                 })
                     .then((res: AxiosResponse) => {
                         setFacultetList(res.data.data)
                         setFacultetLoading(false)
+                        setIsSubmitting(true)
                         setOpen(false)
                         SnackBarUtils.success(`Группа ${groupName} создана`)
-                        setIsSubmitting(true)
                         props.updateList()
                     })
                     .catch(() => {
@@ -83,6 +83,17 @@ function ModalGroupCreate(props: any) {
                     SnackBarUtils.error('Ошибка загрузки отделений')
                     setFacultetLoading(false)
                 })
+        } else {
+            setKurs(1)
+            setIsSubmitting(false)
+            setInProgress(1)
+            setFacultet('')
+            setStartDate(new Date())
+            setFinishDate(new Date())
+            setGroupType(0)
+            setGroupName('')
+            setFacultetList([])
+            setFacultetLoading(false)
         }
     }, [open])
 

@@ -81,6 +81,7 @@ function Prikaz_list(props: any) {
     function updateList(): void {
         props.getPrikazList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -108,10 +109,8 @@ function Prikaz_list(props: any) {
         setRowCount(props.Admin.prikazList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.prikazList.count <= pageSize && filters?.length) {
+        if (props.Admin.prikazList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.prikazList.list])
@@ -327,10 +326,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getPrikazList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getPrikazList(page, sort, filters))
+            dispatch(getPrikazList(page, per_page, sort, filters))
         },
     }
 }

@@ -13,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller {
@@ -51,7 +50,7 @@ class StudentController extends Controller {
             $students = Student::whereInactive($students);
         }
 
-        return $this->success($students->paginate(6));
+        return $this->success($students->paginate($request->per_page));
     }
 
     public function editStudent(StudentEditRequest $request): JsonResponse {

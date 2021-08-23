@@ -121,7 +121,7 @@ class PrikazController extends Controller {
 
         $prikazList = Prikaz::getList($request->filters, $request->sort);
 
-        return $this->success($prikazList->paginate(6));
+        return $this->success($prikazList->paginate($request->per_page));
     }
 
     public function getLinkedStudentList(PrikazStudentsList $request): JsonResponse {
@@ -129,7 +129,7 @@ class PrikazController extends Controller {
 //        DB::enableQueryLog();
         $prikazList = Student::getList($request->filters, $request->sort, $vars['prikazNumber']);
 //        dd(DB::getQueryLog());
-        return $this->success($prikazList->paginate(6));
+        return $this->success($prikazList->paginate($request->per_page));
     }
 
     public function editPrikaz(PrikazEditRequest $request): \Illuminate\Http\JsonResponse {

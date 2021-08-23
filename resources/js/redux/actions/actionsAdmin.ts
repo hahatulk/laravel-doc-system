@@ -5,7 +5,6 @@ import {Filter, Sorting} from "@devexpress/dx-react-grid";
 import fileDownload from "js-file-download";
 import {getLocalPlainDateTime} from "../../additional_components/Dates";
 import {
-    REACT_APP_ADMIN_DOWNLOAD_EXCEL_DOCUMENT_BY_PATH,
     REACT_APP_ADMIN_EXPORT_DATA,
     REACT_APP_ADMIN_GROUPS_DELETE,
     REACT_APP_ADMIN_GROUPS_EDIT,
@@ -100,6 +99,7 @@ export function getPrikazListLoadingStateToRedux(loading: boolean): object {
 
 export function getGroupsList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -109,6 +109,7 @@ export function getGroupsList(
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                 },
@@ -133,6 +134,7 @@ export function getGroupsList(
 
 export function getModeratorsList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -142,6 +144,7 @@ export function getModeratorsList(
             {
                 params:{
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                 }
@@ -165,6 +168,7 @@ export function getModeratorsList(
 
 export function getPrikazList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -174,6 +178,7 @@ export function getPrikazList(
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                 }
@@ -197,6 +202,7 @@ export function getPrikazList(
 
 export function getStudentsList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -206,6 +212,7 @@ export function getStudentsList(
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                     inProgress: 1,
@@ -230,6 +237,7 @@ export function getStudentsList(
 
 export function getArchivedStudentsList(
     page: string | number,
+    per_page: string | number,
     sort?: Sorting[],
     filters?: Filter[],
 ): any {
@@ -239,6 +247,7 @@ export function getArchivedStudentsList(
             {
                 params: {
                     page: Number(page) + 1,
+                    per_page: per_page,
                     sort: sort?.length ? JSON.stringify(sort) : undefined,
                     filters: filters?.length ? JSON.stringify(filters) : undefined,
                     inProgress: 0,

@@ -62,7 +62,7 @@ class UserController extends Controller {
 
     public function getAdminsList(AdminsListRequest $request): JsonResponse {
         $admins = Moderator::getAdminsList($request->filters, $request->sort);
-        return $this->success($admins->paginate(6));
+        return $this->success($admins->paginate($request->per_page));
     }
 
     public function deleteAdmin(AdminsDeleteRequest $request): JsonResponse {

@@ -10,7 +10,6 @@ import {Loading} from '../../../additional_components/Loading/Loading';
 import HeaderBar from '../../../additional_components/HeaderBar/HeaderBar';
 import {Button, Container, Typography} from "@material-ui/core";
 import './Archived_Orders_list.scss'
-import {getLocalPlainDateTime} from "../../../additional_components/Dates";
 import _ from "lodash";
 import PrepareOrder from "../../../additional_components/Modal/ModalOrderPrepare/ModalOrderPrepareSpravkaObObucheni";
 import axios, {AxiosResponse} from "axios";
@@ -76,6 +75,7 @@ function Archived_Orders_list(props: any) {
     function updateList(): void {
         props.getArchivedOrdersList(
             page,
+            pageSize,
             sorting,
             filters,
         )
@@ -104,10 +104,8 @@ function Archived_Orders_list(props: any) {
         setRowCount(props.Admin.archivedOrdersList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.archivedOrdersList.count <= pageSize && filters?.length) {
+        if (props.Admin.archivedOrdersList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.archivedOrdersList.list])
@@ -400,10 +398,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getArchivedOrdersList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getArchivedOrdersList( page, sort, filters))
+            dispatch(getArchivedOrdersList(page, per_page, sort, filters))
         },
     }
 }

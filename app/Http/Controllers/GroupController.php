@@ -67,6 +67,6 @@ class GroupController extends Controller {
 
         $students = Group::getList($request->filters, $request->sort);
 
-        return $this->success($students->paginate(6));
+        return $this->success($students->paginate($request->per_page));
     }
 }

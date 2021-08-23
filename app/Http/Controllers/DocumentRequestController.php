@@ -137,7 +137,7 @@ class DocumentRequestController extends Controller {
         }
 
 
-        return $this->success($orders->paginate(6));
+        return $this->success($orders->paginate($request->per_page));
     }
 
     /**

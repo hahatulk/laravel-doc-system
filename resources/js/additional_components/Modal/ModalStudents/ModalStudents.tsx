@@ -125,16 +125,15 @@ function ModalStudents(props: any) {
 
     //обновить список студентов
     function updateList(): void {
-
         setLoading(true)
 
         //если список нужен по выбранному приказу
         if (prikazNumber !== undefined) {
-            console.log(prikazNumber)
             axios.get(REACT_APP_ADMIN_STUDENTS_LINKED_TO_PRIKAZ + ``,
                 {
                     params: {
                         page: Number(page) + 1,
+                        per_page: pageSize,
                         sort: sorting?.length ? JSON.stringify(sorting) : undefined,
                         filters: filters?.length ? JSON.stringify(filters) : undefined,
                         inProgress: inProgress,

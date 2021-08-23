@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {connect} from "react-redux"
 import {withRouter} from "react-router"
-import {getArchivedOrdersList, getOrdersList} from "../../../redux/actions/actionsOrders";
+import {getOrdersList} from "../../../redux/actions/actionsOrders";
 import {editStudent} from "../../../redux/actions/actionsAdmin";
 import Paper from '@material-ui/core/Paper';
 import {Column, CustomPaging, Filter, FilteringState, PagingState, Sorting, SortingState, TableColumnWidthInfo,} from '@devexpress/dx-react-grid';
@@ -11,7 +11,6 @@ import HeaderBar from '../../../additional_components/HeaderBar/HeaderBar';
 import {Button, Container, Typography} from "@material-ui/core";
 import './Orders_list.scss'
 import Link from "../../../additional_components/HOC/ProtectedLink";
-import {getLocalPlainDateTime} from "../../../additional_components/Dates";
 import _ from "lodash";
 import axios, {AxiosResponse} from "axios";
 import fileDownload from "js-file-download";
@@ -82,10 +81,10 @@ function Orders_list(props: any) {
     function updateList(): void {
         props.getOrdersList(
             page,
+            pageSize,
             sorting,
             filters,
         )
-
     }
 
     //задержка перед фильтрацией
@@ -110,10 +109,8 @@ function Orders_list(props: any) {
         setRowCount(props.Admin.ordersList.count)
 
         //сброс страницы на 0 если лист маленький
-        if (props.Admin.ordersList.count <= pageSize && filters?.length) {
+        if (props.Admin.ordersList.count <= pageSize) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [props.Admin.ordersList.list])
@@ -416,17 +413,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         getOrdersList: (
             page: string | number,
+            per_page: string | number,
             sort?: Sorting[],
             filters?: Filter[],
         ) => {
-            dispatch(getOrdersList( page, sort, filters))
-        },
-        getArchivedOrdersList: (
-            page: string | number,
-            sort?: Sorting[],
-            filters?: Filter[],
-        ) => {
-            dispatch(getArchivedOrdersList( page, sort, filters))
+            dispatch(getOrdersList(page, per_page, sort, filters))
         },
     }
 }
