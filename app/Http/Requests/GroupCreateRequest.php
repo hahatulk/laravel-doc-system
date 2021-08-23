@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GroupCreateRequest extends FormRequest
@@ -18,6 +17,7 @@ class GroupCreateRequest extends FormRequest
         return [
             'kurs' => 'required|numeric',
             'name' => 'required|string|unique:groups',
+            'inProgress' => 'required|numeric',
             'startDate' => 'required|date',
             'finishDate' => 'required|date',
             'groupType' => 'required|digits_between:0,1',
