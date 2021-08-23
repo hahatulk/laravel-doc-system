@@ -179,13 +179,15 @@ class Student extends Model {
 
     public static function whereInactive(Builder $query): Builder {
         return $query
-            ->whereHas('prikazs', function ($query) {
-                $query->orWhere([
-                    ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE],
+            ->where(function ($query) {
+                $query->where([
+                    ['g.inProgress', '=', '0']
                 ]);
-                $query->orWhere([
-                    ['g.inProgress', '=', '0'],
-                ]);
+                $query->orWhereHas('prikazs', function ($query) {
+                    $query->where([
+                        ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+                    ]);
+                });
             });
     }
 
@@ -195,10 +197,9 @@ class Student extends Model {
                 ['g.inProgress', '=', '1']
             ])
             ->whereDoesntHave('prikazs', function ($query) {
-                $query
-                    ->where([
-                        ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
-                    ]);
+                $query->where([
+                    ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
+                ]);
             });
     }
 
