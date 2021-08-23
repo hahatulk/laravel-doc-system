@@ -154,6 +154,7 @@ function ModalStudents(props: any) {
                 {
                     params: {
                         page: Number(page) + 1,
+                        per_page: pageSize,
                         sort: sorting?.length ? JSON.stringify(sorting) : undefined,
                         filters: filters?.length ? JSON.stringify(filters) : undefined,
                         inProgress: inProgress
