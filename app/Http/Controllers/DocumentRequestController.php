@@ -151,46 +151,48 @@ class DocumentRequestController extends Controller {
             abort('order not found', 404);
         }
 
-        $student = Student::where('userId', $order->userId)
-            ->with(['prikazs.default_document', 'groups'])
-            ->first();
+        if ($order->fullFilled === 0) {
+            $student = Student::where('userId', $order->userId)
+                ->with(['prikazs.default_document', 'groups'])
+                ->first();
 
-        if (empty($student)) {
-            abort('student not found', 404);
+            if (empty($student)) {
+                abort('student not found', 404);
+            }
+
+            $petrovich = new Petrovich();
+            $docType = $order->documentName;
+            $fileName = $order->id;
+            $studentName = 'TestName';
+            $gender = $student->gender === 'мужской' ? Petrovich::GENDER_MALE : Petrovich::GENDER_FEMALE;
+            $case = Petrovich::CASE_GENITIVE;
+
+            $vars = [
+                'Фамилия' => $petrovich->firstname($student->surname, $case, $gender),
+                'Имя' => $petrovich->lastname($student->name, $case, $gender),
+                'Отчество' => $petrovich->middlename($student->patronymic, $case, $gender),
+                'Курс' => $student->groups->kurs,
+                'Группа' => $student->groups->name,
+                'ФормаОбучения' => $student->groups->groupType ? 'заочного' : 'очного (дневного)',
+                'БюджетПлат' => $student->formaObuch ? 'платной' : 'бюджетной',
+                'НачалоУчебы' => Carbon::createFromDate($student->groups->startDate)->format('d.m.Y'),
+                'КонецУчебы' => Carbon::createFromDate($student->groups->finishDate)->format('d.m.Y'),
+                'Приказы' => collect($student->prikazs)->map(function (Prikaz $el) {
+                    $defaultTitle = $el->default_document->title;
+                    return [
+                        'Номер' => $el->N,
+                        "Название" => $defaultTitle,
+                        "Дата" => Carbon::createFromDate($el->date)->format('d.m.Y'),
+                    ];
+                }),
+            ];
+
+            $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
+            $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
+            $templateProcessor->setValues($vars);
+
+            $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
         }
-
-        $petrovich = new Petrovich();
-        $docType = $order->documentName;
-        $fileName = $order->id;
-        $studentName = 'TestName';
-        $gender = $student->gender === 'мужской' ? Petrovich::GENDER_MALE : Petrovich::GENDER_FEMALE;
-        $case = Petrovich::CASE_GENITIVE;
-
-        $vars = [
-            'Фамилия' => $petrovich->firstname($student->surname, $case, $gender),
-            'Имя' => $petrovich->lastname($student->name, $case, $gender),
-            'Отчество' => $petrovich->middlename($student->patronymic, $case, $gender),
-            'Курс' => $student->groups->kurs,
-            'Группа' => $student->groups->name,
-            'ФормаОбучения' => $student->groups->groupType ? 'заочного' : 'очного (дневного)',
-            'БюджетПлат' => $student->formaObuch ? 'платной' : 'бюджетной',
-            'НачалоУчебы' => Carbon::createFromDate($student->groups->startDate)->format('d.m.Y'),
-            'КонецУчебы' => Carbon::createFromDate($student->groups->finishDate)->format('d.m.Y'),
-            'Приказы' => collect($student->prikazs)->map(function (Prikaz $el) {
-                $defaultTitle = $el->default_document->title;
-                return [
-                    'Номер' => $el->N,
-                    "Название" => $defaultTitle,
-                    "Дата" => Carbon::createFromDate($el->date)->format('d.m.Y'),
-                ];
-            }),
-        ];
-
-        $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
-        $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
-        $templateProcessor->setValues($vars);
-
-        $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
 
         return $this->success([
             'orderId' => $order->id,

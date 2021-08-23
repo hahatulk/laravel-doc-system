@@ -44,6 +44,7 @@ class Group extends Model {
     protected $fillable = [
         'kurs',
         'name',
+        'inProgress',
         'startDate',
         'finishDate',
         'groupType',

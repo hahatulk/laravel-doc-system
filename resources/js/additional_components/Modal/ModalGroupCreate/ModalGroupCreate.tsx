@@ -56,6 +56,7 @@ function ModalGroupCreate(props: any) {
                         setFacultetLoading(false)
                         setOpen(false)
                         SnackBarUtils.success(`Группа ${groupName} создана`)
+                        setIsSubmitting(true)
                         props.updateList()
                     })
                     .catch(() => {
@@ -72,7 +73,6 @@ function ModalGroupCreate(props: any) {
 
     useEffect(() => {
         if (open) {
-
             //подгрузка факультетов
             axios.get(REACT_APP_ADMIN_FACULTETS_GET + ``)
                 .then((res: AxiosResponse) => {
@@ -111,14 +111,11 @@ function ModalGroupCreate(props: any) {
                     e.preventDefault()
                     handleSubmit()
                 }}>
-
                     <DialogTitle id="form-dialog-title">Создание группы</DialogTitle>
                     <DialogContent>
                         <Grid container spacing={3}>
-
                             <Grid item xs={12} md={6}>
                                 <FormGroup>
-
                                     <TextField
                                         margin="normal"
                                         name="kurs"
@@ -174,7 +171,6 @@ function ModalGroupCreate(props: any) {
                                             <option value={1}>Заочная</option>
                                         </Select>
                                     </FormControl>
-
                                 </FormGroup>
                             </Grid>
 
@@ -235,10 +231,8 @@ function ModalGroupCreate(props: any) {
                                             setFinishDate(e)
                                         }}
                                     />
-
                                 </FormGroup>
                             </Grid>
-
                         </Grid>
                     </DialogContent>
                     <DialogActions>
