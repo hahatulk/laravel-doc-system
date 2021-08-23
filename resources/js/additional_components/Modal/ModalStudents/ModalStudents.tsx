@@ -31,10 +31,10 @@ import {editColumnMessages, filterRowMessages} from "../../DxGridLocaleConfig";
 import {REACT_APP_ADMIN_STUDENTS_LINKED_TO_PRIKAZ, REACT_APP_ADMIN_STUDENTS_LIST_GET} from "../../Routes";
 
 function ModalStudents(props: any) {
-    const [groupId] = useState<string>(props.groupId ? props.groupId : '')
-    const [groupName] = useState<string>(props.groupName ? props.groupName : '')
-    const [inProgress] = useState<string>(props.inProgress !== undefined ? props.inProgress : -1)
-    const [prikazNumber] = useState<string>(props.prikazNumber)
+    const [groupId] = useState<undefined | number>(props.groupId ? props.groupId : '')
+    const [groupName] = useState<undefined | string>(props.groupName ? props.groupName : '')
+    const [inProgress] = useState<undefined | string>(props.inProgress !== undefined ? props.inProgress : -1)
+    const [prikazNumber] = useState<undefined | number>(props.prikazNumber)
 
     const [open, setOpen] = useState<boolean>(false)
 
@@ -81,7 +81,6 @@ function ModalStudents(props: any) {
         {columnName: 'userData', width: 180},
     ])
 
-
     const [defaultHiddenColumnNames] = useState<string[]>([
         'userId',
         'groupName',
@@ -94,11 +93,11 @@ function ModalStudents(props: any) {
     ])
     const [currentHiddenColumnNames, setCurrentHiddenColumnNames] = useState<string[]>(defaultHiddenColumnNames)
 
-    const [defaultFilters] = useState<Filter[]>(props.groupName && [{
+    const [defaultFilters] = useState<Filter[]>(props.groupName ? [{
         columnName: 'groupName',
         operation: 'contains',
         value: groupName,
-    }])
+    }] : [])
     const [filters, setFilters] = useState<Filter[]>(defaultFilters)
     const [filtersNeedReset, setFiltersNeedReset] = useState<boolean>(false)
     const [filteringStateColumnExtensions] = useState([
@@ -131,14 +130,15 @@ function ModalStudents(props: any) {
 
         //если список нужен по выбранному приказу
         if (prikazNumber !== undefined) {
+            console.log(prikazNumber)
             axios.get(REACT_APP_ADMIN_STUDENTS_LINKED_TO_PRIKAZ + ``,
                 {
-                    params:{
+                    params: {
                         page: Number(page) + 1,
                         sort: sorting?.length ? JSON.stringify(sorting) : undefined,
                         filters: filters?.length ? JSON.stringify(filters) : undefined,
                         inProgress: inProgress,
-                        prikazNumber: props.prikazNumber
+                        prikazNumber: prikazNumber
                     }
                 }
             )
@@ -148,12 +148,9 @@ function ModalStudents(props: any) {
                     setLoading(false)
                 })
                 .catch(e => {
-                    const res = e.response
-                    //check if tokens expired already
                     SnackBarUtils.error('Ошибка загрузки списка')
-
                 })
-        } else{
+        } else {
             axios.get(REACT_APP_ADMIN_STUDENTS_LIST_GET + ``,
                 {
                     params: {
@@ -170,10 +167,7 @@ function ModalStudents(props: any) {
                     setLoading(false)
                 })
                 .catch(e => {
-                    const res = e.response
-                    //check if tokens expired already
                     SnackBarUtils.error('Ошибка загрузки списка')
-
                 })
         }
     }
@@ -188,17 +182,20 @@ function ModalStudents(props: any) {
         if (open) {
             updateList()
         }
-
-        // console.log(page * pageSize,( page + 1) * pageSize);
     }, [page, sorting, filters, open])
+
+    //получать новый лист при изменении параметров
+    useEffect(() => {
+        if (!open) {
+            setFilters(defaultFilters)
+        }
+    }, [open])
 
     //обновить лист в компоненте
     useEffect(() => {
         //сброс страницы на 0 если лист маленький
         if (rowCount <= pageSize && filters?.length && open) {
             setPage(0)
-            // console.log(props.Admin.studentsList.count, pageSize);
-            // console.log(page);
         }
 
     }, [rows])
@@ -208,7 +205,6 @@ function ModalStudents(props: any) {
     const [selection, setSelection] = useState([]);
     useEffect(() => {
         if (open && selectable) {
-            props.selectStudents(selection)
         }
     }, [selection])
 
@@ -221,7 +217,7 @@ function ModalStudents(props: any) {
             );
 
             if (
-                columnToCheck.length > 0 &&
+                columnToCheck?.length > 0 &&
                 columnToCheck[0].direction !== column.direction &&
                 column.direction === "asc"
             ) {
@@ -358,7 +354,7 @@ function ModalStudents(props: any) {
                 <DialogTitle id="form-dialog-title" style={{padding: '16px 24px 0 24px'}}>
                     <div className={"table-description"}>
                         <Typography variant={'h6'}>
-                            Студенты группы {groupName}
+                            Студенты {groupName}
                         </Typography>
                         <div className={'table-controls'}>
 

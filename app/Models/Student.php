@@ -131,7 +131,7 @@ class Student extends Model {
 
     public static function getList(array|null $filters = null,
                                    array|null $sort = null,
-                                   int        $prikazNumber = -1
+                                   int $prikazNumber = -1
 
     ): Builder {
 
@@ -179,14 +179,13 @@ class Student extends Model {
 
     public static function whereInactive(Builder $query): Builder {
         return $query
-            ->orWhere([
-                ['g.inProgress', '=', '0']
-            ])
-            ->orWhereHas('prikazs', function ($query) {
-                $query
-                    ->where([
-                        ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE]
-                    ]);
+            ->whereHas('prikazs', function ($query) {
+                $query->orWhere([
+                    ['name', '=', Prikaz::PRIKAZ_OTCHISLENIE],
+                ]);
+                $query->orWhere([
+                    ['g.inProgress', '=', '0'],
+                ]);
             });
     }
 
