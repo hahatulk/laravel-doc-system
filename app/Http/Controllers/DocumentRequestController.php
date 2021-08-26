@@ -7,6 +7,7 @@ use App\Http\Requests\OrderCancelRequest;
 use App\Http\Requests\OrderDownloadRequest;
 use App\Http\Requests\OrderFullfillRequest;
 use App\Http\Requests\OrderPrepareRequest;
+use App\Http\Requests\OrderPreviewDownloadRequest;
 use App\Http\Requests\OrdersCreateRequest;
 use App\Http\Requests\OrdersListRequest;
 use App\Http\Requests\OrdersLkRequest;
@@ -124,9 +125,9 @@ class DocumentRequestController extends Controller {
     public function getOrdersList(OrdersListRequest $request): JsonResponse {
         $vars = $request->validated();
         $orders = DocumentRequest::getList($request->filters, $request->sort)
-        ->with(['student' => function($enrolledQuery) {
-            $enrolledQuery->with('groups');
-        }]);
+            ->with(['student' => function ($enrolledQuery) {
+                $enrolledQuery->with('groups');
+            }]);
 
         if (isset($vars['active'])) {
             if ((int)$vars['active'] === 1) {
@@ -151,48 +152,46 @@ class DocumentRequestController extends Controller {
             abort('order not found', 404);
         }
 
-        if ($order->fullFilled === 0) {
-            $student = Student::where('userId', $order->userId)
-                ->with(['prikazs.default_document', 'groups'])
-                ->first();
+        $student = Student::where('userId', $order->userId)
+            ->with(['prikazs.default_document', 'groups'])
+            ->first();
 
-            if (empty($student)) {
-                abort('student not found', 404);
-            }
-
-            $petrovich = new Petrovich();
-            $docType = $order->documentName;
-            $fileName = $order->id;
-            $studentName = 'TestName';
-            $gender = $student->gender === 'мужской' ? Petrovich::GENDER_MALE : Petrovich::GENDER_FEMALE;
-            $case = Petrovich::CASE_GENITIVE;
-
-            $vars = [
-                'Фамилия' => $petrovich->firstname($student->surname, $case, $gender),
-                'Имя' => $petrovich->lastname($student->name, $case, $gender),
-                'Отчество' => $petrovich->middlename($student->patronymic, $case, $gender),
-                'Курс' => $student->groups->kurs,
-                'Группа' => $student->groups->name,
-                'ФормаОбучения' => $student->groups->groupType ? 'заочного' : 'очного (дневного)',
-                'БюджетПлат' => $student->formaObuch ? 'платной' : 'бюджетной',
-                'НачалоУчебы' => Carbon::createFromDate($student->groups->startDate)->format('d.m.Y'),
-                'КонецУчебы' => Carbon::createFromDate($student->groups->finishDate)->format('d.m.Y'),
-                'Приказы' => collect($student->prikazs)->map(function (Prikaz $el) {
-                    $defaultTitle = $el->default_document->title;
-                    return [
-                        'Номер' => $el->N,
-                        "Название" => $defaultTitle,
-                        "Дата" => Carbon::createFromDate($el->date)->format('d.m.Y'),
-                    ];
-                }),
-            ];
-
-            $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
-            $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
-            $templateProcessor->setValues($vars);
-
-            $templateProcessor->saveAs(Storage::path("orders/$fileName.docx"));
+        if (empty($student)) {
+            abort('student not found', 404);
         }
+
+        $petrovich = new Petrovich();
+        $docType = $order->documentName;
+        $fileName = $order->id;
+        $studentName = 'TestName';
+        $gender = $student->gender === 'мужской' ? Petrovich::GENDER_MALE : Petrovich::GENDER_FEMALE;
+        $case = Petrovich::CASE_GENITIVE;
+
+        $vars = [
+            'Фамилия' => $petrovich->firstname($student->surname, $case, $gender),
+            'Имя' => $petrovich->lastname($student->name, $case, $gender),
+            'Отчество' => $petrovich->middlename($student->patronymic, $case, $gender),
+            'Курс' => $student->groups->kurs,
+            'Группа' => $student->groups->name,
+            'ФормаОбучения' => $student->groups->groupType ? 'заочного' : 'очного (дневного)',
+            'БюджетПлат' => $student->formaObuch ? 'платной' : 'бюджетной',
+            'НачалоУчебы' => Carbon::createFromDate($student->groups->startDate)->format('d.m.Y'),
+            'КонецУчебы' => Carbon::createFromDate($student->groups->finishDate)->format('d.m.Y'),
+            'Приказы' => collect($student->prikazs)->map(function (Prikaz $el) {
+                $defaultTitle = $el->default_document->title;
+                return [
+                    'Номер' => $el->N,
+                    "Название" => $defaultTitle,
+                    "Дата" => Carbon::createFromDate($el->date)->format('d.m.Y'),
+                ];
+            }),
+        ];
+
+        $templateProcessor = new PatchedTemplateProcessor(Storage::path("templates/$docType.docx"));
+        $templateProcessor->cloneBlock('Приказ', 10, true, false, $vars['Приказы']->toArray());
+        $templateProcessor->setValues($vars);
+
+        $templateProcessor->saveAs(Storage::path("orders/_$fileName.docx"));
 
         return $this->success([
             'orderId' => $order->id,
@@ -245,5 +244,14 @@ class DocumentRequestController extends Controller {
         ];
 
         return response()->download(Storage::path("orders/$request->orderId.docx"), 'order.docx', $headers);
+    }
+
+    public function previewOrder(OrderPreviewDownloadRequest $request): BinaryFileResponse {
+        $headers = [
+            'Content-type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Disposition' => 'attachment; filename="order.docx"',
+        ];
+
+        return response()->download(Storage::path("orders/_$request->orderId.docx"), 'order.docx', $headers);
     }
 }

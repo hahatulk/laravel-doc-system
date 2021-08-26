@@ -1,6 +1,7 @@
 *
 !templates
 !templates/*
+!public
 !public/
 !orders/
 !.gitignore

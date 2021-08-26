@@ -61,7 +61,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/orders/create', [DocumentRequestController::class, 'createOrder']);
     Route::post('/orders/update', [DocumentRequestController::class, 'updateOrder']);
     Route::delete('/orders/cancel', [DocumentRequestController::class, 'cancelOrder']);
-    Route::get('/order/preview', [DocumentRequestController::class, 'downloadOrder']);
+    Route::get('/order/preview', [DocumentRequestController::class, 'previewOrder']);
 
     Route::post('/prikaz/zachislenie', [PrikazController::class, 'createZachislenie']);
     Route::delete('/prikaz/delete', [PrikazController::class, 'deletePrikaz']);
