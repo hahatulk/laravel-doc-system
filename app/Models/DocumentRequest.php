@@ -62,9 +62,9 @@ class DocumentRequest extends Model {
     public static function summary(): Builder {
         return self::select([
             DB::raw("COUNT(*) as total"),
-            DB::raw("SUM(CASE WHEN document_requests.status IN ('1') THEN 1 ELSE 0 END)  as pending"),
+            DB::raw("SUM(CASE WHEN document_requests.status IN ('0') THEN 1 ELSE 0 END)  as pending"),
             DB::raw("SUM(CASE WHEN document_requests.status IN ('-1') THEN 1 ELSE 0 END) as canceled"),
-            DB::raw("SUM(CASE WHEN document_requests.status IN ('0') THEN 1 ELSE 0 END)  as successful"),
+            DB::raw("SUM(CASE WHEN document_requests.status IN ('1') THEN 1 ELSE 0 END)  as successful"),
         ])
             ->join('students', 'document_requests.userId', '=', 'students.userId');
     }
