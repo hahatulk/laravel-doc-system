@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Class;
+namespace App\Class\TemplateProcessor;
 
 class StudentImportExcelReadFilter implements \PhpOffice\PhpSpreadsheet\Reader\IReadFilter
 {

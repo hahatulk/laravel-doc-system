@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Class\PatchedTemplateProcessor;
+use App\Class\TemplateProcessor\PatchedTemplateProcessor;
 use App\Http\Requests\OrderCancelRequest;
 use App\Http\Requests\OrderDownloadRequest;
 use App\Http\Requests\OrderFullfillRequest;
