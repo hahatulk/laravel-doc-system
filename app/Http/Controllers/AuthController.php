@@ -13,16 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use JsonException;
-use Laravel\Passport\TokenRepository;
 use Laravel\Passport\RefreshTokenRepository;
+use Laravel\Passport\TokenRepository;
 
-class AuthController extends Controller
-{
-     /**
+class AuthController extends Controller {
+    /**
      * @throws JsonException
      */
-    public function login(Request $request): Response|JsonResponse|Application|ResponseFactory
-    {
+    public function login(Request $request): Response|JsonResponse|Application|ResponseFactory {
         $vars = $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -37,9 +35,11 @@ class AuthController extends Controller
         }
 
         $tokens = $this->issueToken($user->username, $user->password);
+        $accessTokenExpireMinutes = (int)env('ACCESS_TOKEN_HOURS') * 60;
+        $refreshTokenExpireMinutes = (int)env('REFRESH_TOKEN_DAYS') * 24 * 60;
 
-        Cookie::queue('access_token', $tokens['access_token'], env('ACCESS_TOKEN_MINUTES'));
-        Cookie::queue('refresh_token', $tokens['refresh_token'], env('REFRESH_TOKEN_MINUTES'));
+        Cookie::queue('access_token', $tokens['access_token'], $accessTokenExpireMinutes);
+        Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshTokenExpireMinutes);
 
         return response()->json([
             'msg' => 'Logged in.'
@@ -50,78 +50,7 @@ class AuthController extends Controller
      * @throws JsonException
      * @throws Exception
      */
-    public function refreshToken(Request $request): JsonResponse {
-        $client = DB::table('oauth_clients')
-            ->where('password_client', true)
-            ->first();
-
-        $data = [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $request->cookie('refresh_token'),
-            'client_id' => $client->id,
-            'client_secret' => $client->secret,
-        ];
-        $response = Request::create('/oauth/token', 'POST', $data);
-        $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
-
-        $accessExpire = (int)env('ACCESS_TOKEN_HOURS');
-        $refreshExpire = (int)env('REFRESH_TOKEN_DAYS');
-
-        try {
-            Cookie::queue('access_token', $tokens['access_token'], $accessExpire);
-            Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshExpire);
-        } catch (\Exception $e) {
-            return $this->error('Refresh token failure');
-        }
-
-
-        return $this->success();
-    }
-
-    public function logout(Request $request): bool
-    {
-        $userTokens = Auth::user()->tokens;
-        $tokenId = $request->user()->token()->id;
-
-        $tokenRepository = app(TokenRepository::class);
-        $refreshTokenRepository = app(RefreshTokenRepository::class);
-
-        // Revoke an access token...
-        $tokenRepository->revokeAccessToken($tokenId);
-
-        // Revoke all of the token's refresh tokens...
-        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
-
-        Cookie::queue('access_token', '', 0);
-        Cookie::queue('refresh_token', '', 0);
-
-        return true;
-    }
-
-    public function revokeAllTokens(Request $request): bool
-    {
-        $userTokens = Auth::user()->tokens;
-        $tokenId = $request->user()->token()->id;
-
-        $tokenRepository = app(TokenRepository::class);
-        $refreshTokenRepository = app(RefreshTokenRepository::class);
-
-        foreach($userTokens as $token) {
-            $token->revoke();
-        }
-
-        // Revoke all of the token's refresh tokens...
-        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
-
-        return true;
-    }
-
-    /**
-     * @throws JsonException
-     * @throws Exception
-     */
-    private function issueToken(string $username, string $password): mixed
-    {
+    private function issueToken(string $username, string $password): mixed {
         $client = DB::table('oauth_clients')
             ->where('password_client', true)
             ->first();
@@ -142,7 +71,73 @@ class AuthController extends Controller
         return json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
     }
 
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function refreshToken(Request $request): JsonResponse {
+        $client = DB::table('oauth_clients')
+            ->where('password_client', true)
+            ->first();
+
+        $data = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $request->cookie('refresh_token'),
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
+        ];
+        $response = Request::create('/oauth/token', 'POST', $data);
+        $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        $accessTokenExpireMinutes = (int)env('ACCESS_TOKEN_HOURS') * 60;
+        $refreshTokenExpireMinutes = (int)env('REFRESH_TOKEN_DAYS') * 24 * 60;
+
+        try {
+            Cookie::queue('access_token', $tokens['access_token'], $accessTokenExpireMinutes);
+            Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshTokenExpireMinutes);
+        } catch (\Exception $e) {
+            return $this->error('Refresh token failure');
+        }
+
+        return $this->success();
+    }
+
+    public function logout(Request $request): JsonResponse {
+        $tokenId = $request->user()->token()->id;
+
+        $tokenRepository = app(TokenRepository::class);
+        $refreshTokenRepository = app(RefreshTokenRepository::class);
+
+        // Revoke an access token...
+        $tokenRepository->revokeAccessToken($tokenId);
+        // Revoke all of the token's refresh tokens...
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
+        Cookie::queue('access_token', '', 0);
+        Cookie::queue('refresh_token', '', 0);
+
+        return $this->success();
+    }
+
+    public function revokeAllTokens(Request $request): JsonResponse {
+        $userTokens = Auth::user()->tokens;
+        $tokenId = $request->user()->token()->id;
+
+//        $tokenRepository = app(TokenRepository::class);
+        $refreshTokenRepository = app(RefreshTokenRepository::class);
+
+        //revoke all access tokens
+        foreach ($userTokens as $token) {
+            $token->revoke();
+        }
+
+        // Revoke all of the token's refresh tokens...
+        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+
+        return $this->success();
+    }
+
     public function tokenCheck(): JsonResponse {
-       return $this->success();
+        return $this->success();
     }
 }

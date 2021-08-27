@@ -31,7 +31,7 @@ class PrikazController extends Controller {
 
         $prikazTemplate = DefaultDocument::whereName(Prikaz::PRIKAZ_ZACHISLENIE)->first();
         $kursNumber = Group::find($vars['group'])->kurs;
-        $kursFormatted = Util::numberToRomanRepresentation($kursNumber);
+        $kursFormatted = Util::numberToRoman($kursNumber);
         $prikazName = Prikaz::PRIKAZ_ZACHISLENIE;
         $prikazNumber = $vars['prikazNumber'];
         $prikazDefaultTitle = strtolower($prikazTemplate->title);
