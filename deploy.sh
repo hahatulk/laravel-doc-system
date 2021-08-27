@@ -7,7 +7,7 @@ echo -e "\n-> GIT PULL"
 git pull
 
 echo -e "\n-> COMPOSER INSTALL"
-composer install
+/opt/php/8.0/bin/php ~/bin/composerphp8/composer install
 /opt/php/8.0/bin/php artisan package:discover --ansi
 
 echo -e "\n-> MIGRATE"
