@@ -35,8 +35,8 @@ class AuthController extends Controller {
         }
 
         $tokens = $this->issueToken($user->username, $user->password);
-        $accessTokenExpireMinutes = (int)env('ACCESS_TOKEN_HOURS') * 60;
-        $refreshTokenExpireMinutes = (int)env('REFRESH_TOKEN_DAYS') * 24 * 60;
+        $accessTokenExpireMinutes = User::ACCESS_TOKEN_HOURS * 60;
+        $refreshTokenExpireMinutes = User::REFRESH_TOKEN_DAYS * 24 * 60;
 
         Cookie::queue('access_token', $tokens['access_token'], $accessTokenExpireMinutes);
         Cookie::queue('refresh_token', $tokens['refresh_token'], $refreshTokenExpireMinutes);
@@ -89,8 +89,8 @@ class AuthController extends Controller {
         $response = Request::create('/oauth/token', 'POST', $data);
         $tokens = json_decode(app()->handle($response)->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
-        $accessTokenExpireMinutes = (int)env('ACCESS_TOKEN_HOURS') * 60;
-        $refreshTokenExpireMinutes = (int)env('REFRESH_TOKEN_DAYS') * 24 * 60;
+        $accessTokenExpireMinutes = User::ACCESS_TOKEN_HOURS * 60;
+        $refreshTokenExpireMinutes = User::REFRESH_TOKEN_DAYS * 24 * 60;
 
         try {
             Cookie::queue('access_token', $tokens['access_token'], $accessTokenExpireMinutes);

@@ -13,7 +13,6 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Client;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
@@ -51,28 +50,27 @@ class User extends Authenticatable {
     use HasApiTokens, HasFactory, Notifiable;
     use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
+    public const ACCESS_TOKEN_HOURS = 2;
+    public const REFRESH_TOKEN_DAYS = 30;
+
     public const ROLE_ADMIN = 'admin';
     public const ROLE_STUDENT = 'student';
-    public function prikazs() {
-        return $this->belongsToJson(Prikaz::class, 'userId[]->id');
-    }
     protected $fillable = [
         'username',
         'password',
         'role',
         'status'
     ];
-
     protected $hidden = [
         'password',
     ];
-//    protected $casts = [
-//        'email_verified_at' => 'datetime',
-//    ];
 
     public static function findByUsername(string $username): Model|Builder|null {
         return self::whereUsername($username)->first();
     }
+//    protected $casts = [
+//        'email_verified_at' => 'datetime',
+//    ];
 
     public static function verifyCredentials(string $username, string $password): Model|Builder|null {
         return self::whereUsername($username)->wherePassword($password)->first();
@@ -80,6 +78,10 @@ class User extends Authenticatable {
 
     public static function editCredentials(string $username, string $password): Model|Builder|null {
         return self::whereUsername($username)->wherePassword($password)->first();
+    }
+
+    public function prikazs() {
+        return $this->belongsToJson(Prikaz::class, 'userId[]->id');
     }
 
     /**
@@ -102,8 +104,7 @@ class User extends Authenticatable {
         return true;
     }
 
-    public function hasRole(array $roles): bool
-    {
+    public function hasRole(array $roles): bool {
         return in_array($this->role, $roles, true);
     }
 }

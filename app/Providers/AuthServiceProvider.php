@@ -31,8 +31,8 @@ class AuthServiceProvider extends ServiceProvider
             User::ROLE_STUDENT => 'student-access',
         ]);
 
-        $accessExpire = (int)env('ACCESS_TOKEN_HOURS');
-        $refreshExpire = (int)env('REFRESH_TOKEN_DAYS');
+        $accessExpire = User::ACCESS_TOKEN_HOURS;
+        $refreshExpire = User::REFRESH_TOKEN_DAYS;
 
         Passport::tokensExpireIn(now()->addHours($accessExpire));
         Passport::refreshTokensExpireIn(now()->addDays($refreshExpire));
