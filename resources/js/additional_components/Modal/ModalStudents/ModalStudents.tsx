@@ -205,6 +205,7 @@ function ModalStudents(props: any) {
     const [selection, setSelection] = useState([]);
     useEffect(() => {
         if (open && selectable) {
+            props.selectStudents(selection)
         }
     }, [selection])
 
