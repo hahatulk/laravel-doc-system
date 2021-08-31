@@ -163,6 +163,8 @@ function Archived_Students_list(props: any) {
             const editedUserId: number = parseInt(Object.keys(changed)[0])
             const editedData: any = changed[editedUserId]
 
+            console.log(changed)
+
             if (editedData) {
                 props.editStudent(editedUserId, editedData, () => {
                     updateList()

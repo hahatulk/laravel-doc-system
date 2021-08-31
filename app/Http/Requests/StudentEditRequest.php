@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
 
@@ -17,7 +16,13 @@ class StudentEditRequest extends FormRequest {
     public function rules()
     {
         return [
-            'userId' => 'required|numeric'
+            'userId' => 'required|numeric',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|string',
+            'group' => 'nullable|exists:groups,id',
+            'surname' => 'nullable|string',
+            'name' => 'nullable|string',
+            'patronymic' => 'nullable|string',
         ];
     }
 }

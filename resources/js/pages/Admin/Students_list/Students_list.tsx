@@ -169,7 +169,7 @@ function Students_list(props: any) {
             const editedUserId: number = parseInt(Object.keys(changed)[0])
             const editedData: any = changed[editedUserId]
 
-            // console.log(changed)
+            console.log(changed)
 
             if (editedData) {
                 setLoading(true)

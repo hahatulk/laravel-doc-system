@@ -8,6 +8,7 @@ use App\Http\Requests\GroupEditRequest;
 use App\Http\Requests\GroupListRequest;
 use App\Http\Requests\GroupsAllRequest;
 use App\Models\Group;
+use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -20,11 +21,11 @@ class GroupController extends Controller {
     public function getAll(GroupsAllRequest $request): JsonResponse {
         $vars = $request->validated();
 
-       if ($vars['inProgress'] >= 0) {
-           $groups = Group::where('inProgress', $vars['inProgress'])->get();
-       } else {
-           $groups = Group::all();
-       }
+        if ($vars['inProgress'] >= 0) {
+            $groups = Group::where('inProgress', $vars['inProgress'])->get();
+        } else {
+            $groups = Group::all();
+        }
 
         return $this->success($groups);
     }
@@ -37,14 +38,20 @@ class GroupController extends Controller {
         return $this->success();
     }
 
-    /**
-     * @throws \JsonException
-     */
     public function edit(GroupEditRequest $request): JsonResponse {
-        $vars = $request->validated();
-//        $vars['values'] = json_decode($vars['values'], JSON_THROW_ON_ERROR | true, 512, JSON_THROW_ON_ERROR);
+        $vars = $request->except('groupName', 'groupId');
+        if (!empty($request->get('groupName'))) {
+            $vars['name'] = $request->get('groupName');
+        }
+        if (!empty($request->get('startDate'))) {
+            $vars['startDate'] = Carbon::createFromTimestampMs($request->get('startDate'))->toDateString();
+        }
+        if (!empty($request->get('finishDate'))) {
+            $vars['finishDate'] = Carbon::createFromTimestampMs($request->get('finishDate'))->toDateString();
+        }
+        $groupId = $request->only('groupId');
 
-        Group::whereId($vars['groupId'])->update($vars['values']);
+        Group::whereId($groupId)->update($vars);
 
         return $this->success();
     }

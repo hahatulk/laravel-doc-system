@@ -363,7 +363,7 @@ export function editGroup(
         return await axios.post(REACT_APP_ADMIN_GROUPS_EDIT + ``,
             {
                 groupId: groupId,
-                values: values
+                ...values
             }
         )
             .then((res) => {

@@ -8,13 +8,12 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "dep": "docker-compose run web composer update && docker-compose run web npm i",
+        "dep": "docker-compose exec web composer update && docker-compose exec web npm i",
         "docker": "docker-compose up --build -d",
-        "cache": "docker-compose run web php artisan config:clear",
-        "migrate": "docker-compose run web php artisan migrate:fresh --seed",
-        "passport": "docker-compose run web php artisan passport:install",
-        "larkey": "docker-compose run web composer run-script post-create-project-cmd",
-        "idehelper": "docker-compose run web php artisan ide-helper:generate && docker-compose run web php artisan ide-helper:models -W && docker-compose run web php artisan ide-helper:meta"
+        "migrate": "docker-compose exec web php artisan migrate:fresh --seed",
+        "passport": "docker-compose exec web php artisan passport:install",
+        "larkey": "docker-compose exec web composer run-script post-create-project-cmd",
+        "idehelper": "docker-compose exec web php artisan ide-helper:generate && docker-compose exec web php artisan ide-helper:models -W && docker-compose run web php artisan ide-helper:meta"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",

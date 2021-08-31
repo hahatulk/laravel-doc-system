@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GroupEditRequest extends FormRequest {
@@ -16,7 +15,9 @@ class GroupEditRequest extends FormRequest {
     public function rules(): array {
         return [
             'groupId' => 'required|numeric',
-            'values' => 'required|array',
+            'facultet' => 'nullable|string',
+            'groupType' => 'nullable|numeric',
+            'inProgress' => 'nullable|numeric',
         ];
     }
 }

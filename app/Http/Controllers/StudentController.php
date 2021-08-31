@@ -8,7 +8,6 @@ use App\Http\Requests\StudentListRequest;
 use App\Http\Requests\StudentsExportRequest;
 use App\Http\Requests\UserInfoGetRequest;
 use App\Models\Student;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -57,12 +56,8 @@ class StudentController extends Controller {
         $vars = $request->except('userId');
         $userId = $request->only('userId');
 
-        try {
-            Student::where('userId', '=', $userId)->update($vars);
+        Student::where('userId', '=', $userId)->update($vars);
 
-        } catch (Exception $e) {
-            return $this->error('Student edit error');
-        }
         return $this->success();
     }
 
